@@ -1,4 +1,4 @@
-## Hi there 👋
+## Hi
 
 <!--
 **HiddenAbilitree/HiddenAbilitree** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
