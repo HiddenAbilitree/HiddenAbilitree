@@ -1,4 +1,5 @@
-import { Footer } from '@/components/landing/footer';
+import { Footer } from '@/components/landing';
+import { Settings } from '@/components/settings';
 
 export default function LandingLayout({
   children,
@@ -11,6 +12,7 @@ export default function LandingLayout({
         {children}
       </main>
       <Footer />
+      <Settings />
     </>
   );
 }

@@ -67,6 +67,7 @@
   --color-tns-blue: var(--tns-blue);
   --color-tns-magenta: var(--tns-magenta);
   --color-tns-black: var(--tns-black);
+  --color-tns-black-hover: var(--tns-black-hover);
 }
 
 :root {
@@ -111,6 +112,7 @@
   --tns-blue: oklch(0.719 0.1322 264.2);
   --tns-magenta: oklch(0.7515 0.1344 299.5);
   --tns-black: oklch(0.2263 0.0214 280.49);
+  --tns-black-hover: oklch(0.2111 0.0214 280.49);
 
   --tns-highlight: oklch(0.7537 0.1243 213.18);
 }

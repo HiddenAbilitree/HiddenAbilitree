@@ -1,7 +1,7 @@
 'use client';
 
 import { Separator } from '@/components/ui/separator';
-import { useModal } from '@/lib/hooks/use-modal';
+import { useModal } from '@/hooks/use-modal';
 import { AnimatePresence, motion } from 'motion/react';
 import { ReactNode, useEffect, useState } from 'react';
 
@@ -32,7 +32,7 @@ export const MobileNav = ({
           setModal(!open);
           setOpen(!open);
         }}
-        className='bg-tns-black z-50 flex size-10 items-center justify-center rounded-full border hover:cursor-pointer focus:ring sm:hidden'
+        className='bg-tns-black z-50 flex size-10 items-center justify-center rounded-full border-2 hover:cursor-pointer focus:ring sm:hidden'
       >
         <motion.span
           animate={{
@@ -54,7 +54,7 @@ export const MobileNav = ({
             className='bg-tns-black/50 fixed bottom-0 left-0 right-0 top-0 z-40 bg-clip-content backdrop-blur-sm backdrop-brightness-50'
           >
             <nav className='pt-18 flex flex-col gap-4 px-4'>
-              <Separator />
+              <div className='w-full rounded-full border' />
               {children}
             </nav>
           </motion.div>

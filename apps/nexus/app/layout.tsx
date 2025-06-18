@@ -1,5 +1,4 @@
 import '@/app/globals.css';
-import { Footer } from '@/components/landing/footer';
 import { Header } from '@/components/header';
 import { ReactLenis } from 'lenis/react';
 import type { Metadata } from 'next';
@@ -26,7 +25,7 @@ const _0xProto = localFont({
 });
 
 export const metadata: Metadata = {
-  title: 'Eric Zhang',
+  title: 'ezhang.dev',
   description: 'The Goat.',
 };
 

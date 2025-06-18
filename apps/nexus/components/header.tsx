@@ -26,7 +26,7 @@ const Bubble = ({
   <Link
     href={href}
     {...props}
-    className='bg-tns-black hover:bg-tns-black/75 hover:text-tns-white z-50 flex h-10 items-center justify-center rounded-full border px-4 text-center text-xl font-black shadow-md transition-all duration-200 hover:translate-x-0 hover:translate-y-0.5 hover:shadow-lg'
+    className='bg-tns-black hover:bg-tns-black-hover hover:text-tns-white z-50 flex h-10 items-center justify-center rounded-full border-2 px-4 text-center text-xl font-black shadow-sm transition-all duration-200 hover:translate-y-0.5 hover:shadow-lg'
   >
     {props.children}
   </Link>
