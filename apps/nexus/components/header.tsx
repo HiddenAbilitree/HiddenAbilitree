@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { ComponentProps, ReactNode } from 'react';
 
 export const Header = () => (
-  <header className='fixed left-0 right-0 top-0 z-50 flex items-center justify-between gap-8 p-4 sm:p-8'>
+  <header className='fixed left-0 right-0 top-0 z-40 flex items-center justify-between gap-8 p-4 sm:p-8 md:invisible'>
     <Bubble href='/'>
       ericzhang<span className='text-tns-blue'>.</span>dev
     </Bubble>
@@ -26,7 +26,7 @@ const Bubble = ({
   <Link
     href={href}
     {...props}
-    className='bg-tns-black hover:bg-tns-black-hover hover:text-tns-white z-50 flex h-10 items-center justify-center rounded-full border-2 px-4 text-center text-xl font-black shadow-sm transition-all duration-200 hover:translate-y-0.5 hover:shadow-lg'
+    className='hover:bg-tns-black-hover bg-tns-black hover:text-tns-white visible isolate z-50 flex h-10 items-center justify-center rounded-full border-2 px-4 text-center text-xl font-black shadow-sm transition-all duration-200 hover:translate-y-0.5 hover:shadow-lg'
   >
     {props.children}
   </Link>

@@ -1,6 +1,5 @@
 'use client';
 
-import { Separator } from '@/components/ui/separator';
 import { useModal } from '@/hooks/use-modal';
 import { AnimatePresence, motion } from 'motion/react';
 import { ReactNode, useEffect, useState } from 'react';
@@ -35,6 +34,10 @@ export const MobileNav = ({
         className='bg-tns-black z-50 flex size-10 items-center justify-center rounded-full border-2 hover:cursor-pointer focus:ring sm:hidden'
       >
         <motion.span
+          initial={{
+            borderRadius: open ? '100%' : '25%',
+            borderColor: open ? 'var(--tns-red)' : 'var(--tns-green)',
+          }}
           animate={{
             borderRadius: open ? '100%' : '25%',
             borderColor: open ? 'var(--tns-red)' : 'var(--tns-green)',

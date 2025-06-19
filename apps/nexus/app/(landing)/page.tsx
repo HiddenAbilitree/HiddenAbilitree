@@ -1,3 +1,4 @@
+import { AnimateText } from '@/components/appearing-text';
 import { JPQuote, ProjectCard, Section } from '@/components/landing';
 import { Separator } from '@/components/ui/separator';
 
@@ -45,9 +46,9 @@ const Projects = () => (
     <h1 className='text-tns-blue text-5xl'>
       <JPQuote>projects</JPQuote>
     </h1>
-    <div className='flex w-full max-w-[1600px] flex-col items-center justify-center gap-8 px-4 md:px-8'>
+    <div className='flex w-full flex-col items-center justify-center gap-8 px-4 md:px-8'>
       <ProjectCard
-        className='bg-tns-blue/10'
+        color='blue'
         title='Auth Template'
         href=''
         imgSrc='/nextjs-auth-template.png'
@@ -57,7 +58,7 @@ const Projects = () => (
         ]}
       />
       <ProjectCard
-        className='bg-tns-magenta/10 border-tns-magenta'
+        color='magenta'
         title='Auth Template'
         href=''
         imgSrc='/nextjs-auth-template.png'
@@ -68,7 +69,7 @@ const Projects = () => (
         ]}
       />
       <ProjectCard
-        className='bg-tns-green/10 border-tns-green'
+        color='green'
         title='Auth Template'
         href=''
         imgSrc='/nextjs-auth-template.png'
@@ -78,7 +79,28 @@ const Projects = () => (
         ]}
       />
       <ProjectCard
-        className='bg-tns-red/10 border-tns-red'
+        color='magenta'
+        title='Auth Template'
+        href=''
+        imgSrc='/nextjs-auth-template.png'
+        reverse
+        badges={[
+          { text: 'Next.js', href: '' },
+          { text: 'Better Auth', href: '' },
+        ]}
+      />
+      <ProjectCard
+        color='yellow'
+        title='Auth Template'
+        href=''
+        imgSrc='/nextjs-auth-template.png'
+        badges={[
+          { text: 'Next.js', href: '' },
+          { text: 'Better Auth', href: '' },
+        ]}
+      />
+      <ProjectCard
+        color='cyan'
         title='Auth Template'
         href=''
         imgSrc='/nextjs-auth-template.png'
