@@ -1,5 +1,5 @@
-import { db, projects } from '@/db';
 import { Webhooks } from '@octokit/webhooks';
+import { db, projects } from 'db';
 import { Elysia, t } from 'elysia';
 
 const webhooks = new Webhooks({
