@@ -1,7 +1,6 @@
 import { AppearingGroup } from '@/components/appearing-group';
-import { Bluesky, Discord, Instagram, Mail } from '@/components/icons/';
+import { Bluesky, Discord, Email, Instagram } from '@/components/icons/';
 import { Separator } from '@/components/ui/separator';
-import { cn } from '@/utils';
 import clsx from 'clsx';
 import Link from 'next/link';
 
@@ -42,7 +41,7 @@ export const Footer = () => (
             rel='noopener noreferrer'
             target='_blank'
           >
-            <Mail />
+            <Email />
             me@ericzhang.dev
           </Link>
           <Link

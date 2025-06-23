@@ -1,7 +1,7 @@
+import { getStars } from '@/actions';
 import { Github, Star } from '@/components/icons';
 import { JPQuote, ProjectData, Tag } from '@/components/landing';
 import { Separator } from '@/components/ui/separator';
-import { getStars } from '@/actions';
 import clsx from 'clsx';
 import Image from 'next/image';
 import Link from 'next/link';

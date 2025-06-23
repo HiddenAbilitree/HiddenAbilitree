@@ -1,5 +1,5 @@
 import { Footer } from '@/components/landing';
-import { Settings } from '@/components/settings';
+import { SmoothScrollToggle } from '@/components/settings';
 
 export default function LandingLayout({
   children,
@@ -12,7 +12,7 @@ export default function LandingLayout({
         {children}
       </main>
       <Footer />
-      <Settings />
+      <SmoothScrollToggle />
     </>
   );
 }

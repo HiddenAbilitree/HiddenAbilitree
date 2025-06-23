@@ -1,7 +1,8 @@
 export { Instagram } from '@/components/icons/instagram';
 export { Discord } from '@/components/icons/discord';
 export { Bluesky } from '@/components/icons/bluesky';
-export { Mail } from '@/components/icons/email';
+export { Email } from '@/components/icons/email';
+export { Motion } from '@/components/icons/motion';
 export { Next } from '@/components/icons/next';
 export { Cog } from '@/components/icons/cog';
 export { Star } from '@/components/icons/star';
