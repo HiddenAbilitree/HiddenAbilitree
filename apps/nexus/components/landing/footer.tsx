@@ -2,6 +2,7 @@ import { AppearingGroup } from '@/components/appearing-group';
 import { Bluesky, Discord, Instagram, Mail } from '@/components/icons/';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/utils';
+import clsx from 'clsx';
 import Link from 'next/link';
 
 export const Footer = () => (
@@ -24,11 +25,11 @@ export const Footer = () => (
         </Link>
       </p>
       <div
-        className={cn(
+        className={clsx(
           'mt-auto flex flex-col text-center sm:ml-auto sm:text-start',
           'text-2xl',
-          '2xs:text-4xl',
-          'xs:text-5xl',
+          '2xs:text-3xl',
+          'xs:text-4xl',
           'sm:text-6xl',
           'xl:text-7xl',
           '3xl:text-8xl',
@@ -37,7 +38,7 @@ export const Footer = () => (
         <AppearingGroup className='flex flex-col'>
           <Link
             href='mailto:me@ericzhang.dev'
-            className='flex items-center gap-4 hover:text-white'
+            className='flex items-center gap-1.5 hover:text-white sm:gap-4'
             rel='noopener noreferrer'
             target='_blank'
           >
@@ -46,7 +47,7 @@ export const Footer = () => (
           </Link>
           <Link
             href='https://discord.com/users/288137037457129483'
-            className='hover:text-tns-blue flex items-center gap-4'
+            className='hover:text-tns-blue flex items-center gap-1.5 sm:gap-4'
             rel='noopener noreferrer'
             target='_blank'
           >
@@ -55,7 +56,7 @@ export const Footer = () => (
           </Link>
           <Link
             href='https://www.instagram.com/hiddenabiltree'
-            className='hover:text-tns-red flex items-center gap-4'
+            className='hover:text-tns-red flex items-center gap-1.5 sm:gap-4'
             rel='noopener noreferrer'
             target='_blank'
           >
@@ -64,7 +65,7 @@ export const Footer = () => (
           </Link>
           <Link
             href='https://bsky.app/profile/ericzhang.dev'
-            className='flex items-center gap-4 hover:text-blue-500'
+            className='flex items-center gap-1.5 hover:text-blue-500 sm:gap-4'
             rel='noopener noreferrer'
             target='_blank'
           >

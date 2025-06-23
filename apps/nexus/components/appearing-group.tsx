@@ -16,7 +16,7 @@ export const AppearingGroup = ({
   >
     {props.children.map((child, i) => (
       <motion.span
-        className='rounded-full px-5 py-2'
+        className='rounded-full sm:px-5 sm:py-2'
         key={i}
         variants={item}
         whileHover={{ y: -10, background: '#000000' }}
