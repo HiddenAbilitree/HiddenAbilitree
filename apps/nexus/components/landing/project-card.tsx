@@ -56,7 +56,7 @@ export const ProjectCard = ({
     )}
     {...props}
   >
-    <div className='flex grow flex-col gap-2'>
+    <div className='flex grow flex-col gap-4'>
       <div className='flex grow flex-col gap-2'>
         <JPQuote className='text-tns-white xs:text-3xl text-2xl md:text-4xl'>
           <span className='xs:text-3xl text-2xl md:text-4xl'>{title}</span>

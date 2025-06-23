@@ -12,7 +12,7 @@ export default function LandingPage() {
 
 const Hero = () => (
   <Section className='from-tns-blue/25 to-tns-blue/5 h-screen gap-4 bg-black bg-gradient-to-b to-80%'>
-    <div className='2xs:text-8xl 3xl:text-11xl xl:text-10xl lg:text-10xl relative isolate z-0 flex flex-col border text-7xl sm:text-8xl md:text-9xl'>
+    <div className='2xs:text-8xl 3xl:text-11xl xl:text-10xl lg:text-10xl relative isolate z-0 flex flex-col border-2 text-7xl sm:text-8xl md:text-9xl'>
       <h1 className='flex flex-col'>
         <span className='text-full w-full text-left underline'>wowwww</span>
         <span className='w-full text-center underline'>ezhang</span>
