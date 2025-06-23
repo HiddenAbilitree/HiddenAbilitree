@@ -32,10 +32,11 @@
     },
     "apps/gh-webhook-handler": {
       "name": "gh-webhook-handler",
-      "version": "0.0.0",
+      "version": "0.0.1",
       "dependencies": {
         "@octokit/webhooks": "^14.0.2",
         "db": "workspace:*",
+        "drizzle-orm": "^0.44.2",
         "elysia": "^1.3.5",
       },
       "devDependencies": {
@@ -53,6 +54,8 @@
         "@radix-ui/react-separator": "^1.1.7",
         "@radix-ui/react-slot": "^1.2.3",
         "@tailwindcss/postcss": "^4.1.10",
+        "db": "workspace:*",
+        "drizzle-orm": "^0.44.2",
         "lenis": "^1.3.4",
         "lucide-react": "^0.522.0",
         "motion": "^12.18.1",
@@ -79,7 +82,6 @@
       "version": "0.0.1",
       "dependencies": {
         "@neondatabase/serverless": "^1.0.1",
-        "drizzle-orm": "^0.44.2",
         "pg": "^8.16.2",
       },
       "devDependencies": {
@@ -87,6 +89,9 @@
         "@types/node": "^24.0.3",
         "drizzle-kit": "^0.31.1",
         "typescript": "^5.8.3",
+      },
+      "peerDependencies": {
+        "drizzle-orm": "^0.44.2",
       },
     },
   },
