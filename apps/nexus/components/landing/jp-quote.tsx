@@ -1,11 +1,15 @@
 import { ComponentProps } from 'react';
 
-export const JPQuoteLeft = () => <>&#65378;</>;
-export const JPQuoteRight = () => <>&#65379;</>;
+export const JPQuoteLeft = ({ className }: ComponentProps<'span'>) => (
+  <span className={className}>&#65378;</span>
+);
+export const JPQuoteRight = ({ className }: ComponentProps<'span'>) => (
+  <span className={className}>&#65379;</span>
+);
 export const JPQuote = ({ className, ...props }: ComponentProps<'span'>) => (
-  <span className={className} {...props}>
-    <JPQuoteLeft />
+  <span {...props}>
+    <JPQuoteLeft className={className} />
     {props.children}
-    <JPQuoteRight />
+    <JPQuoteRight className={className} />
   </span>
 );

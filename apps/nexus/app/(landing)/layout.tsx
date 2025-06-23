@@ -8,7 +8,7 @@ export default function LandingLayout({
 }>) {
   return (
     <>
-      <main className='flex w-full flex-col items-center justify-center'>
+      <main className='flex size-full flex-col items-center justify-center'>
         {children}
       </main>
       <Footer />

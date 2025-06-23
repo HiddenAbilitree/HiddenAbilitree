@@ -7,5 +7,7 @@ export interface ProjectData {
   title: string;
   badges: TagData[];
   imgSrc: string;
-  href: string;
+  repo: string;
+  color: 'blue' | 'magenta' | 'green' | 'red' | 'yellow' | 'cyan' | 'default';
+  reverse?: boolean;
 }

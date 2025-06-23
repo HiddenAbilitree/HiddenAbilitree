@@ -1,4 +1,3 @@
-import { AnimateText } from '@/components/appearing-text';
 import { JPQuote, ProjectCard, Section } from '@/components/landing';
 import { Separator } from '@/components/ui/separator';
 
@@ -48,68 +47,35 @@ const Projects = () => (
     </h1>
     <div className='flex w-full flex-col items-center justify-center gap-8 px-4 md:px-8'>
       <ProjectCard
-        color='blue'
-        title='Auth Template'
-        href=''
-        imgSrc='/nextjs-auth-template.png'
-        badges={[
-          { text: 'Next.js', href: '' },
-          { text: 'Better Auth', href: '' },
-        ]}
-      />
-      <ProjectCard
-        color='magenta'
-        title='Auth Template'
-        href=''
+        color='red'
+        title='Next.js Auth Template'
+        repo='HiddenAbilitree/nextjs-auth-template'
         imgSrc='/nextjs-auth-template.png'
         reverse
         badges={[
-          { text: 'Next.js', href: '' },
-          { text: 'Better Auth', href: '' },
+          { text: 'Next.js', href: 'https://nextjs.org/' },
+          { text: 'BetterAuth', href: 'https://www.better-auth.com/' },
         ]}
-      />
-      <ProjectCard
-        color='green'
-        title='Auth Template'
-        href=''
-        imgSrc='/nextjs-auth-template.png'
-        badges={[
-          { text: 'Next.js', href: '' },
-          { text: 'Better Auth', href: '' },
-        ]}
-      />
-      <ProjectCard
-        color='magenta'
-        title='Auth Template'
-        href=''
-        imgSrc='/nextjs-auth-template.png'
-        reverse
-        badges={[
-          { text: 'Next.js', href: '' },
-          { text: 'Better Auth', href: '' },
-        ]}
-      />
-      <ProjectCard
-        color='yellow'
-        title='Auth Template'
-        href=''
-        imgSrc='/nextjs-auth-template.png'
-        badges={[
-          { text: 'Next.js', href: '' },
-          { text: 'Better Auth', href: '' },
-        ]}
-      />
-      <ProjectCard
-        color='cyan'
-        title='Auth Template'
-        href=''
-        imgSrc='/nextjs-auth-template.png'
-        reverse
-        badges={[
-          { text: 'Next.js', href: '' },
-          { text: 'Better Auth', href: '' },
-        ]}
-      />
+      >
+        <div>
+          <h2>Supported Authentication Methods:</h2>
+          <ul>
+            <li>- Email+Password</li>
+            <li>- Passkeys</li>
+            <li>- OAuth</li>
+            <li>- Magic Link</li>
+          </ul>
+        </div>
+        <div>
+          <h2>Features</h2>
+          <ul>
+            <li>- Email/Password Change</li>
+            <li>- Account Deletion</li>
+            <li>- TOTP 2fa</li>
+          </ul>
+        </div>
+        <p>Emails sent with SMTP or SES API</p>
+      </ProjectCard>
     </div>
   </Section>
 );

@@ -1,6 +1,5 @@
 'use client';
 
-import { useModal } from '@/hooks/use-modal';
 import { AnimatePresence, motion } from 'motion/react';
 import { ReactNode, useEffect, useState } from 'react';
 
@@ -11,12 +10,9 @@ export const MobileNav = ({
 }) => {
   const [open, setOpen] = useState(false);
 
-  const setModal = useModal();
-
   useEffect(() => {
     const checkSize = () => {
       if (window.innerWidth > 640) {
-        setModal(false);
         setOpen(false);
       }
     };
@@ -28,7 +24,6 @@ export const MobileNav = ({
     <>
       <button
         onClick={() => {
-          setModal(!open);
           setOpen(!open);
         }}
         className='bg-tns-black z-50 flex size-10 items-center justify-center rounded-full border-2 hover:cursor-pointer focus:ring sm:hidden'

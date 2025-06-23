@@ -1,6 +1,5 @@
 import '@/app/globals.css';
 import { Header } from '@/components/header';
-import { ReactLenis } from 'lenis/react';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 
@@ -35,11 +34,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang='en' suppressHydrationWarning className='w-full'>
-      <body className={`${_0xProto.className} w-full`}>
+    <html lang='en' suppressHydrationWarning>
+      <body className={`${_0xProto.className}`}>
         <Header />
         {children}
-        <ReactLenis root options={{ lerp: 0.2 }} />
       </body>
     </html>
   );
