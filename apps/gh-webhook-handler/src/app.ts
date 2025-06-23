@@ -24,11 +24,14 @@ export const app = new Elysia({ aot: false }).post(
       ))
     )
       return status(401);
+
     const { repository } = body;
-    await db
+    const data = await db
       .insert(projects)
       .values(repository)
       .onConflictDoUpdate({ target: projects.id, set: repository });
+
+    return status(data.rowCount === 0 ? 500 : 200);
   },
   { body },
 );

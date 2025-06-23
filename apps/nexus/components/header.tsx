@@ -9,12 +9,12 @@ export const Header = () => (
     </Bubble>
     <nav className='hidden items-center gap-2 rounded-full text-center text-xl font-black sm:flex'>
       <Bubble href='#projects'>projects</Bubble>
-      <Bubble href='#resume'>resume</Bubble>
-      <Bubble href='/'>blog</Bubble>
+      {/* <Bubble href='#resume'>resume</Bubble> */}
+      {/* <Bubble href='/'>blog</Bubble> */}
     </nav>
     <MobileNav>
-      <Bubble href='#resume'>projects</Bubble>
-      <Bubble href='/'>blog</Bubble>
+      <Bubble href='#projects'>projects</Bubble>
+      {/* <Bubble href='/'>blog</Bubble> */}
     </MobileNav>
   </header>
 );

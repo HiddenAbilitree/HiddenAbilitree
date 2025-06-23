@@ -4,7 +4,10 @@
   "globalDependencies": [
     ".env"
   ],
-  "globalEnv": [],
+  "globalEnv": [
+    "DATABASE_URL",
+    "WEBHOOK_SECRET"
+  ],
   "tasks": {
     "build": {
       "dependsOn": [

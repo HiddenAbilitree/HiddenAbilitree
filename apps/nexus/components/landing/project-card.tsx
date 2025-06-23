@@ -86,7 +86,7 @@ export const ProjectCard = ({
           target='_blank'
           rel='noopener noreferrer'
           className={clsx(
-            'flex items-center gap-1.5 rounded-full border-2 p-2 pr-2.5 hover:underline',
+            'flex items-center gap-1.5 rounded-full border-2 p-2 pr-2.5 text-white hover:underline',
             colors.card[color],
           )}
         >

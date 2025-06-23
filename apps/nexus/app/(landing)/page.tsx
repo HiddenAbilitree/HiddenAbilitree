@@ -5,7 +5,6 @@ export default function LandingPage() {
   return (
     <>
       <Hero />
-      <About />
       <Projects />
     </>
   );
@@ -51,7 +50,6 @@ const Projects = () => (
         title='Next.js Auth Template'
         repo='HiddenAbilitree/nextjs-auth-template'
         imgSrc='/nextjs-auth-template.png'
-        reverse
         badges={[
           { text: 'Next.js', href: 'https://nextjs.org/' },
           { text: 'BetterAuth', href: 'https://www.better-auth.com/' },
@@ -78,11 +76,4 @@ const Projects = () => (
       </ProjectCard>
     </div>
   </Section>
-);
-
-const About = () => (
-  <Section
-    id='about'
-    className='from-tns-blue/5 to-tns-blue/5 bg-gradient-to-b px-4'
-  ></Section>
 );
