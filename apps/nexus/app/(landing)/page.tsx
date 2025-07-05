@@ -47,9 +47,9 @@ const Projects = () => (
     <div className='flex w-full flex-col items-center justify-center gap-8 px-4 md:px-8'>
       <ProjectCard
         color='red'
-        title='Next.js Auth Template'
-        repo='HiddenAbilitree/nextjs-auth-template'
-        imgSrc='/nextjs-auth-template.png'
+        title='Next Auth Template'
+        repo='HiddenAbilitree/next-auth-template'
+        imgSrc='/next-auth-template.png'
         badges={[
           { text: 'Next.js', href: 'https://nextjs.org/' },
           { text: 'BetterAuth', href: 'https://www.better-auth.com/' },
