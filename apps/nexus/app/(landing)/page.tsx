@@ -47,8 +47,7 @@ const Projects = () => (
     <div className='flex w-full flex-col items-center justify-center gap-8 px-4 md:px-8'>
       <ProjectCard
         color='red'
-        title='Next Auth Template'
-        repo='HiddenAbilitree/next-auth-template'
+        repoId={926_402_589}
         imgSrc='/next-auth-template.png'
         badges={[
           { text: 'Next.js', href: 'https://nextjs.org/' },

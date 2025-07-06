@@ -4,10 +4,9 @@ export interface TagData {
 }
 
 export interface ProjectData {
-  title: string;
   badges: TagData[];
   imgSrc: string;
-  repo: string;
+  repoId: number;
   color: 'blue' | 'magenta' | 'green' | 'red' | 'yellow' | 'cyan' | 'default';
   reverse?: boolean;
 }

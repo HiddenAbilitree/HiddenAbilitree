@@ -1,1 +1,1 @@
-export { getStars } from './get-stars';
+export { getRepo } from './get-repo';
