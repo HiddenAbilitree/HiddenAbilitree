@@ -1,6 +1,7 @@
-import { MobileNav } from '@/components/mobile-nav';
 import Link from 'next/link';
 import { ComponentProps, ReactNode } from 'react';
+
+import { MobileNav } from '@/components/mobile-nav';
 
 export const Header = () => (
   <header className='fixed left-0 right-0 top-0 z-40 flex items-center justify-between gap-8 p-4 sm:p-8 md:invisible'>
@@ -22,7 +23,7 @@ export const Header = () => (
 const Bubble = ({
   href,
   ...props
-}: { href: string } & ComponentProps<'a'>): ReactNode => (
+}: ComponentProps<'a'> & { href: string }): ReactNode => (
   <Link
     href={href}
     {...props}

@@ -1,23 +1,24 @@
 'use client';
 
-import { item } from '@/utils/animations/in-view';
 import clsx from 'clsx';
 import { motion } from 'motion/react';
 import { ComponentProps, ReactNode } from 'react';
 
+import { item } from '@/utils/animations/in-view';
+
 export const AppearingText = ({
   children,
   ...props
-}: {
+}: ComponentProps<'span'> & {
   children: ReactNode | ReactNode[];
-} & ComponentProps<'span'>) => (
+}) => (
   <motion.span
+    className={clsx(props.className, 'flex items-center gap-4')}
     initial='hidden'
-    whileInView='visible'
+    transition={{ type: 'spring', visualDuration: 0.1 }}
     variants={item}
     whileHover={{ y: -10 }}
-    transition={{ type: 'spring', visualDuration: 0.1 }}
-    className={clsx(props.className, 'flex items-center gap-4')}
+    whileInView='visible'
   >
     {children}
   </motion.span>

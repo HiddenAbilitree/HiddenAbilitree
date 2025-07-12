@@ -1,51 +1,52 @@
-import { getRepo } from '@/actions';
-import { Github, Star } from '@/components/icons';
-import { ProjectData, Tag } from '@/components/landing';
-import { Separator } from '@/components/ui/separator';
 import clsx from 'clsx';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ComponentProps } from 'react';
 
+import { getRepo } from '@/actions';
+import { Github, Star } from '@/components/icons';
+import { ProjectData, Tag } from '@/components/landing';
+import { Separator } from '@/components/ui/separator';
+
 const colors = {
   card: {
-    default: 'bg-tns-white/10 border-tns-white selection:bg-tns-white',
     blue: 'bg-tns-blue/10 border-tns-blue selection:bg-tns-blue',
-    magenta: 'bg-tns-magenta/10 border-tns-magenta selection:bg-tns-magenta',
+    cyan: 'bg-tns-cyan/10 border-tns-cyan selection:bg-tns-cyan',
+    default: 'bg-tns-white/10 border-tns-white selection:bg-tns-white',
     green: 'bg-tns-green/10 border-tns-green selection:bg-tns-green',
+    magenta: 'bg-tns-magenta/10 border-tns-magenta selection:bg-tns-magenta',
     red: 'bg-tns-red/10 border-tns-red selection:bg-tns-red',
     yellow: 'bg-tns-yellow/10 border-tns-yellow selection:bg-tns-yellow',
-    cyan: 'bg-tns-cyan/10 border-tns-cyan selection:bg-tns-cyan',
-  },
-  tag: {
-    default: 'bg-tns-white',
-    blue: 'bg-tns-blue',
-    magenta: 'bg-tns-magenta',
-    green: 'bg-tns-green',
-    red: 'bg-tns-red',
-    yellow: 'bg-tns-yellow',
-    cyan: 'bg-tns-cyan',
   },
   icon: {
-    default: { stroke: 'stroke-tns-white', fill: 'fill-tns-white' },
-    blue: { stroke: 'stroke-tns-blue', fill: 'fill-tns-blue' },
-    magenta: { stroke: 'stroke-tns-magenta', fill: 'fill-tns-magenta' },
-    green: { stroke: 'stroke-tns-green', fill: 'fill-tns-green' },
-    red: { stroke: 'stroke-tns-red', fill: 'fill-tns-red' },
-    yellow: { stroke: 'stroke-tns-yellow', fill: 'fill-tns-yellow' },
-    cyan: { stroke: 'stroke-tns-cyan', fill: 'fill-tns-cyan' },
+    blue: { fill: 'fill-tns-blue', stroke: 'stroke-tns-blue' },
+    cyan: { fill: 'fill-tns-cyan', stroke: 'stroke-tns-cyan' },
+    default: { fill: 'fill-tns-white', stroke: 'stroke-tns-white' },
+    green: { fill: 'fill-tns-green', stroke: 'stroke-tns-green' },
+    magenta: { fill: 'fill-tns-magenta', stroke: 'stroke-tns-magenta' },
+    red: { fill: 'fill-tns-red', stroke: 'stroke-tns-red' },
+    yellow: { fill: 'fill-tns-yellow', stroke: 'stroke-tns-yellow' },
+  },
+  tag: {
+    blue: 'bg-tns-blue',
+    cyan: 'bg-tns-cyan',
+    default: 'bg-tns-white',
+    green: 'bg-tns-green',
+    magenta: 'bg-tns-magenta',
+    red: 'bg-tns-red',
+    yellow: 'bg-tns-yellow',
   },
 };
 
 export const ProjectCard = async ({
   badges,
-  imgSrc,
   className,
   color = 'default',
-  reverse = false,
+  imgSrc,
   repoId,
+  reverse = false,
   ...props
-}: ProjectData & ComponentProps<'div'>) => {
+}: ComponentProps<'div'> & ProjectData) => {
   const repoData = await getRepo(repoId);
 
   if (!repoData) return;
@@ -71,11 +72,11 @@ export const ProjectCard = async ({
         <div className='flex flex-wrap gap-2'>
           {badges.map((data) => (
             <Tag
-              href={data.href}
               className={clsx(
                 colors.tag[color],
                 'selection:text-tns-white text-tns-black selection:!bg-black',
               )}
+              href={data.href}
               key={data.text}
             >
               {data.text}
@@ -87,23 +88,23 @@ export const ProjectCard = async ({
         />
         <div className='flex items-center justify-between'>
           <Link
-            href={`https://github.com/${fullName}`}
-            target='_blank'
-            rel='noopener noreferrer'
             className={clsx(
               'flex items-center gap-1.5 rounded-full border-2 p-2 pr-2.5 text-white hover:underline',
               colors.card[color],
             )}
+            href={`https://github.com/${fullName}`}
+            rel='noopener noreferrer'
+            target='_blank'
           >
-            <Github fill='fill-white' className='size-6' />
+            <Github className='size-6' fill='fill-white' />
             Link
           </Link>
           <span className='flex items-center justify-center gap-1 rounded-full text-center'>
             {stars}
             <Star
+              className={'mb-0.5 size-6'}
               fill={colors.icon[color].fill}
               stroke={colors.icon[color].stroke}
-              className={'mb-0.5 size-6'}
             />
           </span>
         </div>
@@ -111,11 +112,11 @@ export const ProjectCard = async ({
       <div className='flex w-full flex-col items-center justify-center lg:max-w-[66%]'>
         <Image
           alt=''
-          src={imgSrc}
-          quality={100}
-          width={1920}
-          height={1080}
           className='aspect-video rounded-xl contain-content'
+          height={1080}
+          quality={100}
+          src={imgSrc}
+          width={1920}
         />
       </div>
     </div>

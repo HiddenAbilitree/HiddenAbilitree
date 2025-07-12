@@ -38,21 +38,21 @@ const Hero = () => (
 
 const Projects = () => (
   <Section
-    id='projects'
     className='from-tns-blue/5 to-tns-blue/5 bg-gradient-to-b'
+    id='projects'
   >
     <h1 className='text-tns-blue text-5xl'>
       <JPQuote>projects</JPQuote>
     </h1>
     <div className='flex w-full flex-col items-center justify-center gap-8 px-4 md:px-8'>
       <ProjectCard
-        color='red'
-        repoId={926_402_589}
-        imgSrc='/next-auth-template.png'
         badges={[
-          { text: 'Next.js', href: 'https://nextjs.org/' },
-          { text: 'BetterAuth', href: 'https://www.better-auth.com/' },
+          { href: 'https://nextjs.org/', text: 'Next.js' },
+          { href: 'https://www.better-auth.com/', text: 'BetterAuth' },
         ]}
+        color='red'
+        imgSrc='/next-auth-template.png'
+        repoId={926_402_589}
       >
         <div>
           <h2>Supported Authentication Methods:</h2>

@@ -1,12 +1,12 @@
-export interface TagData {
-  text: string;
-  href: string;
-}
-
 export interface ProjectData {
   badges: TagData[];
+  color: 'blue' | 'cyan' | 'default' | 'green' | 'magenta' | 'red' | 'yellow';
   imgSrc: string;
   repoId: number;
-  color: 'blue' | 'magenta' | 'green' | 'red' | 'yellow' | 'cyan' | 'default';
   reverse?: boolean;
+}
+
+export interface TagData {
+  href: string;
+  text: string;
 }

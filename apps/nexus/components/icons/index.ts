@@ -1,9 +1,9 @@
-export { Instagram } from '@/components/icons/instagram';
-export { Discord } from '@/components/icons/discord';
 export { Bluesky } from '@/components/icons/bluesky';
+export { Cog } from '@/components/icons/cog';
+export { Discord } from '@/components/icons/discord';
 export { Email } from '@/components/icons/email';
+export { Github } from '@/components/icons/github';
+export { Instagram } from '@/components/icons/instagram';
 export { Motion } from '@/components/icons/motion';
 export { Next } from '@/components/icons/next';
-export { Cog } from '@/components/icons/cog';
 export { Star } from '@/components/icons/star';
-export { Github } from '@/components/icons/github';

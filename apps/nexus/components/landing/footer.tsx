@@ -1,8 +1,9 @@
+import clsx from 'clsx';
+import Link from 'next/link';
+
 import { AppearingGroup } from '@/components/appearing-group';
 import { Bluesky, Discord, Email, Instagram } from '@/components/icons/';
 import { Separator } from '@/components/ui/separator';
-import clsx from 'clsx';
-import Link from 'next/link';
 
 export const Footer = () => (
   <section className='from-tns-blue/5 to-tns-blue/40 h-screen w-full bg-black bg-gradient-to-b md:p-4'>
@@ -15,8 +16,8 @@ export const Footer = () => (
       <p className='mr-auto md:text-xl lg:text-2xl'>
         Colorscheme @{' '}
         <Link
-          href='https://github.com/tokyo-night/tokyo-night-vscode-theme'
           className='hover:text-tns-blue hover:font-bold'
+          href='https://github.com/tokyo-night/tokyo-night-vscode-theme'
           rel='noopener noreferrer'
           target='_blank'
         >
@@ -36,8 +37,8 @@ export const Footer = () => (
       >
         <AppearingGroup className='flex flex-col'>
           <Link
-            href='mailto:me@ericzhang.dev'
             className='flex items-center gap-1.5 hover:text-white sm:gap-4'
+            href='mailto:me@ericzhang.dev'
             rel='noopener noreferrer'
             target='_blank'
           >
@@ -45,8 +46,8 @@ export const Footer = () => (
             me@ericzhang.dev
           </Link>
           <Link
-            href='https://discord.com/users/288137037457129483'
             className='hover:text-tns-blue flex items-center gap-1.5 sm:gap-4'
+            href='https://discord.com/users/288137037457129483'
             rel='noopener noreferrer'
             target='_blank'
           >
@@ -54,8 +55,8 @@ export const Footer = () => (
             @hiddenability
           </Link>
           <Link
-            href='https://www.instagram.com/hiddenabiltree'
             className='hover:text-tns-red flex items-center gap-1.5 sm:gap-4'
+            href='https://www.instagram.com/hiddenabiltree'
             rel='noopener noreferrer'
             target='_blank'
           >
@@ -63,8 +64,8 @@ export const Footer = () => (
             @hiddenabiltree
           </Link>
           <Link
-            href='https://bsky.app/profile/ericzhang.dev'
             className='flex items-center gap-1.5 hover:text-blue-500 sm:gap-4'
+            href='https://bsky.app/profile/ericzhang.dev'
             rel='noopener noreferrer'
             target='_blank'
           >

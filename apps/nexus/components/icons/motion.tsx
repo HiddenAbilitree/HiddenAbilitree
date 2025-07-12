@@ -2,10 +2,10 @@ import { SVGProps } from 'react';
 
 export const Motion = (props: SVGProps<SVGSVGElement>) => (
   <svg
-    xmlns='http://www.w3.org/2000/svg'
-    width='1em'
     height='1em'
     viewBox='0 0 24 24'
+    width='1em'
+    xmlns='http://www.w3.org/2000/svg'
     {...props}
   >
     {/* Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE */}
