@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import Link from 'next/link';
 
 import { AppearingGroup } from '@/components/appearing-group';
-import { Bluesky, Discord, Email, Instagram } from '@/components/icons/';
+import { Discord, Github, Mail } from '@/components/icons/';
 import { Separator } from '@/components/ui/separator';
 
 export const Footer = () => (
@@ -37,40 +37,31 @@ export const Footer = () => (
       >
         <AppearingGroup className='flex flex-col'>
           <Link
-            className='flex items-center gap-1.5 hover:text-white sm:gap-4'
+            className='hover:text-tns-white group flex items-center gap-1.5 sm:gap-4'
             href='mailto:me@ericzhang.dev'
             rel='noopener noreferrer'
             target='_blank'
           >
-            <Email />
+            <Mail className='group-hover:text-white' />
             me@ericzhang.dev
           </Link>
           <Link
-            className='hover:text-tns-blue flex items-center gap-1.5 sm:gap-4'
+            className='hover:text-tns-white group flex items-center gap-1.5 sm:gap-4'
             href='https://discord.com/users/288137037457129483'
             rel='noopener noreferrer'
             target='_blank'
           >
-            <Discord />
+            <Discord className='group-hover:text-[#5865F2]' />
             @hiddenability
           </Link>
           <Link
-            className='hover:text-tns-red flex items-center gap-1.5 sm:gap-4'
-            href='https://www.instagram.com/hiddenabiltree'
+            className='hover:text-tns-white group flex items-center gap-1.5 sm:gap-4'
+            href='https://github.com/HiddenAbilitree'
             rel='noopener noreferrer'
             target='_blank'
           >
-            <Instagram />
-            @hiddenabiltree
-          </Link>
-          <Link
-            className='flex items-center gap-1.5 hover:text-blue-500 sm:gap-4'
-            href='https://bsky.app/profile/ericzhang.dev'
-            rel='noopener noreferrer'
-            target='_blank'
-          >
-            <Bluesky />
-            @ericzhang.dev
+            <Github className='group-hover:fill-white' />
+            @hiddenabilitree
           </Link>
         </AppearingGroup>
       </div>
