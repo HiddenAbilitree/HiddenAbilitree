@@ -11,20 +11,20 @@
   "dependencies": {
     "@mdx-js/loader": "^3.1.0",
     "@mdx-js/react": "^3.1.0",
-    "@next/mdx": "^15.3.3",
-    "next": "^15.4.0-canary.84",
-    "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "@next/mdx": "^15.4.6",
+    "next": "^15.4.2-canary.33",
+    "react": "19.1.1",
+    "react-dom": "19.1.1"
   },
   "devDependencies": {
-    "typescript": "^5.8.3",
-    "@hiddenability/opinionated-defaults": "^0.0.12",
+    "@hiddenability/opinionated-defaults": "^0.1.24",
+    "@tailwindcss/postcss": "^4.1.11",
     "@tailwindcss/typography": "^0.5.16",
     "@types/mdx": "^2.0.13",
-    "@types/node": "^24.0.3",
-    "@types/react": "^19.1.8",
-    "@types/react-dom": "^19.1.6",
-    "@tailwindcss/postcss": "^4.1.10",
-    "tailwindcss": "^4.1.10"
+    "@types/node": "^24.2.0",
+    "@types/react": "^19.1.9",
+    "@types/react-dom": "^19.1.7",
+    "tailwindcss": "^4.1.11",
+    "typescript": "^5.9.2"
   }
 }
