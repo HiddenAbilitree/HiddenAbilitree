@@ -12,10 +12,10 @@ export const useWindowWidth = () => {
       setWindowWidth(window.innerWidth);
     };
 
-    globalThis.addEventListener('resize', handleResize);
+    globalThis.addEventListener(`resize`, handleResize);
 
     return () => {
-      globalThis.removeEventListener('resize', handleResize);
+      globalThis.removeEventListener(`resize`, handleResize);
     };
   });
 

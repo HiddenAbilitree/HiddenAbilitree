@@ -8,10 +8,10 @@ export const useIsTop = () => {
       setIsTop(window.scrollY === 0);
     };
 
-    globalThis.addEventListener('scroll', handleScroll);
+    globalThis.addEventListener(`scroll`, handleScroll);
 
     return () => {
-      globalThis.removeEventListener('scroll', handleScroll);
+      globalThis.removeEventListener(`scroll`, handleScroll);
     };
   }, []);
 

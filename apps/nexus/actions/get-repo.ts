@@ -5,7 +5,7 @@ import { eq } from 'drizzle-orm';
 
 export const getRepo = async (repoId: number) => {
   const res = await db
-    .select({ stars: projects.stargazers_count, fullName: projects.full_name })
+    .select({ fullName: projects.full_name, stars: projects.stargazers_count })
     .from(projects)
     .where(eq(projects.id, repoId));
 

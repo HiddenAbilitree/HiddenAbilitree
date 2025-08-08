@@ -1,15 +1,21 @@
+import { includeIgnoreFile } from '@eslint/compat';
 import {
+  eslintConfig,
   eslintConfigBase,
+  eslintConfigPerfectionist,
   eslintConfigPrettier,
   eslintConfigRelative,
-  eslintConfigTypescript,
 } from '@hiddenability/opinionated-defaults/eslint';
+import { fileURLToPath } from 'node:url';
 
-const eslintConfig = [
+const gitignorePath = fileURLToPath(
+  new URL(`../../.gitignore`, import.meta.url),
+);
+
+export default eslintConfig([
+  includeIgnoreFile(gitignorePath, `Imported .gitignore patterns`),
   ...eslintConfigBase,
-  ...eslintConfigTypescript,
-  ...eslintConfigRelative,
+  ...eslintConfigPerfectionist,
   ...eslintConfigPrettier,
-];
-
-export default eslintConfig;
+  ...eslintConfigRelative,
+]);
