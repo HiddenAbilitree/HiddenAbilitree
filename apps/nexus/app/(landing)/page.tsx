@@ -69,6 +69,7 @@ const Projects = () => (
             <li>- Email/Password Change</li>
             <li>- Account Deletion</li>
             <li>- TOTP 2fa</li>
+            <li>- Session Invalidation</li>
           </ul>
         </div>
         <p>Emails sent with SMTP or SES API</p>
