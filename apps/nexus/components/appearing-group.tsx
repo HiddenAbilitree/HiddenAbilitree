@@ -7,7 +7,7 @@ import { item, list } from '@/utils/animations/in-view';
 
 export const AppearingGroup = ({
   ...props
-}: ComponentProps<'div'> & MotionProps & { children: ReactNode[] }) => (
+}: ComponentProps<`div`> & MotionProps & { children: ReactNode[] }) => (
   <motion.div
     className='flex items-center gap-4'
     initial='hidden'
@@ -19,9 +19,9 @@ export const AppearingGroup = ({
       <motion.span
         className='rounded-full sm:px-5 sm:py-2'
         key={i}
-        transition={{ type: 'spring', visualDuration: 0.1 }}
+        transition={{ type: `spring`, visualDuration: 0.1 }}
         variants={item}
-        whileHover={{ background: '#000000', y: -10 }}
+        whileHover={{ background: `#000000`, y: -10 }}
       >
         {child}
       </motion.span>

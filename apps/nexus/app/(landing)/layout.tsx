@@ -1,10 +1,12 @@
+import { ReactNode } from 'react';
+
 import { Footer } from '@/components/landing';
 import { SmoothScrollToggle } from '@/components/settings';
 
 export default function LandingLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode;
 }>) {
   return (
     <>

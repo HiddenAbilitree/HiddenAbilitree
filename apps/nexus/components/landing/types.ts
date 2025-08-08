@@ -1,6 +1,6 @@
 export interface ProjectData {
   badges: TagData[];
-  color: 'blue' | 'cyan' | 'default' | 'green' | 'magenta' | 'red' | 'yellow';
+  color: `blue` | `cyan` | `default` | `green` | `magenta` | `red` | `yellow`;
   imgSrc: string;
   repoId: number;
   reverse?: boolean;

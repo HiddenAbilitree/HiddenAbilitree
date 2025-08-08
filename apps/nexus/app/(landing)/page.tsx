@@ -11,24 +11,24 @@ export default function LandingPage() {
 }
 
 const Hero = () => (
-  <Section className='from-tns-blue/25 to-tns-blue/5 h-screen gap-4 bg-black bg-gradient-to-b to-80%'>
-    <div className='2xs:text-8xl 3xl:text-11xl xl:text-10xl lg:text-10xl relative isolate z-0 flex flex-col border-2 text-7xl sm:text-8xl md:text-9xl'>
+  <Section className='h-screen gap-4 bg-black bg-gradient-to-b from-tns-blue/25 to-tns-blue/5 to-80%'>
+    <div className='relative isolate z-0 flex flex-col border-2 text-7xl 2xs:text-8xl sm:text-8xl md:text-9xl lg:text-10xl xl:text-10xl 3xl:text-11xl'>
       <h1 className='flex flex-col'>
-        <span className='text-full w-full text-left underline'>wowwww</span>
+        <span className='w-full text-left text-full underline'>wowwww</span>
         <span className='w-full text-center underline'>ezhang</span>
         <span className='w-full text-right underline'>.</span>
       </h1>
       <div className='absolute bottom-0 left-0 text-base leading-[1]'>
         <span className='text-tns-magenta'>Senior @ GMU CS</span>
-        <span className='text-tns-green relative'>
+        <span className='relative text-tns-green'>
           *
-          <div className='bg-tns-green/30 absolute bottom-0 left-0 right-0 top-0 animate-ping'></div>
+          <div className='absolute top-0 right-0 bottom-0 left-0 animate-ping bg-tns-green/30'></div>
         </span>
       </div>
     </div>
-    <div className='absolute bottom-6 left-0 right-0 flex w-full items-center gap-8 px-8'>
+    <div className='absolute right-0 bottom-6 left-0 flex w-full items-center gap-8 px-8'>
       <Separator className='bg-tns-blue/10' />
-      <span className='text-tns-white/50 select-none text-nowrap text-center'>
+      <span className='text-center text-nowrap text-tns-white/50 select-none'>
         Scroll Down
       </span>
       <Separator className='bg-tns-blue/10' />
@@ -38,17 +38,17 @@ const Hero = () => (
 
 const Projects = () => (
   <Section
-    className='from-tns-blue/5 to-tns-blue/5 bg-gradient-to-b'
+    className='bg-gradient-to-b from-tns-blue/5 to-tns-blue/5'
     id='projects'
   >
-    <h1 className='text-tns-blue text-5xl'>
+    <h1 className='text-5xl text-tns-blue'>
       <JPQuote>projects</JPQuote>
     </h1>
     <div className='flex w-full flex-col items-center justify-center gap-8 px-4 md:px-8'>
       <ProjectCard
         badges={[
-          { href: 'https://nextjs.org/', text: 'Next.js' },
-          { href: 'https://www.better-auth.com/', text: 'BetterAuth' },
+          { href: `https://nextjs.org/`, text: `Next.js` },
+          { href: `https://www.better-auth.com/`, text: `BetterAuth` },
         ]}
         color='red'
         imgSrc='/next-auth-template.png'

@@ -5,7 +5,7 @@ export default function NotFound() {
         <h1 className='text-9xl'>404</h1>
         <p className='text-2xl'>Page not found</p>
       </div>
-      <button className='bg-tns-blue text-tns-black border-5 border-tns-blue rounded-full px-9 py-2'>
+      <button className='rounded-full border-5 border-tns-blue bg-tns-blue px-9 py-2 text-tns-black'>
         Return to safety
       </button>
     </section>

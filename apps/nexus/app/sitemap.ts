@@ -4,10 +4,10 @@ import type { MetadataRoute } from 'next';
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {
-      changeFrequency: 'monthly',
+      changeFrequency: `monthly`,
       lastModified: new Date(),
       priority: 1,
-      url: 'https://www.ericzhang.dev',
+      url: `https://www.ericzhang.dev`,
     },
   ];
 }
