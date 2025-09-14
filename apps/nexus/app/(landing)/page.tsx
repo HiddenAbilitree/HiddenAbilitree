@@ -1,4 +1,5 @@
 import { JPQuote, ProjectCard, Section } from '@/components/landing';
+import { Code } from '@/components/landing/code';
 import { Separator } from '@/components/ui/separator';
 
 export default function LandingPage() {
@@ -44,17 +45,19 @@ const Projects = () => (
     <h1 className='text-5xl text-tns-blue'>
       <JPQuote>projects</JPQuote>
     </h1>
-    <div className='flex w-full flex-col items-center justify-center gap-8 px-4 md:px-8'>
+    <div className='flex w-full flex-col items-center justify-center gap-4 px-4 md:gap-12 md:px-8'>
       <ProjectCard
         badges={[
           { href: `https://nextjs.org/`, text: `Next.js` },
           { href: `https://www.better-auth.com/`, text: `BetterAuth` },
         ]}
-        color='red'
+        color='magenta'
+        imgHref='https://auth.ericzhang.dev'
         imgSrc='/next-auth-template.png'
         repoId={926_402_589}
       >
         <div>
+          A Next.js based template that provides authentication via Better Auth.
           <h2>Supported Authentication Methods:</h2>
           <ul>
             <li>- Email+Password</li>
@@ -73,6 +76,32 @@ const Projects = () => (
           </ul>
         </div>
         <p>Emails sent with SMTP or SES API</p>
+      </ProjectCard>
+      <ProjectCard
+        badges={[
+          { href: `https://eslint.org/`, text: `ESLint` },
+          { href: `https://prettier.io/`, text: `Prettier` },
+          { href: `https://www.rust-lang.org/`, text: `Rust` },
+        ]}
+        color='blue'
+        imgHeight={1440}
+        imgSrc='/haod-demo.gif'
+        imgWidth={2560}
+        repoId={1_001_191_632}
+        reverse
+      >
+        <div>
+          <p>A collection of opinionated web-dev tooling configurations.</p>
+          <br />
+          <p>
+            There&apos;s a CLI provided that analyzes your project and generates
+            the appropriate configuration files.
+          </p>
+          <br />
+          <p>
+            Quickstart: <Code>bunx @hiddenability/opinionated-defaults</Code>
+          </p>
+        </div>
       </ProjectCard>
     </div>
   </Section>

@@ -30,7 +30,7 @@ export const Footer = () => (
           `text-2xl`,
           `2xs:text-3xl`,
           `xs:text-4xl`,
-          `sm:text-6xl`,
+          `sm:text-5xl`,
           `xl:text-7xl`,
           `3xl:text-8xl`,
         )}

@@ -5,7 +5,7 @@ import { ComponentProps } from 'react';
 
 import { getRepo } from '@/actions';
 import { Github, Star } from '@/components/icons';
-import { ProjectData, Tag } from '@/components/landing';
+import { Tag } from '@/components/landing';
 import { Separator } from '@/components/ui/separator';
 
 const colors = {
@@ -38,11 +38,28 @@ const colors = {
   },
 };
 
+interface ProjectData {
+  badges: TagData[];
+  color: `blue` | `cyan` | `default` | `green` | `magenta` | `red` | `yellow`;
+  imgHeight?: number;
+  imgHref?: string;
+  imgSrc?: string;
+  imgWidth?: number;
+  repoId: number;
+  reverse?: boolean;
+}
+interface TagData {
+  href: string;
+  text: string;
+}
 export const ProjectCard = async ({
   badges,
   className,
   color = `default`,
+  imgHeight,
+  imgHref,
   imgSrc,
+  imgWidth,
   repoId,
   reverse = false,
   ...props
@@ -60,13 +77,20 @@ export const ProjectCard = async ({
         className,
         colors.card[color],
         reverse && `lg:flex-row-reverse`,
-        `flex size-full max-w-[1600px] flex-col justify-start gap-2 rounded-2xl border-2 p-4 sm:rounded-2xl sm:p-4 lg:flex-row lg:gap-6 lg:rounded-3xl lg:p-6`,
+        `flex size-full max-w-[1600px] flex-col justify-start gap-2 rounded-2xl border-2 p-4 sm:p-4 lg:flex-row lg:gap-6 lg:rounded-3xl lg:p-6`,
       )}
       {...props}
     >
       <div className='flex grow flex-col gap-4'>
         <div className='flex grow flex-col gap-2'>
-          <span className='text-2xl xs:text-3xl md:text-4xl'>{name}</span>
+          <Link
+            className='text-2xl hover:underline xs:text-3xl md:text-4xl'
+            href={`https://github.com/${fullName}`}
+            rel='noopener noreferrer'
+            target='_blank'
+          >
+            {name}
+          </Link>
           {props.children}
         </div>
         <div className='flex flex-wrap gap-2'>
@@ -86,7 +110,7 @@ export const ProjectCard = async ({
         <Separator
           className={clsx(`rounded-full border-t-2`, colors.card[color])}
         />
-        <div className='flex items-center justify-between'>
+        <div className='flex items-center gap-4'>
           <Link
             className={clsx(
               `flex items-center gap-1.5 rounded-full border-2 p-2 pr-2.5 text-white hover:underline`,
@@ -99,26 +123,46 @@ export const ProjectCard = async ({
             <Github className='size-6' fill='fill-white' />
             Link
           </Link>
+          <Separator
+            className={clsx(`opacity-35`, colors.tag[color])}
+            orientation='vertical'
+          />
           <span className='flex items-center justify-center gap-1 rounded-full text-center'>
-            {stars}
             <Star
               className={`mb-0.5 size-6`}
               fill={colors.icon[color].fill}
               stroke={colors.icon[color].stroke}
             />
+            {stars}
           </span>
         </div>
       </div>
-      <div className='flex w-full flex-col items-center justify-center lg:max-w-[66%]'>
-        <Image
-          alt=''
-          className='aspect-video rounded-xl contain-content'
-          height={1080}
-          quality={100}
-          src={imgSrc}
-          width={1920}
-        />
-      </div>
+      {imgSrc &&
+        (imgHref ?
+          <Link
+            className='flex w-full flex-col items-center justify-center lg:max-w-[66%]'
+            href={imgHref}
+            target='_blank'
+          >
+            <Image
+              alt=''
+              className='rounded-lg contain-content'
+              height={imgHeight ?? 1080}
+              quality={100}
+              src={imgSrc}
+              width={imgWidth ?? 1920}
+            />
+          </Link>
+        : <div className='flex w-full flex-col items-center justify-center lg:max-w-[66%]'>
+            <Image
+              alt=''
+              className='rounded-lg contain-content'
+              height={imgHeight ?? 1080}
+              quality={100}
+              src={imgSrc}
+              width={imgWidth ?? 1920}
+            />
+          </div>)}
     </div>
   );
 };

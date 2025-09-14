@@ -1,5 +1,6 @@
 export { Bluesky } from '@/components/icons/bluesky';
 export { Cog } from '@/components/icons/cog';
+export { Copy } from '@/components/icons/copy';
 export { Discord } from '@/components/icons/discord';
 export { Github } from '@/components/icons/github';
 export { Instagram } from '@/components/icons/instagram';
