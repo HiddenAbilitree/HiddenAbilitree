@@ -1,3 +1,4 @@
+import { Route } from 'next';
 import Link from 'next/link';
 import { ComponentProps, ReactNode } from 'react';
 
@@ -25,7 +26,7 @@ const Bubble = ({
   ...props
 }: ComponentProps<`a`> & { href: string }): ReactNode => (
   <Link
-    href={href}
+    href={href as Route}
     {...props}
     className='visible isolate z-50 flex h-10 items-center justify-center rounded-full border-2 bg-tns-black px-4 text-center text-xl font-black shadow-sm transition-all duration-200 hover:translate-y-0.5 hover:bg-tns-black-hover hover:text-tns-white hover:shadow-lg'
   >

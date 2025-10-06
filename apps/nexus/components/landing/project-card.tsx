@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import { Route } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ComponentProps } from 'react';
@@ -141,7 +142,7 @@ export const ProjectCard = async ({
         (imgHref ?
           <Link
             className='flex w-full flex-col items-center justify-center lg:max-w-[66%]'
-            href={imgHref}
+            href={imgHref as Route}
             target='_blank'
           >
             <Image
