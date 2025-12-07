@@ -149,7 +149,6 @@ export const ProjectCard = async ({
               alt=''
               className='rounded-lg contain-content'
               height={imgHeight ?? 1080}
-              quality={100}
               src={imgSrc}
               width={imgWidth ?? 1920}
             />
@@ -159,7 +158,6 @@ export const ProjectCard = async ({
               alt=''
               className='rounded-lg contain-content'
               height={imgHeight ?? 1080}
-              quality={100}
               src={imgSrc}
               width={imgWidth ?? 1920}
             />
