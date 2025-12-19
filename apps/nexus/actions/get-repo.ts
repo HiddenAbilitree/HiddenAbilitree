@@ -1,7 +1,6 @@
 'use server';
 
-import { db, projects } from 'db';
-import { eq } from 'drizzle-orm';
+import { db, eq, projects } from 'db';
 import { unstable_noStore } from 'next/cache';
 
 export const getRepo = async (repoId: number) => {
