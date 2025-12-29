@@ -13,6 +13,7 @@ export const SmoothScrollToggle = () => {
   const [enabled, setEnabled] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setEnabled(localStorage.getItem(`smooth-scroll`) === `true`);
   }, [setEnabled]);
 

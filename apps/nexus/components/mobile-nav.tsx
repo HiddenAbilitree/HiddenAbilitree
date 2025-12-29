@@ -1,32 +1,44 @@
 'use client';
 
 import { AnimatePresence, motion } from 'motion/react';
-import { ReactNode, useEffect, useState } from 'react';
+import { MouseEvent, ReactNode, useEffect, useState } from 'react';
 
-export const MobileNav = ({
-  children,
-}: {
-  children: ReactNode | ReactNode[];
-}) => {
+export const MobileNav = ({ children }: { children: ReactNode }) => {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const checkSize = () => {
-      if (window.innerWidth > 640) {
-        setOpen(false);
-      }
+    const onResize = () => window.innerWidth > 640 && setOpen(false);
+    globalThis.addEventListener(`resize`, onResize);
+    return () => globalThis.removeEventListener(`resize`, onResize);
+  }, []);
+
+  useEffect(() => {
+    document.body.style.overflow = open ? `hidden` : ``;
+    return () => {
+      document.body.style.overflow = ``;
     };
-    globalThis.addEventListener(`resize`, checkSize);
-    return () => globalThis.removeEventListener(`resize`, checkSize);
-  });
+  }, [open]);
+
+  const handleNavClick = (e: MouseEvent) => {
+    const link = (e.target as HTMLElement).closest(`a`);
+    if (!link) return;
+
+    const href = link.getAttribute(`href`) ?? `/`;
+
+    if (href.startsWith(`#`)) {
+      e.preventDefault();
+      setOpen(false);
+      document.querySelector(href)?.scrollIntoView({ behavior: `smooth` });
+    } else {
+      setOpen(false);
+    }
+  };
 
   return (
     <>
       <button
         className='z-50 flex size-10 items-center justify-center rounded-full border-2 bg-tns-black hover:cursor-pointer focus:ring sm:hidden'
-        onClick={() => {
-          setOpen(!open);
-        }}
+        onClick={() => setOpen(!open)}
       >
         <motion.span
           animate={{
@@ -45,13 +57,15 @@ export const MobileNav = ({
         {open && (
           <motion.div
             animate={{ opacity: 1 }}
-            // transition={{ ease: 'easeInOut' }}
-            className='fixed top-0 right-0 bottom-0 left-0 z-40 bg-tns-black/50 bg-clip-content backdrop-blur-sm backdrop-brightness-50'
+            className='fixed inset-0 z-40 bg-tns-black/50 bg-clip-content backdrop-blur-sm backdrop-brightness-50'
             exit={{ opacity: 0 }}
             initial={{ opacity: 0 }}
             key='nav'
           >
-            <nav className='flex flex-col gap-4 px-4 pt-18'>
+            <nav
+              className='flex flex-col gap-4 px-4 pt-18'
+              onClick={handleNavClick}
+            >
               <div className='w-full rounded-full border' />
               {children}
             </nav>

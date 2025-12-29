@@ -99,7 +99,7 @@ export const ProjectCard = async ({
             <Tag
               className={clsx(
                 colors.tag[color],
-                `text-tns-black selection:!bg-black selection:text-tns-white`,
+                `rounded-full text-tns-black selection:bg-black! selection:text-tns-white`,
               )}
               href={data.href}
               key={data.text}

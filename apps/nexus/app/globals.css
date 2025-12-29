@@ -5,6 +5,14 @@
   text-rendering: optimizeLegibility;
 }
 
+@utility text-trim-both {
+  text-box-trim: trim-both;
+}
+
+@utility text-edge-cap {
+  text-box-edge: cap alphabetic;
+}
+
 @theme {
   --breakpoint-2xs: 26.25rem;
   --breakpoint-xs: 30rem;

@@ -1,4 +1,4 @@
-/* eslint quotes: ['error', 'single'] */
+/* eslint @stylistic/quotes: ['error', 'single'] */
 
 import localFont from 'next/font/local';
 

@@ -12,14 +12,15 @@ export default function LandingPage() {
 }
 
 const Hero = () => (
-  <Section className='h-screen gap-4 bg-black bg-gradient-to-b from-tns-blue/25 to-tns-blue/5 to-80%'>
-    <div className='relative isolate z-0 flex flex-col border-2 text-7xl 2xs:text-8xl sm:text-8xl md:text-9xl lg:text-10xl xl:text-10xl 3xl:text-11xl'>
+  <Section className='h-screen gap-4 bg-black bg-linear-to-b from-tns-blue/25 to-tns-blue/5 to-80%'>
+    <div className='absolute bottom-24 left-8 flex flex-col text-7xl 2xs:text-8xl sm:text-8xl md:text-9xl lg:text-10xl xl:text-10xl 3xl:text-11xl'>
       <h1 className='flex flex-col'>
-        <span className='w-full text-left text-full underline'>wowwww</span>
-        <span className='w-full text-center underline'>ezhang</span>
-        <span className='w-full text-right underline'>.</span>
+        <span className='text-tns-white/70 text-edge-cap text-trim-both'>
+          ERIC
+        </span>
+        <span className='text-tns-white/70'>ZHANG</span>
       </h1>
-      <div className='absolute bottom-0 left-0 text-base leading-[1]'>
+      <div className='ml-1 text-base xs:ml-1.5 md:ml-2.5'>
         <span className='text-tns-magenta'>Senior @ GMU CS</span>
         <span className='relative text-tns-green'>
           *
@@ -39,7 +40,7 @@ const Hero = () => (
 
 const Projects = () => (
   <Section
-    className='bg-gradient-to-b from-tns-blue/5 to-tns-blue/5'
+    className='bg-linear-to-b from-tns-blue/5 to-tns-blue/5'
     id='projects'
   >
     <h1 className='text-5xl text-tns-blue'>
