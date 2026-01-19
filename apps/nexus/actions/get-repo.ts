@@ -3,14 +3,20 @@
 import { db, eq, projects } from 'db';
 import { unstable_noStore } from 'next/cache';
 
-export const getRepo = async (repoId: number) => {
+export type StarsResult = { error: false; stars: number } | { error: true };
+
+export const getStars = async (repoId: number): Promise<StarsResult> => {
   unstable_noStore();
-  const res = await db
-    .select({ fullName: projects.full_name, stars: projects.stargazers_count })
-    .from(projects)
-    .where(eq(projects.id, repoId));
+  try {
+    const res = await db
+      .select({ stars: projects.stargazers_count })
+      .from(projects)
+      .where(eq(projects.id, repoId));
 
-  if (res.length === 0) return;
-
-  return res[0];
+    return res.length === 0 ?
+        { error: true }
+      : { error: false, stars: res[0].stars };
+  } catch {
+    return { error: true };
+  }
 };

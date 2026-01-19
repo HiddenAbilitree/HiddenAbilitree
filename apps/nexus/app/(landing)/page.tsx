@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 import { JPQuote, ProjectCard, Section } from '@/components/landing';
 import { Code } from '@/components/landing/code';
 import { Separator } from '@/components/ui/separator';
@@ -49,10 +51,85 @@ const Projects = () => (
     <div className='flex w-full flex-col items-center justify-center gap-4 px-4 md:gap-12 md:px-8'>
       <ProjectCard
         badges={[
+          { href: `https://www.langchain.com/`, text: `LangChain` },
+          { href: `https://ai.google.dev/gemini-api/docs`, text: `Gemini` },
+          { href: `https://openrouter.ai/`, text: `OpenRouter` },
+          { href: `https://modelcontextprotocol.io/`, text: `MCP` },
+          {
+            href: `https://qdrant.tech/`,
+            text: `Qdrant (Vector Database)`,
+          },
+          { text: `Agentic AI` },
+        ]}
+        color='blue'
+        fullName='HiddenAbilitree/mcp-scheduling'
+        imgHeight={1440}
+        imgSrc='/mcp-scheduler.png'
+        imgWidth={2560}
+        repoId={1_112_832_334}
+      >
+        <div>
+          <p>
+            A framework-agnostic tool router for MCP (Model Context Protocol)
+            servers. Routes agent requests to the fastest available tool when
+            similar tools exist, decreasing response latency by ~64% (tool
+            dependent) on average across 824 benchmark questions.
+          </p>
+          <br />
+          <p>
+            Tool similarity is determined by computing vector embeddings of each
+            tool&apos;s description, then grouping duplicates via cosine
+            similarity, letting the router identify functionally equivalent
+            tools automatically.
+          </p>
+          <br />
+          <p>
+            Tested against{` `}
+            <Link
+              className='text-tns-blue underline visited:text-tns-magenta'
+              href='https://huggingface.co/datasets/google/frames-benchmark'
+            >
+              Google&apos;s Frames dataset
+            </Link>
+            {` `}
+            using Gemini Flash with a custom agent built using LangChain.
+          </p>
+        </div>
+      </ProjectCard>
+      <ProjectCard
+        badges={[
+          { href: `https://eslint.org/`, text: `ESLint` },
+          { href: `https://prettier.io/`, text: `Prettier` },
+          { href: `https://www.rust-lang.org/`, text: `Rust` },
+        ]}
+        color='cyan'
+        fullName='HiddenAbilitree/opinionated-defaults'
+        imgHeight={1440}
+        imgSrc='/haod-demo.gif'
+        imgWidth={2560}
+        repoId={1_001_191_632}
+        reverse
+      >
+        <div>
+          <p>A collection of opinionated web-dev tooling configurations.</p>
+          <br />
+          <p>
+            A CLI is provided that analyzes your project and generates the
+            appropriate ESLint/Prettier configuration files.
+          </p>
+          <br />
+          <p>
+            Quickstart: <Code>bunx @hiddenability/opinionated-defaults</Code>
+          </p>
+        </div>
+      </ProjectCard>
+      <ProjectCard
+        badges={[
           { href: `https://nextjs.org/`, text: `Next.js` },
           { href: `https://www.better-auth.com/`, text: `BetterAuth` },
         ]}
         color='magenta'
+        fullName='HiddenAbilitree/next-auth-template'
         imgHref='https://auth.ericzhang.dev'
         imgSrc='/next-auth-template.png'
         repoId={926_402_589}
@@ -77,32 +154,6 @@ const Projects = () => (
           </ul>
         </div>
         <p>Emails sent with SMTP or SES API</p>
-      </ProjectCard>
-      <ProjectCard
-        badges={[
-          { href: `https://eslint.org/`, text: `ESLint` },
-          { href: `https://prettier.io/`, text: `Prettier` },
-          { href: `https://www.rust-lang.org/`, text: `Rust` },
-        ]}
-        color='blue'
-        imgHeight={1440}
-        imgSrc='/haod-demo.gif'
-        imgWidth={2560}
-        repoId={1_001_191_632}
-        reverse
-      >
-        <div>
-          <p>A collection of opinionated web-dev tooling configurations.</p>
-          <br />
-          <p>
-            There&apos;s a CLI provided that analyzes your project and generates
-            the appropriate configuration files.
-          </p>
-          <br />
-          <p>
-            Quickstart: <Code>bunx @hiddenability/opinionated-defaults</Code>
-          </p>
-        </div>
       </ProjectCard>
     </div>
   </Section>

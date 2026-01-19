@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ComponentProps } from 'react';
 
-import { getRepo } from '@/actions';
+import { getStars, type StarsResult } from '@/actions';
 import { Github, Star } from '@/components/icons';
 import { Tag } from '@/components/landing';
 import { Separator } from '@/components/ui/separator';
@@ -42,6 +42,7 @@ const colors = {
 interface ProjectData {
   badges: TagData[];
   color: `blue` | `cyan` | `default` | `green` | `magenta` | `red` | `yellow`;
+  fullName: string;
   imgHeight?: number;
   imgHref?: string;
   imgSrc?: string;
@@ -50,13 +51,14 @@ interface ProjectData {
   reverse?: boolean;
 }
 interface TagData {
-  href: string;
+  href?: string;
   text: string;
 }
 export const ProjectCard = async ({
   badges,
   className,
   color = `default`,
+  fullName,
   imgHeight,
   imgHref,
   imgSrc,
@@ -65,11 +67,8 @@ export const ProjectCard = async ({
   reverse = false,
   ...props
 }: ComponentProps<`div`> & ProjectData) => {
-  const repoData = await getRepo(repoId);
-
-  if (!repoData) return;
-
-  const { fullName, stars } = repoData;
+  const starsResult: StarsResult = await getStars(repoId);
+  const stars = starsResult.error ? undefined : starsResult.stars;
   const name = fullName.slice(Math.max(0, fullName.indexOf(`/`) + 1));
 
   return (
@@ -134,14 +133,14 @@ export const ProjectCard = async ({
               fill={colors.icon[color].fill}
               stroke={colors.icon[color].stroke}
             />
-            {stars}
+            <span>{stars ?? `-`}</span>
           </span>
         </div>
       </div>
       {imgSrc &&
         (imgHref ?
           <Link
-            className='flex w-full flex-col items-center justify-center lg:max-w-[66%]'
+            className='flex w-full shrink-0 flex-col items-center justify-center lg:w-1/2'
             href={imgHref as Route}
             target='_blank'
           >
@@ -153,7 +152,7 @@ export const ProjectCard = async ({
               width={imgWidth ?? 1920}
             />
           </Link>
-        : <div className='flex w-full flex-col items-center justify-center lg:max-w-[66%]'>
+        : <div className='flex w-full shrink-0 flex-col items-center justify-center lg:w-1/2'>
             <Image
               alt=''
               className='rounded-lg contain-content'

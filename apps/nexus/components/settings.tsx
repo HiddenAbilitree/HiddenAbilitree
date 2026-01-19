@@ -24,6 +24,7 @@ export const SmoothScrollToggle = () => {
   return (
     <>
       <motion.button
+        aria-label='Smooth Scroll'
         className='group fixed bottom-8 left-8 z-auto hidden size-10 items-center justify-center overflow-clip rounded-full border-2 bg-tns-black p-2 shadow-md selection:ring-tns-blue hover:cursor-pointer hover:bg-tns-black-hover md:flex'
         initial={{ borderColor: `var(--tns-green)` }}
         onClick={() => {

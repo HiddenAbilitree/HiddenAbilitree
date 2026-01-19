@@ -1,1 +1,1 @@
-export { getRepo } from './get-repo';
+export { getStars, type StarsResult } from './get-repo';
