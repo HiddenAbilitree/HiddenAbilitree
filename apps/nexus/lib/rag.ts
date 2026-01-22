@@ -135,7 +135,7 @@ export const formatProjectDetails = (details: ProjectDetails): string => {
           (c) => `
 ${c.path}:
 \`\`\`${c.language}|${project.html_url}/blob/main/${c.path}
-${c.content.slice(0, 4000)}${c.content.length > 4000 ? `\n// ... truncated` : ``}
+${c.content}
 \`\`\`
 `,
         )

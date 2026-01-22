@@ -38,7 +38,7 @@ export const Footer = () => (
       >
         <AppearingGroup className='flex flex-col'>
           <Link
-            className='group flex items-center gap-1.5 hover:text-tns-white sm:gap-4'
+            className='group flex items-center gap-1.5 sm:gap-4 md:hover:text-tns-white'
             href='mailto:me@ericzhang.dev'
             rel='noopener noreferrer'
             target='_blank'
@@ -47,7 +47,7 @@ export const Footer = () => (
             me@ericzhang.dev
           </Link>
           <Link
-            className='group flex items-center gap-1.5 hover:text-tns-white sm:gap-4'
+            className='group flex items-center gap-1.5 sm:gap-4 md:hover:text-tns-white'
             href='https://discord.com/users/288137037457129483'
             rel='noopener noreferrer'
             target='_blank'
@@ -56,7 +56,7 @@ export const Footer = () => (
             @hiddenability
           </Link>
           <Link
-            className='group flex items-center gap-1.5 hover:text-tns-white sm:gap-4'
+            className='group flex items-center gap-1.5 sm:gap-4 md:hover:text-tns-white'
             href='https://github.com/HiddenAbilitree'
             rel='noopener noreferrer'
             target='_blank'

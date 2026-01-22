@@ -1,5 +1,6 @@
 import Link from 'next/link';
 
+import { HeroChat } from '@/components/hero-chat';
 import { JPQuote, ProjectCard, Section } from '@/components/landing';
 import { Code } from '@/components/landing/code';
 import { Separator } from '@/components/ui/separator';
@@ -29,6 +30,9 @@ const Hero = () => (
           <div className='absolute top-0 right-0 bottom-0 left-0 animate-ping bg-tns-green/30'></div>
         </span>
       </div>
+    </div>
+    <div className='absolute top-20 right-8 bottom-20 hidden min-[1440px]:flex 2xl:right-[5%]'>
+      <HeroChat />
     </div>
     <div className='absolute right-0 bottom-6 left-0 flex w-full items-center gap-8 px-8'>
       <Separator className='bg-tns-blue/10' />
