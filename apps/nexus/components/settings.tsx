@@ -33,7 +33,7 @@ export const SmoothScrollToggle = () => {
           // });
           setEnabled((cur) => !cur);
         }}
-        transition={{ visualDuration: 0.3 }}
+        transition={{ duration: 0.2 }}
         whileInView={{
           borderColor: enabled ? `var(--tns-green)` : `var(--tns-red)`,
         }}

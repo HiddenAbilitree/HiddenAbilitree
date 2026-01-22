@@ -10,7 +10,7 @@
     }
   },
   "scripts": {
-    "push": "drizzle-kit push",
+    "migrate": "drizzle-kit push --force",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },

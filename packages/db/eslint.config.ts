@@ -4,7 +4,6 @@ import {
   eslintConfigBase,
   eslintConfigPerfectionist,
   eslintConfigPrettier,
-  eslintConfigRelative,
 } from '@hiddenability/opinionated-defaults/eslint';
 import { fileURLToPath } from 'node:url';
 
@@ -14,8 +13,8 @@ const gitignorePath = fileURLToPath(
 
 export default eslintConfig([
   includeIgnoreFile(gitignorePath, `Imported .gitignore patterns`),
+  { ignores: [`prettier.config.mjs`] },
   ...eslintConfigBase,
   ...eslintConfigPerfectionist,
   ...eslintConfigPrettier,
-  ...eslintConfigRelative,
 ]);

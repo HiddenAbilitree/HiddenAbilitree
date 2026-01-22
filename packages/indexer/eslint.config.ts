@@ -2,19 +2,25 @@ import { includeIgnoreFile } from '@eslint/compat';
 import {
   eslintConfig,
   eslintConfigBase,
+  eslintConfigDefaultProject,
+  eslintConfigNext,
   eslintConfigPerfectionist,
   eslintConfigPrettier,
+  eslintConfigReact,
   eslintConfigRelative,
 } from '@hiddenability/opinionated-defaults/eslint';
 import { fileURLToPath } from 'node:url';
 
-const gitignorePath = fileURLToPath(new URL(`.gitignore`, import.meta.url));
-
 export default eslintConfig([
-  includeIgnoreFile(gitignorePath, `Imported .gitignore patterns`),
-  { ignores: [`prettier.config.mjs`, `worker-configuration.d.ts`] },
+  includeIgnoreFile(
+    fileURLToPath(new URL(`../../.gitignore`, import.meta.url)),
+    ``,
+  ),
   ...eslintConfigBase,
+  ...eslintConfigDefaultProject([`eslint.config.ts`, `prettier.config.mjs`]),
+  ...eslintConfigNext,
   ...eslintConfigPerfectionist,
   ...eslintConfigPrettier,
+  ...eslintConfigReact,
   ...eslintConfigRelative,
 ]);

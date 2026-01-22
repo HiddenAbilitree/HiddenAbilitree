@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 
+import { BottomControls } from '@/components/bottom-controls';
 import { Footer } from '@/components/landing';
-import { SmoothScrollToggle } from '@/components/settings';
 
 export default function LandingLayout({
   children,
@@ -14,7 +14,7 @@ export default function LandingLayout({
         {children}
       </main>
       <Footer />
-      <SmoothScrollToggle />
+      <BottomControls />
     </>
   );
 }

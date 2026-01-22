@@ -2,7 +2,16 @@
   "$schema": "https://turborepo.com/schema.json",
   "ui": "tui",
   "globalDependencies": [".env"],
-  "globalEnv": ["DATABASE_URL", "WEBHOOK_SECRET"],
+  "globalEnv": [
+    "CEREBRAS_API_KEY",
+    "DATABASE_URL",
+    "GITHUB_PAT",
+    "GITHUB_USERNAME",
+    "QDRANT_API_KEY",
+    "QDRANT_URL",
+    "VOYAGE_API_KEY",
+    "WEBHOOK_SECRET"
+  ],
   "tasks": {
     "build": {
       "cache": false,

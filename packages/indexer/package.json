@@ -1,0 +1,26 @@
+{
+  "name": "indexer",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "index": "bun run src/index.ts index",
+    "index:force": "bun run src/index.ts index --force",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "dependencies": {
+    "@ai-sdk/cerebras": "^2.0.17",
+    "@qdrant/js-client-rest": "^1.13.0",
+    "ai": "^6.0.44",
+    "db": "workspace:*",
+    "drizzle-orm": "^0.45.1",
+    "zod": "^4.3.5"
+  },
+  "devDependencies": {
+    "@hiddenability/opinionated-defaults": "^0.1.47",
+    "@types/bun": "latest",
+    "@types/node": "^25.0.10",
+    "typescript": "^5.9.3"
+  }
+}

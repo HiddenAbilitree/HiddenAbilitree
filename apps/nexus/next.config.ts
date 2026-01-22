@@ -4,6 +4,7 @@ const nextConfig: NextConfig = {
   experimental: {
     typedEnv: true,
   },
+  reactCompiler: true,
   typedRoutes: true,
 };
 

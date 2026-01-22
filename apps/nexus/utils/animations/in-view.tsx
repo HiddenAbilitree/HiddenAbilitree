@@ -21,5 +21,15 @@ export const item = {
     rotateZ: 10,
     y: 100,
   },
-  visible: { filter: `blur(0px)`, opacity: 1, rotateZ: 0, y: 0 },
+  visible: {
+    filter: `blur(0px)`,
+    opacity: 1,
+    rotateZ: 0,
+    transition: {
+      filter: { type: `tween` as const },
+      rotateZ: { type: `spring` as const },
+      y: { type: `spring` as const },
+    },
+    y: 0,
+  },
 };

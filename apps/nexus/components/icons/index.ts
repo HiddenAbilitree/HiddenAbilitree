@@ -1,4 +1,5 @@
 export { Bluesky } from '@/components/icons/bluesky';
+export { Close } from '@/components/icons/close';
 export { Cog } from '@/components/icons/cog';
 export { Copy } from '@/components/icons/copy';
 export { Discord } from '@/components/icons/discord';
@@ -7,4 +8,6 @@ export { Instagram } from '@/components/icons/instagram';
 export { Mail } from '@/components/icons/mail';
 export { Motion } from '@/components/icons/motion';
 export { Next } from '@/components/icons/next';
+export { Robot } from '@/components/icons/robot';
 export { Star } from '@/components/icons/star';
+export { Undo } from '@/components/icons/undo';
