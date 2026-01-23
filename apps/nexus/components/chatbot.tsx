@@ -1,17 +1,34 @@
 'use client';
 
+import { readStreamableValue } from '@ai-sdk/rsc';
 import * as languages from 'linguist-languages';
 import { AnimatePresence, motion } from 'motion/react';
-import { memo, ReactNode, useEffect, useRef } from 'react';
+import {
+  FormEvent,
+  memo,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import Markdown from 'react-markdown';
 import 'react-shiki/css';
 import ShikiHighlighter from 'react-shiki';
 import remarkGfm from 'remark-gfm';
 
-import { Message } from '@/app/actions/chat';
-import { useChatContext } from '@/components/chat-context';
+import {
+  chat,
+  ChatResult,
+  getDataLastUpdated,
+  Message,
+  ToolCall,
+} from '@/app/actions/chat';
 import { Close, Undo } from '@/components/icons';
 import { _0xProto } from '@/styles/fonts';
+
+const parseContent = (raw: string): string =>
+  raw.replaceAll(/<think>[\s\S]*?<\/think>/g, ``).trim();
 
 const CodeBlock = memo(
   ({
@@ -103,7 +120,6 @@ const getLanguageColor = (lang: string): string | undefined => {
 };
 
 type ChatbotProps = {
-  hideOnScroll?: boolean;
   isOpen: boolean;
   onCloseAction: () => void;
 };
@@ -165,7 +181,7 @@ const markdownComponents = {
 
 const remarkPlugins = [remarkGfm];
 
-export const MessageItem = memo(
+const MessageItem = memo(
   ({ index, isExpanded, message: m, onToggleReasoning }: MessageItemProps) => (
     <div
       className={`flex min-w-0 flex-col gap-1 ${m.role === `user` ? `items-end` : `items-start`}`}
@@ -262,41 +278,203 @@ export const MessageItem = memo(
 
 MessageItem.displayName = `MessageItem`;
 
-export const Chatbot = ({
-  hideOnScroll = false,
-  isOpen,
-  onCloseAction,
-}: ChatbotProps) => {
-  const {
-    activeToolCall,
-    expandedReasoning,
-    handleSubmit,
-    input,
-    isRateLimited,
-    isStreaming,
-    lastUpdated,
-    messages,
-    popupInputRef,
-    reasoningContent,
-    requestFocusToHero,
-    resetMessages,
-    setInput,
-    toggleReasoning,
-  } = useChatContext();
+export const Chatbot = ({ isOpen, onCloseAction }: ChatbotProps) => {
+  const [input, setInput] = useState(``);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [isStreaming, setIsStreaming] = useState(false);
+  const [isRateLimited, setIsRateLimited] = useState(false);
+  const [activeToolCall, setActiveToolCall] = useState<ToolCall | undefined>();
+  const [reasoningContent, setReasoningContent] = useState(``);
+  const [expandedReasoning, setExpandedReasoning] = useState<Set<number>>(
+    new Set(),
+  );
+  const [lastUpdated, setLastUpdated] = useState<string | undefined>();
 
-  const wasInputFocused = useRef(false);
-
-  useEffect(() => {
-    if (hideOnScroll && wasInputFocused.current) {
-      requestFocusToHero();
-      wasInputFocused.current = false;
-    }
-  }, [hideOnScroll, requestFocusToHero]);
-
+  const inputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const userScrolledUp = useRef(false);
   const lastScrollHeight = useRef(0);
+
+  useEffect(() => {
+    void getDataLastUpdated().then(setLastUpdated);
+  }, []);
+
+  const toggleReasoning = useCallback((index: number) => {
+    setExpandedReasoning((prev) => {
+      const next = new Set(prev);
+      if (next.has(index)) {
+        next.delete(index);
+      } else {
+        next.add(index);
+      }
+      return next;
+    });
+  }, []);
+
+  const resetMessages = useCallback(() => {
+    setMessages([]);
+    setExpandedReasoning(new Set());
+  }, []);
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (input.trim() === `` || isStreaming || isRateLimited) return;
+
+    setReasoningContent(``);
+    const userMessage: Message = { content: input, role: `user` };
+    setMessages((prev) => [...prev, userMessage]);
+    setInput(``);
+    setIsStreaming(true);
+
+    const result: ChatResult = await chat([...messages, userMessage]);
+
+    if (!result.stream) {
+      setIsStreaming(false);
+      return;
+    }
+
+    let rawContent = ``;
+    let assistantReasoning = ``;
+    let isInsideThinkTag = false;
+    const completedToolCalls: ToolCall[] = [];
+    setMessages((prev) => [
+      ...prev,
+      { content: ``, role: `assistant`, toolCalls: [] },
+    ]);
+
+    try {
+      for await (const event of readStreamableValue(result.stream)) {
+        if (!event) continue;
+
+        switch (event.type) {
+          case `error`: {
+            const isRateLimitError = event.error === `rate_limit`;
+            if (isRateLimitError) {
+              setIsRateLimited(true);
+            }
+            setMessages((prev) => [
+              ...prev.slice(0, -1),
+              {
+                content:
+                  isRateLimitError ?
+                    `I've hit my daily API limit. Please try again tomorrow.`
+                  : `Sorry, something went wrong. Please try again.`,
+                role: `assistant`,
+              },
+            ]);
+            setActiveToolCall(undefined);
+            setReasoningContent(``);
+            setIsStreaming(false);
+            return;
+          }
+          case `reasoning`: {
+            assistantReasoning += event.content;
+            setReasoningContent((prev) => prev + event.content);
+            break;
+          }
+          case `text`: {
+            rawContent += event.content;
+
+            if (
+              rawContent.includes(`<think>`) &&
+              !rawContent.includes(`</think>`)
+            ) {
+              isInsideThinkTag = true;
+              const thinkStart = rawContent.lastIndexOf(`<think>`);
+              const thinkContent = rawContent.slice(thinkStart + 7);
+              assistantReasoning = thinkContent;
+              setReasoningContent(thinkContent);
+            } else if (isInsideThinkTag && rawContent.includes(`</think>`)) {
+              isInsideThinkTag = false;
+              const thinkMatch = rawContent.match(/<think>([\s\S]*?)<\/think>/);
+              assistantReasoning = thinkMatch ? thinkMatch[1].trim() : ``;
+              setReasoningContent(``);
+            } else if (isInsideThinkTag) {
+              const thinkStart = rawContent.lastIndexOf(`<think>`);
+              const thinkContent = rawContent.slice(thinkStart + 7);
+              assistantReasoning = thinkContent;
+              setReasoningContent(thinkContent);
+            }
+
+            const parsedContent = parseContent(rawContent);
+            setMessages((prev) => [
+              ...prev.slice(0, -1),
+              {
+                content: parsedContent,
+                reasoning:
+                  parsedContent ? assistantReasoning || undefined : undefined,
+                role: `assistant`,
+                toolCalls: [...completedToolCalls],
+              },
+            ]);
+            break;
+          }
+          case `tool_call`: {
+            if (event.tool.status === `running`) {
+              setActiveToolCall(event.tool);
+            } else if (event.tool.status === `completed`) {
+              setActiveToolCall(undefined);
+              completedToolCalls.push(event.tool);
+              const parsedContent = parseContent(rawContent);
+              setMessages((prev) => [
+                ...prev.slice(0, -1),
+                {
+                  content: parsedContent,
+                  reasoning:
+                    parsedContent ? assistantReasoning || undefined : undefined,
+                  role: `assistant`,
+                  toolCalls: [...completedToolCalls],
+                },
+              ]);
+            }
+            break;
+          }
+        }
+      }
+
+      const finalContent = parseContent(rawContent);
+      const hasToolCalls = completedToolCalls.length > 0;
+      const hasReasoning = assistantReasoning.trim().length > 0;
+
+      const displayContent =
+        finalContent ||
+        (hasToolCalls || hasReasoning ? `` : (
+          `I couldn't generate a response. Please try again.`
+        ));
+
+      setMessages((prev) => [
+        ...prev.slice(0, -1),
+        {
+          content: displayContent,
+          reasoning: hasReasoning ? assistantReasoning : undefined,
+          role: `assistant`,
+          toolCalls: hasToolCalls ? [...completedToolCalls] : undefined,
+        },
+      ]);
+    } catch (error) {
+      const errorString = String(error);
+      const isRateLimitError =
+        error === `rate_limit` || errorString.includes(`rate_limit`);
+      if (isRateLimitError) {
+        setIsRateLimited(true);
+      }
+      setMessages((prev) => [
+        ...prev.slice(0, -1),
+        {
+          content:
+            isRateLimitError ?
+              `I've hit my daily API limit. Please try again tomorrow.`
+            : `Sorry, something went wrong. Please try again.`,
+          role: `assistant`,
+        },
+      ]);
+    }
+
+    setActiveToolCall(undefined);
+    setReasoningContent(``);
+    setIsStreaming(false);
+  };
 
   useEffect(() => {
     const container = messagesContainerRef.current;
@@ -324,10 +502,10 @@ export const Chatbot = ({
 
   return (
     <AnimatePresence>
-      {isOpen && !hideOnScroll && (
+      {isOpen && (
         <motion.div
           animate={{ opacity: 1, x: 0 }}
-          className={`mb-2 flex w-[calc(100vw-2rem)] max-w-96 flex-col overflow-hidden rounded-xl border-2 border-tns-blue bg-tns-black shadow-xl ${_0xProto.className}`}
+          className={`mb-2 flex w-[calc(100vw-2rem)] max-w-lg flex-col overflow-hidden rounded-xl border-2 border-tns-blue bg-tns-black shadow-xl ${_0xProto.className}`}
           exit={{ opacity: 0, x: -20 }}
           initial={{ opacity: 0, x: -20 }}
           transition={{ duration: 0.2 }}
@@ -382,7 +560,7 @@ export const Chatbot = ({
           </div>
 
           <div
-            className='flex h-96 min-w-0 flex-col gap-2 overflow-x-hidden overflow-y-auto overscroll-contain p-4'
+            className='flex h-128 min-w-0 flex-col gap-2 overflow-x-hidden overflow-y-auto overscroll-contain p-4'
             data-chat-history
             onScroll={handleScroll}
             onWheel={(e) => e.stopPropagation()}
@@ -395,7 +573,7 @@ export const Chatbot = ({
                   Try{` `}
                   {[
                     `What information do you have?`,
-                    `What projects have you worked on?`,
+                    `What projects has he worked on?`,
                     `Explain how the tool router works in mcp-scheduling`,
                     `What tech stack does this site use?`,
                   ].map((prompt, i) => (
@@ -459,13 +637,11 @@ export const Chatbot = ({
               <input
                 className='w-full rounded-lg border border-tns-blue/50 bg-tns-black-hover px-3 py-2 text-sm text-tns-white placeholder:text-tns-white/40 focus:border-tns-blue focus:outline-none disabled:opacity-50'
                 disabled={isStreaming}
-                onBlur={() => (wasInputFocused.current = false)}
                 onChange={(e) => setInput(e.target.value)}
-                onFocus={() => (wasInputFocused.current = true)}
                 placeholder={
                   isStreaming ? `Waiting for response...` : `Type a message...`
                 }
-                ref={popupInputRef}
+                ref={inputRef}
                 value={input}
               />
             </form>

@@ -1,7 +1,6 @@
 import { ReactNode } from 'react';
 
 import { BottomControls } from '@/components/bottom-controls';
-import { ChatProvider } from '@/components/chat-context';
 import { Footer } from '@/components/landing';
 
 export default function LandingLayout({
@@ -10,12 +9,12 @@ export default function LandingLayout({
   children: ReactNode;
 }>) {
   return (
-    <ChatProvider>
+    <>
       <main className='flex size-full flex-col items-center justify-center'>
         {children}
       </main>
       <Footer />
       <BottomControls />
-    </ChatProvider>
+    </>
   );
 }
