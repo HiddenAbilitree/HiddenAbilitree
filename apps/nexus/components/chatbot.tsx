@@ -29,7 +29,7 @@ import {
   getDataLastUpdated,
   Message,
   ToolCall,
-} from '@/app/actions/chat';
+} from '@/actions';
 import { Close, Undo } from '@/components/icons';
 import { _0xProto } from '@/styles/fonts';
 

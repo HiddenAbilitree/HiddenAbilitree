@@ -7,19 +7,6 @@ export type KeyFile = {
   path: string;
 };
 
-const summarySchema = z.object({
-  summary: z
-    .string()
-    .describe(
-      `A confident 3-4 sentence summary describing exactly what this project does, its main features, and purpose`,
-    ),
-  tags: z
-    .array(z.string())
-    .describe(
-      `5-10 specific tags: languages, frameworks, libraries, and domain categories (AI, CLI, Web, API, etc.)`,
-    ),
-});
-
 export const summarizeRepo = async (
   repoName: string,
   description: string | undefined,
@@ -27,7 +14,7 @@ export const summarizeRepo = async (
   topics: string[],
   filePaths: string[],
   keyFiles: KeyFile[],
-): Promise<{ summary: string; tags: string[] }> => {
+) => {
   const keyFilesSection =
     keyFiles.length > 0 ?
       `\n\nKey source files:\n${keyFiles.map((f) => `--- ${f.path} ---\n${f.content.slice(0, 3000)}${f.content.length > 3000 ? `\n... truncated` : ``}`).join(`\n\n`)}`
@@ -51,7 +38,20 @@ Based on the actual code above, provide:
 
   const { output } = await generateText({
     model: cerebras(`llama-3.3-70b`),
-    output: Output.object({ schema: summarySchema }),
+    output: Output.object({
+      schema: z.object({
+        summary: z
+          .string()
+          .describe(
+            `A confident 3-4 sentence summary describing exactly what this project does, its main features, and purpose`,
+          ),
+        tags: z
+          .array(z.string())
+          .describe(
+            `5-10 specific tags: languages, frameworks, libraries, and domain categories (AI, CLI, Web, API, etc.)`,
+          ),
+      }),
+    }),
     prompt,
   });
 

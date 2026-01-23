@@ -27,7 +27,7 @@ const KEY_FILE_PATTERNS = [
   /^src\/lib\/.*\.[tj]sx?$/,
 ];
 
-const isKeyFile = (path: string): boolean =>
+const isKeyFile = (path: string) =>
   KEY_FILE_PATTERNS.some((pattern) => pattern.test(path));
 
 type IndexResult =
@@ -242,7 +242,7 @@ export const runIndexPipeline = async (
     singleRepo?: string;
     summariesOnly: boolean;
   },
-): Promise<void> => {
+) => {
   const github = createGitHubGraphQLClient(
     config.github.pat,
     config.github.username,

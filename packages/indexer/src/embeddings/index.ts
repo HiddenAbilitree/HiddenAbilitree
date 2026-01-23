@@ -29,10 +29,10 @@ export const createEmbeddingProvider = (config: Config): EmbeddingProvider => {
       );
     }
 
-    const data = (await response.json()) as {
+    const { data } = (await response.json()) as {
       data: Array<{ embedding: number[] }>;
     };
-    return data.data.map((d) => d.embedding);
+    return data.map((d) => d.embedding);
   };
 
   return { dimensions: DIMENSIONS, embedBatch, name: `voyage:${MODEL}` };
