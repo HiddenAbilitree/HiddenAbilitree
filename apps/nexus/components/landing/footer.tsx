@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import Link from 'next/link';
 
-import { AppearingGroup } from '@/components/appearing-group';
+import { AppearingGroup, AppearingItem } from '@/components/appearing-group';
 import { Discord, Github, Mail } from '@/components/icons/';
 import { Separator } from '@/components/ui/separator';
 
@@ -37,33 +37,39 @@ export const Footer = () => (
         )}
       >
         <AppearingGroup className='flex flex-col'>
-          <Link
-            className='group flex items-center gap-1.5 sm:gap-4 md:hover:text-tns-white'
-            href='mailto:me@ericzhang.dev'
-            rel='noopener noreferrer'
-            target='_blank'
-          >
-            <Mail className='group-hover:text-white' />
-            me@ericzhang.dev
-          </Link>
-          <Link
-            className='group flex items-center gap-1.5 sm:gap-4 md:hover:text-tns-white'
-            href='https://discord.com/users/288137037457129483'
-            rel='noopener noreferrer'
-            target='_blank'
-          >
-            <Discord className='group-hover:text-[#5865F2]' />
-            @hiddenability
-          </Link>
-          <Link
-            className='group flex items-center gap-1.5 sm:gap-4 md:hover:text-tns-white'
-            href='https://github.com/HiddenAbilitree'
-            rel='noopener noreferrer'
-            target='_blank'
-          >
-            <Github className='group-hover:fill-white' />
-            @hiddenabilitree
-          </Link>
+          <AppearingItem key='email'>
+            <Link
+              className='group flex items-center gap-1.5 sm:gap-4 md:hover:text-tns-white'
+              href='mailto:me@ericzhang.dev'
+              rel='noopener noreferrer'
+              target='_blank'
+            >
+              <Mail className='group-hover:text-white' />
+              me@ericzhang.dev
+            </Link>
+          </AppearingItem>
+          <AppearingItem key='discord'>
+            <Link
+              className='group flex items-center gap-1.5 sm:gap-4 md:hover:text-tns-white'
+              href='https://discord.com/users/288137037457129483'
+              rel='noopener noreferrer'
+              target='_blank'
+            >
+              <Discord className='group-hover:text-[#5865F2]' />
+              @hiddenability
+            </Link>
+          </AppearingItem>
+          <AppearingItem key='github'>
+            <Link
+              className='group flex items-center gap-1.5 sm:gap-4 md:hover:text-tns-white'
+              href='https://github.com/HiddenAbilitree'
+              rel='noopener noreferrer'
+              target='_blank'
+            >
+              <Github className='group-hover:fill-white' />
+              @hiddenabilitree
+            </Link>
+          </AppearingItem>
         </AppearingGroup>
       </div>
     </footer>

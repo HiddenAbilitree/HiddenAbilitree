@@ -39,7 +39,7 @@ const colors = {
   },
 };
 
-interface ProjectData {
+type ProjectData = {
   badges: TagData[];
   color: `blue` | `cyan` | `default` | `green` | `magenta` | `red` | `yellow`;
   fullName: string;
@@ -49,11 +49,12 @@ interface ProjectData {
   imgWidth?: number;
   repoId: number;
   reverse?: boolean;
-}
-interface TagData {
+};
+
+type TagData = {
   href?: string;
   text: string;
-}
+};
 export const ProjectCard = async ({
   badges,
   className,

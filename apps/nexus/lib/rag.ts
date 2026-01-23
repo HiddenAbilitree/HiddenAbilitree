@@ -52,19 +52,21 @@ export const getProjectDetails = async (
   projectName: string,
   query: string,
 ): Promise<ProjectDetails | undefined> => {
-  const project = await db
+  const [project] = await db
     .select()
     .from(projects)
     .where(eq(projects.full_name, projectName))
-    .then((rows) => rows[0]);
+    .limit(1);
 
   if (!project) return undefined;
 
-  const codeEmbedding = await embedQueryForCode(query);
+  const embeddingResult = await embedQueryForCode(query);
+  if (!embeddingResult.success) return undefined;
+
   const codeResults = await qdrant.search(`code_chunks`, {
     filter: { must: [{ key: `project_id`, match: { value: project.id } }] },
     limit: 5,
-    vector: codeEmbedding,
+    vector: embeddingResult.embedding,
   });
 
   const fileIds = codeResults.map((r) => r.id as number);

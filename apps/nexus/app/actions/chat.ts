@@ -25,6 +25,7 @@ export type ChatResult = {
 
 export type Message = {
   content: string;
+  id: string;
   reasoning?: string;
   role: `assistant` | `user`;
   toolCalls?: ToolCall[];

@@ -1,8 +1,14 @@
+export type EmbeddingResult =
+  | { embedding: number[]; success: true }
+  | { error: string; success: false };
+
 type EmbeddingResponse = {
   data: Array<{ embedding: number[] }>;
 };
 
-export const embedQueryForCode = async (text: string): Promise<number[]> => {
+export const embedQueryForCode = async (
+  text: string,
+): Promise<EmbeddingResult> => {
   const response = await fetch(`https://api.voyageai.com/v1/embeddings`, {
     body: JSON.stringify({
       input: text,
@@ -17,9 +23,12 @@ export const embedQueryForCode = async (text: string): Promise<number[]> => {
   });
 
   if (!response.ok) {
-    throw new Error(`Voyage embedding failed: ${response.status}`);
+    return {
+      error: `Voyage embedding failed: ${response.status}`,
+      success: false,
+    };
   }
 
   const data = (await response.json()) as EmbeddingResponse;
-  return data.data[0].embedding;
+  return { embedding: data.data[0].embedding, success: true };
 };

@@ -1,5 +1,7 @@
 'use client';
 
+import type { PluggableList } from 'unified';
+
 import { readStreamableValue } from '@ai-sdk/rsc';
 import * as languages from 'linguist-languages';
 import { AnimatePresence, motion } from 'motion/react';
@@ -12,10 +14,14 @@ import {
   useRef,
   useState,
 } from 'react';
-import Markdown from 'react-markdown';
 import 'react-shiki/css';
+import 'katex/dist/katex.min.css';
+import Markdown from 'react-markdown';
 import ShikiHighlighter from 'react-shiki';
+import rehypeExternalLinks from 'rehype-external-links';
+import rehypeKatex from 'rehype-katex';
 import remarkGfm from 'remark-gfm';
+import remarkMath from 'remark-math';
 
 import {
   chat,
@@ -29,6 +35,8 @@ import { _0xProto } from '@/styles/fonts';
 
 const parseContent = (raw: string): string =>
   raw.replaceAll(/<think>[\s\S]*?<\/think>/g, ``).trim();
+
+const generateId = (): string => crypto.randomUUID();
 
 const CodeBlock = memo(
   ({
@@ -105,18 +113,14 @@ type LinguistLanguage = {
 
 const getLanguageColor = (lang: string): string | undefined => {
   const normalizedLang = lang.toLowerCase();
-  for (const key of Object.keys(languages)) {
-    const langData = languages[
-      key as keyof typeof languages
-    ] as LinguistLanguage;
-    if (
-      langData.name?.toLowerCase() === normalizedLang ||
-      langData.aliases?.some((alias) => alias.toLowerCase() === normalizedLang)
-    ) {
-      return langData.color;
-    }
-  }
-  return undefined;
+  const found = Object.values(languages).find((langData) => {
+    const data = langData as LinguistLanguage;
+    return (
+      data.name?.toLowerCase() === normalizedLang ||
+      data.aliases?.some((alias) => alias.toLowerCase() === normalizedLang)
+    );
+  }) as LinguistLanguage | undefined;
+  return found?.color;
 };
 
 type ChatbotProps = {
@@ -125,25 +129,12 @@ type ChatbotProps = {
 };
 
 type MessageItemProps = {
-  index: number;
   isExpanded: boolean;
   message: Message;
-  onToggleReasoning: (_index: number) => void;
+  onToggleReasoning: (_id: string) => void;
 };
 
 const markdownComponents = {
-  a: ({
-    children,
-    href,
-    ...props
-  }: {
-    children?: ReactNode;
-    href?: string;
-  }) => (
-    <a href={href} rel='noopener noreferrer' target='_blank' {...props}>
-      {children}
-    </a>
-  ),
   code: ({
     children,
     className,
@@ -179,17 +170,21 @@ const markdownComponents = {
   ),
 };
 
-const remarkPlugins = [remarkGfm];
+const remarkPlugins = [remarkGfm, remarkMath];
+const rehypePlugins: PluggableList = [
+  rehypeKatex,
+  [rehypeExternalLinks, { rel: [`noopener`, `noreferrer`], target: `_blank` }],
+];
 
 const MessageItem = memo(
-  ({ index, isExpanded, message: m, onToggleReasoning }: MessageItemProps) => (
+  ({ isExpanded, message: m, onToggleReasoning }: MessageItemProps) => (
     <div
       className={`flex min-w-0 flex-col gap-1 ${m.role === `user` ? `items-end` : `items-start`}`}
     >
       {m.role === `assistant` && m.reasoning && (
         <button
           className='flex items-center gap-1 text-xs text-tns-white/40 hover:text-tns-white/60'
-          onClick={() => onToggleReasoning(index)}
+          onClick={() => onToggleReasoning(m.id)}
         >
           <span
             className={`transition-transform ${isExpanded ? `rotate-90` : ``}`}
@@ -264,6 +259,7 @@ const MessageItem = memo(
           : <div className='prose prose-sm max-w-none min-w-0 prose-code-size-inherit wrap-break-word prose-invert prose-headings:my-2 prose-p:my-1 prose-a:text-tns-blue prose-code:break-all prose-code:text-tns-blue prose-code:before:content-none prose-code:after:content-none prose-pre:my-2 prose-pre:bg-transparent prose-pre:p-0 prose-ol:my-1 prose-ul:my-1 prose-li:my-0 prose-table:my-2 prose-th:border prose-th:border-tns-blue/30 prose-th:bg-tns-blue/10 prose-th:px-2 prose-th:py-1 prose-td:border prose-td:border-tns-blue/30 prose-td:px-2 prose-td:py-1'>
               <Markdown
                 components={markdownComponents}
+                rehypePlugins={rehypePlugins}
                 remarkPlugins={remarkPlugins}
               >
                 {m.content}
@@ -285,7 +281,7 @@ export const Chatbot = ({ isOpen, onCloseAction }: ChatbotProps) => {
   const [isRateLimited, setIsRateLimited] = useState(false);
   const [activeToolCall, setActiveToolCall] = useState<ToolCall | undefined>();
   const [reasoningContent, setReasoningContent] = useState(``);
-  const [expandedReasoning, setExpandedReasoning] = useState<Set<number>>(
+  const [expandedReasoning, setExpandedReasoning] = useState<Set<string>>(
     new Set(),
   );
   const [lastUpdated, setLastUpdated] = useState<string | undefined>();
@@ -300,13 +296,13 @@ export const Chatbot = ({ isOpen, onCloseAction }: ChatbotProps) => {
     void getDataLastUpdated().then(setLastUpdated);
   }, []);
 
-  const toggleReasoning = useCallback((index: number) => {
+  const toggleReasoning = useCallback((id: string) => {
     setExpandedReasoning((prev) => {
       const next = new Set(prev);
-      if (next.has(index)) {
-        next.delete(index);
+      if (next.has(id)) {
+        next.delete(id);
       } else {
-        next.add(index);
+        next.add(id);
       }
       return next;
     });
@@ -322,7 +318,11 @@ export const Chatbot = ({ isOpen, onCloseAction }: ChatbotProps) => {
     if (input.trim() === `` || isStreaming || isRateLimited) return;
 
     setReasoningContent(``);
-    const userMessage: Message = { content: input, role: `user` };
+    const userMessage: Message = {
+      content: input,
+      id: generateId(),
+      role: `user`,
+    };
     setMessages((prev) => [...prev, userMessage]);
     setInput(``);
     setIsStreaming(true);
@@ -338,9 +338,10 @@ export const Chatbot = ({ isOpen, onCloseAction }: ChatbotProps) => {
     let assistantReasoning = ``;
     let isInsideThinkTag = false;
     const completedToolCalls: ToolCall[] = [];
+    const assistantId = generateId();
     setMessages((prev) => [
       ...prev,
-      { content: ``, role: `assistant`, toolCalls: [] },
+      { content: ``, id: assistantId, role: `assistant`, toolCalls: [] },
     ]);
 
     try {
@@ -360,6 +361,7 @@ export const Chatbot = ({ isOpen, onCloseAction }: ChatbotProps) => {
                   isRateLimitError ?
                     `I've hit my daily API limit. Please try again tomorrow.`
                   : `Sorry, something went wrong. Please try again.`,
+                id: assistantId,
                 role: `assistant`,
               },
             ]);
@@ -402,6 +404,7 @@ export const Chatbot = ({ isOpen, onCloseAction }: ChatbotProps) => {
               ...prev.slice(0, -1),
               {
                 content: parsedContent,
+                id: assistantId,
                 reasoning:
                   parsedContent ? assistantReasoning || undefined : undefined,
                 role: `assistant`,
@@ -421,6 +424,7 @@ export const Chatbot = ({ isOpen, onCloseAction }: ChatbotProps) => {
                 ...prev.slice(0, -1),
                 {
                   content: parsedContent,
+                  id: assistantId,
                   reasoning:
                     parsedContent ? assistantReasoning || undefined : undefined,
                   role: `assistant`,
@@ -447,6 +451,7 @@ export const Chatbot = ({ isOpen, onCloseAction }: ChatbotProps) => {
         ...prev.slice(0, -1),
         {
           content: displayContent,
+          id: assistantId,
           reasoning: hasReasoning ? assistantReasoning : undefined,
           role: `assistant`,
           toolCalls: hasToolCalls ? [...completedToolCalls] : undefined,
@@ -466,6 +471,7 @@ export const Chatbot = ({ isOpen, onCloseAction }: ChatbotProps) => {
             isRateLimitError ?
               `I've hit my daily API limit. Please try again tomorrow.`
             : `Sorry, something went wrong. Please try again.`,
+          id: assistantId,
           role: `assistant`,
         },
       ]);
@@ -592,11 +598,10 @@ export const Chatbot = ({ isOpen, onCloseAction }: ChatbotProps) => {
                 </p>
               </div>
             )}
-            {messages.map((m, i) => (
+            {messages.map((m) => (
               <MessageItem
-                index={i}
-                isExpanded={expandedReasoning.has(i)}
-                key={i}
+                isExpanded={expandedReasoning.has(m.id)}
+                key={m.id}
                 message={m}
                 onToggleReasoning={toggleReasoning}
               />

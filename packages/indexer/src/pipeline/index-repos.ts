@@ -85,12 +85,10 @@ const indexRepo = async (
       repo.full_name,
       keyFilePaths,
     );
-    const keyFiles: KeyFile[] = keyFilePaths
-      .filter((path) => keyFileContents.has(path))
-      .map((path) => ({
-        content: keyFileContents.get(path)!,
-        path,
-      }));
+    const keyFiles: KeyFile[] = keyFilePaths.flatMap((path) => {
+      const content = keyFileContents.get(path);
+      return content === undefined ? [] : [{ content, path }];
+    });
 
     const summary = await summarizeRepo(
       repo.full_name,
@@ -159,10 +157,10 @@ const indexRepo = async (
       await db.delete(codeFiles).where(eq(codeFiles.project_id, repo.id));
 
       const BATCH_SIZE = 100;
-      const batches: string[][] = [];
-      for (let i = 0; i < codeFilePaths.length; i += BATCH_SIZE) {
-        batches.push(codeFilePaths.slice(i, i + BATCH_SIZE));
-      }
+      const batches = Array.from(
+        { length: Math.ceil(codeFilePaths.length / BATCH_SIZE) },
+        (_, i) => codeFilePaths.slice(i * BATCH_SIZE, (i + 1) * BATCH_SIZE),
+      );
 
       let completedBatches = 0;
       const totalBatches = batches.length;
@@ -174,13 +172,12 @@ const indexRepo = async (
             batchPaths,
           );
 
-          const batchFiles = batchPaths
-            .filter((path) => fileContents.has(path))
-            .map((path) => ({
-              content: fileContents.get(path)!,
-              ext: path.slice(path.lastIndexOf(`.`) + 1),
-              path,
-            }));
+          const batchFiles = batchPaths.flatMap((path) => {
+            const content = fileContents.get(path);
+            return content === undefined ?
+                []
+              : [{ content, ext: path.slice(path.lastIndexOf(`.`) + 1), path }];
+          });
 
           if (batchFiles.length === 0) return;
 
@@ -310,11 +307,11 @@ export const runIndexPipeline = async (
 
   if (errors.length > 0) {
     console.log(`\nFailed repos:`);
-    results.forEach((r, i) => {
+    for (const [i, r] of results.entries()) {
       if (r.status === `error`) {
         console.log(`  - ${repos[i].full_name}: ${r.error}`);
       }
-    });
+    }
   }
 
   if (!options.singleRepo) {

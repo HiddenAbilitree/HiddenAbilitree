@@ -469,12 +469,12 @@ export const createGitHubGraphQLClient = (
 
       const data = await graphqlFetch<FileResponse>(query, { name, owner });
 
-      batch.forEach((path, idx) => {
+      for (const [idx, path] of batch.entries()) {
         const file = data.repository[`file_${idx}`];
-        if (file?.text !== null && file?.text !== undefined) {
+        if (file?.text !== undefined) {
           results.set(path, file.text);
         }
-      });
+      }
     }
 
     return results;

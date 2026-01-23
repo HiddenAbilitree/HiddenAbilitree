@@ -55,5 +55,5 @@ Based on the actual code above, provide:
     prompt,
   });
 
-  return output as { summary: string; tags: string[] };
+  return output;
 };
