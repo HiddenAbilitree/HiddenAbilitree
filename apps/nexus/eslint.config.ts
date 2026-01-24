@@ -8,6 +8,7 @@ import {
   eslintConfigReact,
   eslintConfigRelative,
 } from '@hiddenability/opinionated-defaults/eslint';
+import tailwindPlugin from 'eslint-plugin-better-tailwindcss';
 import { fileURLToPath } from 'node:url';
 
 export default eslintConfig([
@@ -19,7 +20,24 @@ export default eslintConfig([
   ...eslintConfigBase,
   ...eslintConfigNext,
   ...eslintConfigPerfectionist,
-  ...eslintConfigPrettier,
   ...eslintConfigReact,
   ...eslintConfigRelative,
+  ...eslintConfigPrettier,
+  {
+    plugins: { 'better-tailwindcss': tailwindPlugin },
+    rules: {
+      ...tailwindPlugin.configs.recommended.rules,
+      'better-tailwindcss/enforce-consistent-line-wrapping': `off`,
+      'better-tailwindcss/no-unknown-classes': [
+        `error`,
+        { ignore: [`^not-prose$`, `^chatbot-code$`] },
+      ],
+    },
+
+    settings: {
+      'better-tailwindcss': {
+        entryPoint: `./styles/globals.css`,
+      },
+    },
+  },
 ]);

@@ -9,14 +9,14 @@ export const Footer = () => (
   <section className='h-screen w-full bg-black bg-linear-to-b from-tns-blue/5 to-tns-blue/40 md:p-4'>
     <footer className='flex size-full flex-col gap-2 overflow-hidden bg-tns-white p-4 pt-16 text-tns-black shadow-xl sm:p-6 sm:pt-22 md:rounded-3xl md:pt-18'>
       <Separator className='bg-border/80' />
-      <h1 className='text-7xl leading-[0.8] xs:text-8xl sm:text-8xl md:text-8xl 2xl:text-9xl 3xl:text-11xl'>
+      <h2 className='text-7xl leading-[0.8] xs:text-8xl sm:text-8xl md:text-8xl 2xl:text-9xl 3xl:text-11xl'>
         CONTACT ME
-      </h1>
+      </h2>
       <Separator className='bg-border/80' />
-      <p className='mr-auto md:text-xl lg:text-2xl'>
+      <p className='mr-auto leading-relaxed md:text-xl lg:text-2xl'>
         Colorscheme @{` `}
         <Link
-          className='group relative isolate transition-colors hover:text-tns-blue'
+          className='group relative isolate underline decoration-tns-black/30 underline-offset-2 transition-colors hover:text-tns-blue hover:decoration-tns-blue'
           href='https://github.com/tokyo-night/tokyo-night-vscode-theme'
           rel='noopener noreferrer'
           target='_blank'

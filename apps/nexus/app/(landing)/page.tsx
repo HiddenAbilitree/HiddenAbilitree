@@ -1,8 +1,6 @@
-import Link from 'next/link';
-
 import { JPQuote, ProjectCard, Section } from '@/components/landing';
-import { Code } from '@/components/landing/code';
 import { Separator } from '@/components/ui/separator';
+import { getProjectContent, projects } from '@/projects';
 
 export default function LandingPage() {
   return (
@@ -20,13 +18,13 @@ const Hero = () => (
         <span className='text-tns-white/70 text-edge-cap text-trim-both'>
           ERIC
         </span>
+        {` `}
         <span className='text-tns-white/70'>ZHANG</span>
       </h1>
       <div className='ml-1 text-base xs:ml-1.5 md:ml-2.5'>
         <span className='text-tns-magenta'>Senior @ GMU CS</span>
         <span className='relative text-tns-green'>
-          *
-          <div className='absolute top-0 right-0 bottom-0 left-0 animate-ping bg-tns-green/30'></div>
+          *<div className='absolute inset-0 animate-ping bg-tns-green/30'></div>
         </span>
       </div>
     </div>
@@ -45,116 +43,27 @@ const Projects = () => (
     className='bg-linear-to-b from-tns-blue/5 to-tns-blue/5'
     id='projects'
   >
-    <h1 className='text-5xl text-tns-blue'>
+    <h2 className='text-5xl text-tns-blue'>
       <JPQuote>projects</JPQuote>
-    </h1>
+    </h2>
     <div className='flex w-full flex-col items-center justify-center gap-4 px-4 md:gap-12 md:px-8'>
-      <ProjectCard
-        badges={[
-          { href: `https://www.langchain.com/`, text: `LangChain` },
-          { href: `https://ai.google.dev/gemini-api/docs`, text: `Gemini` },
-          { href: `https://openrouter.ai/`, text: `OpenRouter` },
-          { href: `https://modelcontextprotocol.io/`, text: `MCP` },
-          {
-            href: `https://qdrant.tech/`,
-            text: `Qdrant (Vector Database)`,
-          },
-          { text: `Agentic AI` },
-        ]}
-        color='blue'
-        fullName='HiddenAbilitree/mcp-scheduling'
-        imgHeight={1440}
-        imgSrc='/mcp-scheduler.png'
-        imgWidth={2560}
-        repoId={1_112_832_334}
-      >
-        <div>
-          <p>
-            A framework-agnostic tool router for MCP (Model Context Protocol)
-            servers. Routes agent requests to the fastest available tool when
-            similar tools exist, decreasing response latency by ~64% (tool
-            dependent) on average across 824 benchmark questions.
-          </p>
-          <br />
-          <p>
-            Tool similarity is determined by computing vector embeddings of each
-            tool&apos;s description, then grouping duplicates via cosine
-            similarity, letting the router identify functionally equivalent
-            tools automatically.
-          </p>
-          <br />
-          <p>
-            Tested against{` `}
-            <Link
-              className='text-tns-blue underline visited:text-tns-magenta'
-              href='https://huggingface.co/datasets/google/frames-benchmark'
-            >
-              Google&apos;s Frames dataset
-            </Link>
-            {` `}
-            using Gemini Flash with a custom agent built using LangChain.
-          </p>
-        </div>
-      </ProjectCard>
-      <ProjectCard
-        badges={[
-          { href: `https://eslint.org/`, text: `ESLint` },
-          { href: `https://prettier.io/`, text: `Prettier` },
-          { href: `https://www.rust-lang.org/`, text: `Rust` },
-        ]}
-        color='cyan'
-        fullName='HiddenAbilitree/opinionated-defaults'
-        imgHeight={1440}
-        imgSrc='/haod-demo.gif'
-        imgWidth={2560}
-        repoId={1_001_191_632}
-        reverse
-      >
-        <div>
-          <p>A collection of opinionated web-dev tooling configurations.</p>
-          <br />
-          <p>
-            A CLI is provided that analyzes your project and generates the
-            appropriate ESLint/Prettier configuration files.
-          </p>
-          <br />
-          <p>
-            Quickstart: <Code>bunx @hiddenability/opinionated-defaults</Code>
-          </p>
-        </div>
-      </ProjectCard>
-      <ProjectCard
-        badges={[
-          { href: `https://nextjs.org/`, text: `Next.js` },
-          { href: `https://www.better-auth.com/`, text: `BetterAuth` },
-        ]}
-        color='magenta'
-        fullName='HiddenAbilitree/next-auth-template'
-        imgHref='https://auth.ericzhang.dev'
-        imgSrc='/next-auth-template.png'
-        repoId={926_402_589}
-      >
-        <div>
-          A Next.js based template that provides authentication via Better Auth.
-          <h2>Supported Authentication Methods:</h2>
-          <ul>
-            <li>- Email+Password</li>
-            <li>- Passkeys</li>
-            <li>- OAuth</li>
-            <li>- Magic Link</li>
-          </ul>
-        </div>
-        <div>
-          <h2>Features</h2>
-          <ul>
-            <li>- Email/Password Change</li>
-            <li>- Account Deletion</li>
-            <li>- TOTP 2fa</li>
-            <li>- Session Invalidation</li>
-          </ul>
-        </div>
-        <p>Emails sent with SMTP or SES API</p>
-      </ProjectCard>
+      {projects.map((project) => (
+        <ProjectCard
+          badges={project.badges}
+          color={project.color}
+          content={getProjectContent(project.slug)}
+          fullName={project.fullName}
+          imgAlt={project.imgAlt}
+          imgHeight={project.imgHeight}
+          imgHref={project.imgHref}
+          imgSrc={project.imgSrc}
+          imgWidth={project.imgWidth}
+          key={project.slug}
+          repoId={project.repoId}
+          reverse={project.reverse}
+          slug={project.slug}
+        />
+      ))}
     </div>
   </Section>
 );

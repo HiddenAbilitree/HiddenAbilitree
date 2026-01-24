@@ -1,3 +1,4 @@
+export * from './code';
 export * from './footer';
 export * from './jp-quote';
 export * from './project-card';

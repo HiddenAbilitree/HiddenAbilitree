@@ -3,7 +3,6 @@
 import type { PluggableList } from 'unified';
 
 import { readStreamableValue } from '@ai-sdk/rsc';
-import * as languages from 'linguist-languages';
 import { AnimatePresence, motion } from 'motion/react';
 import {
   FormEvent,
@@ -14,10 +13,8 @@ import {
   useRef,
   useState,
 } from 'react';
-import 'react-shiki/css';
 import 'katex/dist/katex.min.css';
 import Markdown from 'react-markdown';
-import ShikiHighlighter from 'react-shiki';
 import rehypeExternalLinks from 'rehype-external-links';
 import rehypeKatex from 'rehype-katex';
 import remarkGfm from 'remark-gfm';
@@ -30,98 +27,14 @@ import {
   Message,
   ToolCall,
 } from '@/actions';
-import { Close, Undo } from '@/components/icons';
+import { CodeBlock } from '@/components/code-block';
+import { Close, Document, Undo } from '@/components/icons';
 import { _0xProto } from '@/styles/fonts';
 
 const parseContent = (raw: string): string =>
   raw.replaceAll(/<think>[\s\S]*?<\/think>/g, ``).trim();
 
 const generateId = (): string => crypto.randomUUID();
-
-const CodeBlock = memo(
-  ({
-    codeString,
-    langColor,
-    language,
-    url,
-  }: {
-    codeString: string;
-    langColor?: string;
-    language: string;
-    url?: string;
-  }) => (
-    <div className='not-prose overflow-hidden rounded-md border border-tns-blue'>
-      <div className='flex items-center gap-2 bg-tns-blue py-1 pr-3 pl-2 text-xs font-semibold text-tns-black'>
-        {langColor && (
-          <span
-            className='size-2.5 rounded-full border border-tns-black'
-            style={{ backgroundColor: langColor }}
-          />
-        )}
-        <span className='flex-1'>{language}</span>
-        {url && (
-          <a
-            className='flex items-center gap-1 text-tns-black/70 transition-colors hover:text-tns-black'
-            href={url}
-            rel='noopener noreferrer'
-            target='_blank'
-          >
-            <svg
-              className='size-3.5'
-              fill='none'
-              stroke='currentColor'
-              strokeWidth={2}
-              viewBox='0 0 24 24'
-            >
-              <path
-                d='M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101'
-                strokeLinecap='round'
-                strokeLinejoin='round'
-              />
-              <path
-                d='M10.172 13.828a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1'
-                strokeLinecap='round'
-                strokeLinejoin='round'
-              />
-            </svg>
-            <span>Link</span>
-          </a>
-        )}
-      </div>
-      <div className='overflow-x-auto'>
-        <ShikiHighlighter
-          className='chatbot-code text-sm [&_pre]:min-w-max'
-          language={language}
-          showLanguage={false}
-          showLineNumbers
-          theme='tokyo-night'
-        >
-          {codeString}
-        </ShikiHighlighter>
-      </div>
-    </div>
-  ),
-);
-
-CodeBlock.displayName = `CodeBlock`;
-
-type LinguistLanguage = {
-  aliases?: string[];
-  color?: string;
-  name?: string;
-};
-
-const getLanguageColor = (lang: string): string | undefined => {
-  const normalizedLang = lang.toLowerCase();
-  const found = Object.values(languages).find((langData) => {
-    const data = langData as LinguistLanguage;
-    return (
-      data.name?.toLowerCase() === normalizedLang ||
-      data.aliases?.some((alias) => alias.toLowerCase() === normalizedLang)
-    );
-  }) as LinguistLanguage | undefined;
-  return found?.color;
-};
 
 type ChatbotProps = {
   isOpen: boolean;
@@ -151,14 +64,8 @@ const markdownComponents = {
       : children) as ReactNode;
     const codeString =
       typeof codeContent === `string` ? codeContent.replace(/\n$/, ``) : ``;
-    const langColor = language ? getLanguageColor(language) : undefined;
     return language ?
-        <CodeBlock
-          codeString={codeString}
-          langColor={langColor}
-          language={language}
-          url={url}
-        />
+        <CodeBlock codeString={codeString} language={language} url={url} />
       : <code className={className} {...props}>
           {children}
         </code>;
@@ -218,22 +125,10 @@ const MessageItem = memo(
                   <>
                     <div className='h-3 w-px bg-tns-blue/30' />
                     <div
-                      className='flex items-center gap-1 rounded bg-tns-blue/20 px-1.5 py-0.5'
+                      className='flex items-center gap-1 rounded-sm bg-tns-blue/20 px-1.5 py-0.5'
                       title='Code Snippets'
                     >
-                      <svg
-                        className='size-3'
-                        fill='none'
-                        stroke='currentColor'
-                        strokeWidth={2}
-                        viewBox='0 0 24 24'
-                      >
-                        <path
-                          d='M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z'
-                          strokeLinecap='round'
-                          strokeLinejoin='round'
-                        />
-                      </svg>
+                      <Document className='size-3' />
                       <span>{snippetCount}</span>
                     </div>
                   </>
@@ -248,15 +143,11 @@ const MessageItem = memo(
       )}
       {(m.role === `user` || m.content) && (
         <div
-          className={`max-w-[85%] rounded-lg px-3 py-2 text-sm wrap-break-word ${
-            m.role === `user` ?
-              `bg-tns-blue text-tns-black selection:bg-tns-black selection:text-tns-blue`
-            : `bg-tns-black-hover text-tns-white`
-          }`}
+          className={`max-w-[85%] rounded-lg px-3 py-2 text-sm wrap-break-word ${m.role === `user` ? `bg-tns-blue text-tns-black selection:bg-tns-black selection:text-tns-blue` : `bg-tns-black-hover text-tns-white`}`}
         >
           {m.role === `user` ?
             <span>{m.content}</span>
-          : <div className='prose prose-sm max-w-none min-w-0 prose-code-size-inherit wrap-break-word prose-invert prose-headings:my-2 prose-p:my-1 prose-a:text-tns-blue prose-code:break-all prose-code:text-tns-blue prose-code:before:content-none prose-code:after:content-none prose-pre:my-2 prose-pre:bg-transparent prose-pre:p-0 prose-ol:my-1 prose-ul:my-1 prose-li:my-0 prose-table:my-2 prose-th:border prose-th:border-tns-blue/30 prose-th:bg-tns-blue/10 prose-th:px-2 prose-th:py-1 prose-td:border prose-td:border-tns-blue/30 prose-td:px-2 prose-td:py-1'>
+          : <div className='prose-compact prose prose-sm max-w-none min-w-0 wrap-break-word prose-invert prose-headings:my-2 prose-headings:border-0 prose-p:my-1.5 prose-p:leading-relaxed prose-a:text-tns-blue prose-a:decoration-tns-blue/40 prose-a:underline-offset-2 hover:prose-a:decoration-tns-blue prose-strong:text-tns-white prose-code:rounded-sm prose-code:bg-tns-blue/15 prose-code:px-1 prose-code:py-0.5 prose-code:break-all prose-code:text-tns-cyan prose-code:before:content-none prose-code:after:content-none prose-pre:my-2 prose-pre:bg-transparent prose-pre:p-0 prose-ol:my-1.5 prose-ul:my-1.5 prose-li:my-0.5 prose-table:my-2 prose-th:border prose-th:border-tns-blue/30 prose-th:bg-tns-blue/10 prose-th:px-2 prose-th:py-1 prose-td:border prose-td:border-tns-blue/30 prose-td:px-2 prose-td:py-1'>
               <Markdown
                 components={markdownComponents}
                 rehypePlugins={rehypePlugins}
@@ -313,112 +204,94 @@ export const Chatbot = ({ isOpen, onCloseAction }: ChatbotProps) => {
     setExpandedReasoning(new Set());
   }, []);
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    if (input.trim() === `` || isStreaming || isRateLimited) return;
+  const submitMessage = useCallback(
+    async (content: string, existingMessages: Message[]) => {
+      if (content.trim() === `` || isStreaming || isRateLimited) return;
 
-    setReasoningContent(``);
-    const userMessage: Message = {
-      content: input,
-      id: generateId(),
-      role: `user`,
-    };
-    setMessages((prev) => [...prev, userMessage]);
-    setInput(``);
-    setIsStreaming(true);
+      setReasoningContent(``);
+      const userMessage: Message = {
+        content,
+        id: generateId(),
+        role: `user`,
+      };
+      setMessages([...existingMessages, userMessage]);
+      setInput(``);
+      setIsStreaming(true);
 
-    const result: ChatResult = await chat([...messages, userMessage]);
+      const result: ChatResult = await chat([...existingMessages, userMessage]);
 
-    if (!result.stream) {
-      setIsStreaming(false);
-      return;
-    }
+      if (!result.stream) {
+        setIsStreaming(false);
+        return;
+      }
 
-    let rawContent = ``;
-    let assistantReasoning = ``;
-    let isInsideThinkTag = false;
-    const completedToolCalls: ToolCall[] = [];
-    const assistantId = generateId();
-    setMessages((prev) => [
-      ...prev,
-      { content: ``, id: assistantId, role: `assistant`, toolCalls: [] },
-    ]);
+      let rawContent = ``;
+      let assistantReasoning = ``;
+      let isInsideThinkTag = false;
+      const completedToolCalls: ToolCall[] = [];
+      const assistantId = generateId();
+      setMessages((prev) => [
+        ...prev,
+        { content: ``, id: assistantId, role: `assistant`, toolCalls: [] },
+      ]);
 
-    try {
-      for await (const event of readStreamableValue(result.stream)) {
-        if (!event) continue;
+      try {
+        for await (const event of readStreamableValue(result.stream)) {
+          if (!event) continue;
 
-        switch (event.type) {
-          case `error`: {
-            const isRateLimitError = event.error === `rate_limit`;
-            if (isRateLimitError) {
-              setIsRateLimited(true);
-            }
-            setMessages((prev) => [
-              ...prev.slice(0, -1),
-              {
-                content:
-                  isRateLimitError ?
-                    `I've hit my daily API limit. Please try again tomorrow.`
-                  : `Sorry, something went wrong. Please try again.`,
-                id: assistantId,
-                role: `assistant`,
-              },
-            ]);
-            setActiveToolCall(undefined);
-            setReasoningContent(``);
-            setIsStreaming(false);
-            return;
-          }
-          case `reasoning`: {
-            assistantReasoning += event.content;
-            setReasoningContent((prev) => prev + event.content);
-            break;
-          }
-          case `text`: {
-            rawContent += event.content;
-
-            if (
-              rawContent.includes(`<think>`) &&
-              !rawContent.includes(`</think>`)
-            ) {
-              isInsideThinkTag = true;
-              const thinkStart = rawContent.lastIndexOf(`<think>`);
-              const thinkContent = rawContent.slice(thinkStart + 7);
-              assistantReasoning = thinkContent;
-              setReasoningContent(thinkContent);
-            } else if (isInsideThinkTag && rawContent.includes(`</think>`)) {
-              isInsideThinkTag = false;
-              const thinkMatch = rawContent.match(/<think>([\s\S]*?)<\/think>/);
-              assistantReasoning = thinkMatch ? thinkMatch[1].trim() : ``;
-              setReasoningContent(``);
-            } else if (isInsideThinkTag) {
-              const thinkStart = rawContent.lastIndexOf(`<think>`);
-              const thinkContent = rawContent.slice(thinkStart + 7);
-              assistantReasoning = thinkContent;
-              setReasoningContent(thinkContent);
-            }
-
-            const parsedContent = parseContent(rawContent);
-            setMessages((prev) => [
-              ...prev.slice(0, -1),
-              {
-                content: parsedContent,
-                id: assistantId,
-                reasoning:
-                  parsedContent ? assistantReasoning || undefined : undefined,
-                role: `assistant`,
-                toolCalls: [...completedToolCalls],
-              },
-            ]);
-            break;
-          }
-          case `tool_call`: {
-            if (event.tool.status === `running`) {
-              setActiveToolCall(event.tool);
-            } else if (event.tool.status === `completed`) {
+          switch (event.type) {
+            case `error`: {
+              const isRateLimitError = event.error === `rate_limit`;
+              if (isRateLimitError) {
+                setIsRateLimited(true);
+              }
+              setMessages((prev) => [
+                ...prev.slice(0, -1),
+                {
+                  content:
+                    isRateLimitError ?
+                      `I've hit my daily API limit. Please try again tomorrow.`
+                    : `Sorry, something went wrong. Please try again.`,
+                  id: assistantId,
+                  role: `assistant`,
+                },
+              ]);
               setActiveToolCall(undefined);
-              completedToolCalls.push(event.tool);
+              setReasoningContent(``);
+              setIsStreaming(false);
+              return;
+            }
+            case `reasoning`: {
+              assistantReasoning += event.content;
+              setReasoningContent((prev) => prev + event.content);
+              break;
+            }
+            case `text`: {
+              rawContent += event.content;
+
+              if (
+                rawContent.includes(`<think>`) &&
+                !rawContent.includes(`</think>`)
+              ) {
+                isInsideThinkTag = true;
+                const thinkStart = rawContent.lastIndexOf(`<think>`);
+                const thinkContent = rawContent.slice(thinkStart + 7);
+                assistantReasoning = thinkContent;
+                setReasoningContent(thinkContent);
+              } else if (isInsideThinkTag && rawContent.includes(`</think>`)) {
+                isInsideThinkTag = false;
+                const thinkMatch = rawContent.match(
+                  /<think>([\s\S]*?)<\/think>/,
+                );
+                assistantReasoning = thinkMatch ? thinkMatch[1].trim() : ``;
+                setReasoningContent(``);
+              } else if (isInsideThinkTag) {
+                const thinkStart = rawContent.lastIndexOf(`<think>`);
+                const thinkContent = rawContent.slice(thinkStart + 7);
+                assistantReasoning = thinkContent;
+                setReasoningContent(thinkContent);
+              }
+
               const parsedContent = parseContent(rawContent);
               setMessages((prev) => [
                 ...prev.slice(0, -1),
@@ -431,55 +304,84 @@ export const Chatbot = ({ isOpen, onCloseAction }: ChatbotProps) => {
                   toolCalls: [...completedToolCalls],
                 },
               ]);
+              break;
             }
-            break;
+            case `tool_call`: {
+              if (event.tool.status === `running`) {
+                setActiveToolCall(event.tool);
+              } else if (event.tool.status === `completed`) {
+                setActiveToolCall(undefined);
+                completedToolCalls.push(event.tool);
+                const parsedContent = parseContent(rawContent);
+                setMessages((prev) => [
+                  ...prev.slice(0, -1),
+                  {
+                    content: parsedContent,
+                    id: assistantId,
+                    reasoning:
+                      parsedContent ?
+                        assistantReasoning || undefined
+                      : undefined,
+                    role: `assistant`,
+                    toolCalls: [...completedToolCalls],
+                  },
+                ]);
+              }
+              break;
+            }
           }
         }
+
+        const finalContent = parseContent(rawContent);
+        const hasToolCalls = completedToolCalls.length > 0;
+        const hasReasoning = assistantReasoning.trim().length > 0;
+
+        const displayContent =
+          finalContent ||
+          (hasToolCalls || hasReasoning ? `` : (
+            `I couldn't generate a response. Please try again.`
+          ));
+
+        setMessages((prev) => [
+          ...prev.slice(0, -1),
+          {
+            content: displayContent,
+            id: assistantId,
+            reasoning: hasReasoning ? assistantReasoning : undefined,
+            role: `assistant`,
+            toolCalls: hasToolCalls ? [...completedToolCalls] : undefined,
+          },
+        ]);
+      } catch (error) {
+        const errorString = String(error);
+        const isRateLimitError =
+          error === `rate_limit` || errorString.includes(`rate_limit`);
+        if (isRateLimitError) {
+          setIsRateLimited(true);
+        }
+        setMessages((prev) => [
+          ...prev.slice(0, -1),
+          {
+            content:
+              isRateLimitError ?
+                `I've hit my daily API limit. Please try again tomorrow.`
+              : `Sorry, something went wrong. Please try again.`,
+            id: assistantId,
+            role: `assistant`,
+          },
+        ]);
       }
 
-      const finalContent = parseContent(rawContent);
-      const hasToolCalls = completedToolCalls.length > 0;
-      const hasReasoning = assistantReasoning.trim().length > 0;
+      setActiveToolCall(undefined);
+      setReasoningContent(``);
+      setIsStreaming(false);
+    },
+    [isStreaming, isRateLimited],
+  );
 
-      const displayContent =
-        finalContent ||
-        (hasToolCalls || hasReasoning ? `` : (
-          `I couldn't generate a response. Please try again.`
-        ));
-
-      setMessages((prev) => [
-        ...prev.slice(0, -1),
-        {
-          content: displayContent,
-          id: assistantId,
-          reasoning: hasReasoning ? assistantReasoning : undefined,
-          role: `assistant`,
-          toolCalls: hasToolCalls ? [...completedToolCalls] : undefined,
-        },
-      ]);
-    } catch (error) {
-      const errorString = String(error);
-      const isRateLimitError =
-        error === `rate_limit` || errorString.includes(`rate_limit`);
-      if (isRateLimitError) {
-        setIsRateLimited(true);
-      }
-      setMessages((prev) => [
-        ...prev.slice(0, -1),
-        {
-          content:
-            isRateLimitError ?
-              `I've hit my daily API limit. Please try again tomorrow.`
-            : `Sorry, something went wrong. Please try again.`,
-          id: assistantId,
-          role: `assistant`,
-        },
-      ]);
-    }
-
-    setActiveToolCall(undefined);
-    setReasoningContent(``);
-    setIsStreaming(false);
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    void submitMessage(input, messages);
   };
 
   useEffect(() => {
@@ -547,7 +449,7 @@ export const Chatbot = ({ isOpen, onCloseAction }: ChatbotProps) => {
             </div>
             <div className='flex shrink-0 items-center gap-2'>
               <button
-                className='text-tns-white/60 hover:text-tns-white'
+                className='cursor-pointer text-tns-white/60 hover:text-tns-white'
                 onClick={resetMessages}
                 title='Reset Chat'
                 type='button'
@@ -555,7 +457,7 @@ export const Chatbot = ({ isOpen, onCloseAction }: ChatbotProps) => {
                 <Undo className='size-4' />
               </button>
               <button
-                className='text-tns-white/60 hover:text-tns-white'
+                className='cursor-pointer text-tns-white/60 hover:text-tns-white'
                 onClick={onCloseAction}
                 title='Close'
                 type='button'
@@ -573,10 +475,10 @@ export const Chatbot = ({ isOpen, onCloseAction }: ChatbotProps) => {
             ref={messagesContainerRef}
           >
             {messages.length === 0 && (
-              <div className='flex flex-col items-center justify-evenly gap-3 text-center text-sm text-tns-white/40'>
-                <p>Start a conversation...</p>
-                <p>
-                  Try{` `}
+              <div className='flex flex-col items-center justify-center gap-4 text-center text-sm'>
+                <p className='text-tns-white/40'>Start a conversation...</p>
+                <div className='flex flex-col gap-2'>
+                  <p className='text-left text-tns-white/40'>Try asking:</p>
                   {[
                     `What information do you have?`,
                     `What projects has he worked on?`,
@@ -584,18 +486,14 @@ export const Chatbot = ({ isOpen, onCloseAction }: ChatbotProps) => {
                     `What tech stack does this site use?`,
                   ].map((prompt, i) => (
                     <button
-                      className='text-tns-blue/60 hover:text-tns-blue hover:underline'
+                      className='cursor-pointer rounded-lg border border-tns-blue/40 bg-tns-blue/10 px-3 py-2 text-left text-tns-blue transition-colors hover:border-tns-blue hover:bg-tns-blue/20'
                       key={i}
-                      onClick={() => setInput(prompt)}
+                      onClick={() => void submitMessage(prompt, [])}
                     >
                       {prompt}
                     </button>
                   ))}
-                </p>
-                <p className='text-xs text-tns-white/25'>
-                  Uses RAG to search and retrieve code from all my public
-                  projects.
-                </p>
+                </div>
               </div>
             )}
             {messages.map((m) => (
@@ -625,6 +523,9 @@ export const Chatbot = ({ isOpen, onCloseAction }: ChatbotProps) => {
                   </div>
                 </div>
               )}
+            <p className='mt-auto pt-4 text-center text-xs text-tns-white/25'>
+              Uses RAG to search and retrieve code from all my public projects.
+            </p>
             <div ref={messagesEndRef} />
           </div>
 

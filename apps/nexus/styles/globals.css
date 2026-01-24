@@ -20,6 +20,118 @@
   }
 }
 
+@utility prose-github {
+  & :where(h1):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply mt-8 mb-4 border-b border-tns-blue/20 pb-2 text-2xl font-semibold;
+  }
+
+  & :where(h2):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply mt-6 mb-3 border-b border-tns-blue/15 pb-1.5 text-xl font-semibold;
+  }
+
+  & :where(h3):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply mt-5 mb-2 text-lg font-semibold;
+  }
+
+  & :where(h4):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply mt-4 mb-2 text-base font-semibold;
+  }
+
+  & :where(p):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply my-4 leading-relaxed;
+  }
+
+  & :where(ul, ol):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply my-4 pl-6;
+  }
+
+  & :where(li):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply my-1;
+  }
+
+  & :where(li > p):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply my-1;
+  }
+
+  & :where(blockquote):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply my-4 border-l-4 border-tns-blue/30 pl-4 text-tns-white/70 italic;
+  }
+
+  & :where(hr):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply my-6 border-tns-blue/20;
+  }
+
+  & :where(strong):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply font-semibold text-tns-white;
+  }
+
+  & :where(a):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply text-tns-blue underline decoration-tns-blue/50 underline-offset-2 transition-colors hover:decoration-tns-blue;
+  }
+
+  & :where(a:visited):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply text-tns-magenta decoration-tns-magenta/50 hover:decoration-tns-magenta;
+  }
+
+  & :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply rounded bg-tns-blue/10 px-1.5 py-0.5 text-[0.875em] text-tns-blue;
+  }
+
+  & :where(pre):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply my-4 overflow-x-auto rounded-lg bg-tns-black p-4;
+  }
+
+  & :where(pre code):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply bg-transparent p-0;
+  }
+
+  & :where(table):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply my-4 w-full border-collapse;
+  }
+
+  & :where(th):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply border border-tns-blue/30 bg-tns-blue/10 px-3 py-2 text-left font-semibold;
+  }
+
+  & :where(td):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply border border-tns-blue/30 px-3 py-2;
+  }
+
+  & :where(img):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply my-4 rounded-lg;
+  }
+}
+
+@utility prose-compact {
+  & :where(p):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply my-2 leading-normal;
+  }
+
+  & :where(ul, ol):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply my-2;
+  }
+
+  & :where(li):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply my-0.5;
+  }
+
+  & :where(h1):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply mt-4 mb-2;
+  }
+
+  & :where(h2):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply mt-3 mb-1.5;
+  }
+
+  & :where(h3, h4):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply mt-2 mb-1;
+  }
+
+  & :where(pre):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply my-2;
+  }
+}
+
 @theme {
   --breakpoint-2xs: 26.25rem;
   --breakpoint-xs: 30rem;
@@ -175,7 +287,6 @@
     box-shadow: none !important;
   }
 
-
   * {
     @apply border-tns-blue tracking-tighter antialiased outline-ring/50 optimize-legibility selection:bg-tns-blue selection:text-tns-black;
     scrollbar-width: thin;
@@ -201,10 +312,6 @@
     background: var(--tns-highlight);
   }
 
-  p {
-    @apply hover:cursor-text
-  }
-
   body {
     @apply bg-background text-foreground;
   }
@@ -215,5 +322,63 @@
 
   button {
     @apply touch-manipulation;
+  }
+
+  .markdown-alert {
+    @apply my-4 rounded-lg border-l-4 p-4;
+  }
+
+  .markdown-alert p {
+    margin: 0 !important;
+  }
+
+  .markdown-alert-title {
+    @apply font-semibold;
+    margin-bottom: 0.625rem !important;
+  }
+
+  .markdown-alert-title svg {
+    @apply size-5 shrink-0;
+    fill: currentColor;
+  }
+
+  .markdown-alert-note {
+    @apply border-tns-blue bg-tns-blue/10;
+  }
+
+  .markdown-alert-note .markdown-alert-title {
+    @apply text-tns-blue;
+  }
+
+  .markdown-alert-tip {
+    @apply border-tns-green bg-tns-green/10;
+  }
+
+  .markdown-alert-tip .markdown-alert-title {
+    @apply text-tns-green;
+  }
+
+  .markdown-alert-important {
+    @apply border-tns-magenta bg-tns-magenta/10;
+  }
+
+  .markdown-alert-important .markdown-alert-title {
+    @apply text-tns-magenta;
+  }
+
+  .markdown-alert-warning {
+    @apply border-tns-yellow bg-tns-yellow/10;
+  }
+
+  .markdown-alert-warning .markdown-alert-title {
+    @apply text-tns-yellow;
+  }
+
+  .markdown-alert-caution {
+    @apply border-tns-red bg-tns-red/10;
+  }
+
+  .markdown-alert-caution .markdown-alert-title {
+    @apply text-tns-red;
   }
 }

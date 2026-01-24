@@ -16,14 +16,16 @@ export const Code: FC<ComponentProps<`span`> & { children: string }> = ({
 }) => (
   <span
     className={clsx(
-      `inline-flex w-fit items-center gap-1.5 rounded-sm bg-[#23263A] p-1 wrap-anywhere md:wrap-normal`,
+      `inline-flex w-fit items-center gap-1.5 rounded-sm bg-tns-blue/15 px-1.5 py-1 wrap-anywhere md:wrap-normal`,
       className,
     )}
     {...props}
   >
-    <code className={`${_0xProto.className}`}>{children}</code>
+    <code className={`${_0xProto.className} text-[0.9em] text-tns-cyan`}>
+      {children}
+    </code>
     <button
-      className='rounded-sm border border-tns-blue/50 bg-tns-blue/5 p-1.5 hover:cursor-pointer hover:bg-tns-black'
+      className='rounded-sm border border-tns-blue/40 bg-tns-blue/10 p-1 transition-colors hover:cursor-pointer hover:border-tns-blue/60 hover:bg-tns-blue/20'
       onClick={() => {
         toast({ description: `Successfully copied` });
         void navigator.clipboard.writeText(children);
