@@ -3,9 +3,9 @@ import { createEmbeddingProvider } from '@/src/embeddings';
 import { runIndexPipeline } from '@/src/pipeline/index-repos';
 import { createQdrantClient } from '@/src/vectors/qdrant';
 
-const parseRepoArg = (args: string[]): string | undefined => {
+const parseRepoArg = (args: string[]) => {
   const repoIndex = args.indexOf(`--repo`);
-  if (repoIndex === -1) return undefined;
+  if (repoIndex === -1) return;
   const repoValue = args[repoIndex + 1];
   if (!repoValue || repoValue.startsWith(`--`)) {
     throw new Error(`--repo flag requires a repository name`);

@@ -471,7 +471,7 @@ export const createGitHubGraphQLClient = (
 
       for (const [idx, path] of batch.entries()) {
         const file = data.repository[`file_${idx}`];
-        if (file?.text !== undefined) {
+        if (file?.text != null) {
           results.set(path, file.text);
         }
       }

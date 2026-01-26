@@ -2,8 +2,9 @@
 
 import { cerebras } from '@ai-sdk/cerebras';
 import { createStreamableValue } from '@ai-sdk/rsc';
-import { stepCountIs, streamText, tool } from 'ai';
-import { z } from 'zod';
+import { jsonSchema, stepCountIs, streamText, tool } from 'ai';
+import { type } from 'arktype';
+import type { JSONSchema7 } from 'json-schema';
 
 import {
   buildMinimalSystemPrompt,
@@ -42,6 +43,15 @@ export type ToolCall = {
   result?: string;
   status: `completed` | `running`;
 };
+
+const projectDetailsInput = type({
+  projectName: type.string.describe(
+    `The full project name (e.g., "HiddenAbilitree/nexus")`,
+  ),
+  searchQuery: type.string.describe(
+    `What to search for in the code. Include context from the conversation (e.g., "OAuth frontend components" not just "frontend code")`,
+  ),
+});
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export const chat = async (messages: Message[]): Promise<ChatResult> => {
@@ -100,18 +110,9 @@ export const chat = async (messages: Message[]): Promise<ChatResult> => {
               });
               return resultText;
             },
-            inputSchema: z.object({
-              projectName: z
-                .string()
-                .describe(
-                  `The full project name (e.g., "HiddenAbilitree/nexus")`,
-                ),
-              searchQuery: z
-                .string()
-                .describe(
-                  `What to search for in the code. Include context from the conversation (e.g., "OAuth frontend components" not just "frontend code")`,
-                ),
-            }),
+            inputSchema: jsonSchema<typeof projectDetailsInput.infer>(
+              projectDetailsInput.toJsonSchema() as JSONSchema7,
+            ),
           }),
         },
       });
