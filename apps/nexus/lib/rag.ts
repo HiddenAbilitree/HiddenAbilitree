@@ -37,15 +37,9 @@ export const getAllProjectSummaries = async (): Promise<ProjectSummary[]> => {
 };
 
 export const getLatestIndexedTime = async (): Promise<Date | undefined> => {
-  const allProjects = await db
-    .select({ lastIndexedAt: projects.last_indexed_at })
-    .from(projects);
-  const dates = allProjects
-    .map((p) => p.lastIndexedAt)
-    .filter((d): d is Date => d !== null);
-  return dates.length > 0 ?
-      new Date(Math.max(...dates.map((d) => d.getTime())))
-    : undefined;
+  const allProjects = await db.select({ lastIndexedAt: projects.last_indexed_at }).from(projects);
+  const dates = allProjects.map((p) => p.lastIndexedAt).filter((d): d is Date => d !== null);
+  return dates.length > 0 ? new Date(Math.max(...dates.map((d) => d.getTime()))) : undefined;
 };
 
 export const getProjectDetails = async (
@@ -73,10 +67,7 @@ export const getProjectDetails = async (
   let codeSnippets: Array<CodeFile & { projectName: string }> = [];
 
   if (fileIds.length > 0) {
-    const files = await db
-      .select()
-      .from(codeFiles)
-      .where(inArray(codeFiles.id, fileIds));
+    const files = await db.select().from(codeFiles).where(inArray(codeFiles.id, fileIds));
     codeSnippets = files.map((f) => ({
       ...f,
       projectName: project.full_name,
@@ -86,9 +77,7 @@ export const getProjectDetails = async (
   return { codeSnippets, project };
 };
 
-export const buildMinimalSystemPrompt = (
-  summaries: ProjectSummary[],
-): string => {
+export const buildMinimalSystemPrompt = (summaries: ProjectSummary[]): string => {
   const owned = summaries.filter((s) => s.isOwner);
   const contributed = summaries.filter((s) => !s.isOwner);
 
@@ -123,26 +112,25 @@ ${projectList}`;
 export const formatProjectDetails = (details: ProjectDetails): string => {
   const { codeSnippets, project } = details;
 
-  const ownershipInfo =
-    project.is_owner ?
-      `Eric owns this project`
+  const ownershipInfo = project.is_owner
+    ? `Eric owns this project`
     : `Eric contributed to this project (owned by ${project.owner_login})`;
 
   const forkNote = project.is_fork ? ` (Fork)` : ``;
 
   const codeSection =
-    codeSnippets.length > 0 ?
-      `\n\n=== CODE SNIPPETS (COPY THESE EXACTLY IN YOUR RESPONSE) ===\n${codeSnippets
-        .map(
-          (c) => `
+    codeSnippets.length > 0
+      ? `\n\n=== CODE SNIPPETS (COPY THESE EXACTLY IN YOUR RESPONSE) ===\n${codeSnippets
+          .map(
+            (c) => `
 ${c.path}:
 \`\`\`${c.language}|${project.html_url}/blob/main/${c.path}
 ${c.content}
 \`\`\`
 `,
-        )
-        .join(`\n`)}`
-    : ``;
+          )
+          .join(`\n`)}`
+      : ``;
 
   return `## ${project.full_name}${forkNote}
 - ${ownershipInfo}

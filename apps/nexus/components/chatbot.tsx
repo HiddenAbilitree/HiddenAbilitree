@@ -1,32 +1,18 @@
 'use client';
 
-import type { PluggableList } from 'unified';
-
 import { readStreamableValue } from '@ai-sdk/rsc';
 import { AnimatePresence, motion } from 'motion/react';
-import {
-  FormEvent,
-  memo,
-  ReactNode,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
-import 'katex/dist/katex.min.css';
+import { FormEvent, memo, ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import Markdown from 'react-markdown';
+
+import 'katex/dist/katex.min.css';
 import rehypeExternalLinks from 'rehype-external-links';
 import rehypeKatex from 'rehype-katex';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
+import type { PluggableList } from 'unified';
 
-import {
-  chat,
-  ChatResult,
-  getDataLastUpdated,
-  Message,
-  ToolCall,
-} from '@/actions';
+import { chat, ChatResult, getDataLastUpdated, Message, ToolCall } from '@/actions';
 import { CodeBlock } from '@/components/code-block';
 import { Close, Document, Undo } from '@/components/icons';
 import { _0xProto } from '@/styles/fonts';
@@ -48,27 +34,18 @@ type MessageItemProps = {
 };
 
 const markdownComponents = {
-  code: ({
-    children,
-    className,
-    ...props
-  }: {
-    children?: ReactNode;
-    className?: string;
-  }) => {
+  code: ({ children, className, ...props }: { children?: ReactNode; className?: string }) => {
     const rawLang = className?.replace(`language-`, ``);
     const [language, url] = rawLang?.split(`|`) ?? [];
-    const codeContent = (
-      Array.isArray(children) ?
-        children[0]
-      : children) as ReactNode;
-    const codeString =
-      typeof codeContent === `string` ? codeContent.replace(/\n$/, ``) : ``;
-    return language ?
-        <CodeBlock codeString={codeString} language={language} url={url} />
-      : <code className={className} {...props}>
-          {children}
-        </code>;
+    const codeContent = (Array.isArray(children) ? children[0] : children) as ReactNode;
+    const codeString = typeof codeContent === `string` ? codeContent.replace(/\n$/, ``) : ``;
+    return language ? (
+      <CodeBlock codeString={codeString} language={language} url={url} />
+    ) : (
+      <code className={className} {...props}>
+        {children}
+      </code>
+    );
   },
   table: ({ children, ...props }: { children?: ReactNode }) => (
     <div className='overflow-x-auto'>
@@ -83,85 +60,75 @@ const rehypePlugins: PluggableList = [
   [rehypeExternalLinks, { rel: [`noopener`, `noreferrer`], target: `_blank` }],
 ];
 
-const MessageItem = memo(
-  ({ isExpanded, message: m, onToggleReasoning }: MessageItemProps) => (
-    <div
-      className={`flex min-w-0 flex-col gap-1 ${m.role === `user` ? `items-end` : `items-start`}`}
-    >
-      {m.role === `assistant` && m.reasoning && (
-        <button
-          className='flex items-center gap-1 text-xs text-tns-white/40 hover:text-tns-white/60'
-          onClick={() => onToggleReasoning(m.id)}
-        >
-          <span
-            className={`transition-transform ${isExpanded ? `rotate-90` : ``}`}
-          >
-            ▶
-          </span>
-          <span>Thought process</span>
-        </button>
-      )}
-      {m.role === `assistant` && m.reasoning && isExpanded && (
-        <div className='max-w-[85%] rounded-lg border border-tns-white/10 bg-tns-black-hover px-3 py-2 text-xs wrap-break-word text-tns-white/50 italic'>
-          {m.reasoning}
-        </div>
-      )}
-      {m.role === `assistant` && m.toolCalls && m.toolCalls.length > 0 && (
-        <div className='flex flex-col gap-1'>
-          {m.toolCalls.map((tool, j) => {
-            const snippetMatch = tool.result?.match(
-              /Retrieved (\d+) code snippets?/,
-            );
-            const snippetCount =
-              snippetMatch ? Number.parseInt(snippetMatch[1], 10) : undefined;
-            return (
-              <div
-                className='flex items-center gap-2 rounded-lg border border-tns-blue/30 bg-tns-blue/10 px-2 py-1 text-xs text-tns-blue'
-                key={j}
-              >
-                <span className='text-green-400'>✓</span>
-                <span className='font-semibold'>{tool.name}</span>
-                {snippetCount !== undefined && (
-                  <>
-                    <div className='h-3 w-px bg-tns-blue/30' />
-                    <div
-                      className='flex items-center gap-1 rounded-sm bg-tns-blue/20 px-1.5 py-0.5'
-                      title='Code Snippets'
-                    >
-                      <Document className='size-3' />
-                      <span>{snippetCount}</span>
-                    </div>
-                  </>
-                )}
-                {tool.result && !snippetCount && (
-                  <span className='text-tns-white/60'>→ {tool.result}</span>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      )}
-      {(m.role === `user` || m.content) && (
-        <div
-          className={`max-w-[85%] rounded-lg px-3 py-2 text-sm wrap-break-word ${m.role === `user` ? `bg-tns-blue text-tns-black selection:bg-tns-black selection:text-tns-blue` : `bg-tns-black-hover text-tns-white`}`}
-        >
-          {m.role === `user` ?
-            <span>{m.content}</span>
-          : <div className='prose-compact prose prose-sm max-w-none min-w-0 wrap-break-word prose-invert prose-headings:my-2 prose-headings:border-0 prose-p:my-1.5 prose-p:leading-relaxed prose-a:text-tns-blue prose-a:decoration-tns-blue/40 prose-a:underline-offset-2 hover:prose-a:decoration-tns-blue prose-strong:text-tns-white prose-code:rounded-sm prose-code:bg-tns-blue/15 prose-code:px-1 prose-code:py-0.5 prose-code:break-all prose-code:text-tns-cyan prose-code:before:content-none prose-code:after:content-none prose-pre:my-2 prose-pre:bg-transparent prose-pre:p-0 prose-ol:my-1.5 prose-ul:my-1.5 prose-li:my-0.5 prose-table:my-2 prose-th:border prose-th:border-tns-blue/30 prose-th:bg-tns-blue/10 prose-th:px-2 prose-th:py-1 prose-td:border prose-td:border-tns-blue/30 prose-td:px-2 prose-td:py-1'>
-              <Markdown
-                components={markdownComponents}
-                rehypePlugins={rehypePlugins}
-                remarkPlugins={remarkPlugins}
-              >
-                {m.content}
-              </Markdown>
+const MessageItem = memo(({ isExpanded, message: m, onToggleReasoning }: MessageItemProps) => (
+  <div className={`flex min-w-0 flex-col gap-1 ${m.role === `user` ? `items-end` : `items-start`}`}>
+    {m.role === `assistant` && m.reasoning && (
+      <button
+        className='text-tns-white/40 hover:text-tns-white/60 flex items-center gap-1 text-xs'
+        onClick={() => onToggleReasoning(m.id)}
+      >
+        <span className={`transition-transform ${isExpanded ? `rotate-90` : ``}`}>▶</span>
+        <span>Thought process</span>
+      </button>
+    )}
+    {m.role === `assistant` && m.reasoning && isExpanded && (
+      <div className='border-tns-white/10 bg-tns-black-hover text-tns-white/50 max-w-[85%] rounded-lg border px-3 py-2 text-xs wrap-break-word italic'>
+        {m.reasoning}
+      </div>
+    )}
+    {m.role === `assistant` && m.toolCalls && m.toolCalls.length > 0 && (
+      <div className='flex flex-col gap-1'>
+        {m.toolCalls.map((tool, j) => {
+          const snippetMatch = tool.result?.match(/Retrieved (\d+) code snippets?/);
+          const snippetCount = snippetMatch ? Number.parseInt(snippetMatch[1], 10) : undefined;
+          return (
+            <div
+              className='border-tns-blue/30 bg-tns-blue/10 text-tns-blue flex items-center gap-2 rounded-lg border px-2 py-1 text-xs'
+              key={j}
+            >
+              <span className='text-green-400'>✓</span>
+              <span className='font-semibold'>{tool.name}</span>
+              {snippetCount !== undefined && (
+                <>
+                  <div className='bg-tns-blue/30 h-3 w-px' />
+                  <div
+                    className='bg-tns-blue/20 flex items-center gap-1 rounded-sm px-1.5 py-0.5'
+                    title='Code Snippets'
+                  >
+                    <Document className='size-3' />
+                    <span>{snippetCount}</span>
+                  </div>
+                </>
+              )}
+              {tool.result && !snippetCount && (
+                <span className='text-tns-white/60'>→ {tool.result}</span>
+              )}
             </div>
-          }
-        </div>
-      )}
-    </div>
-  ),
-);
+          );
+        })}
+      </div>
+    )}
+    {(m.role === `user` || m.content) && (
+      <div
+        className={`max-w-[85%] rounded-lg px-3 py-2 text-sm wrap-break-word ${m.role === `user` ? `bg-tns-blue text-tns-black selection:bg-tns-black selection:text-tns-blue` : `bg-tns-black-hover text-tns-white`}`}
+      >
+        {m.role === `user` ? (
+          <span>{m.content}</span>
+        ) : (
+          <div className='prose-compact prose prose-sm prose-invert prose-headings:my-2 prose-headings:border-0 prose-p:my-1.5 prose-p:leading-relaxed prose-a:text-tns-blue prose-a:decoration-tns-blue/40 prose-a:underline-offset-2 hover:prose-a:decoration-tns-blue prose-strong:text-tns-white prose-code:rounded-sm prose-code:bg-tns-blue/15 prose-code:px-1 prose-code:py-0.5 prose-code:break-all prose-code:text-tns-cyan prose-code:before:content-none prose-code:after:content-none prose-pre:my-2 prose-pre:bg-transparent prose-pre:p-0 prose-ol:my-1.5 prose-ul:my-1.5 prose-li:my-0.5 prose-table:my-2 prose-th:border prose-th:border-tns-blue/30 prose-th:bg-tns-blue/10 prose-th:px-2 prose-th:py-1 prose-td:border prose-td:border-tns-blue/30 prose-td:px-2 prose-td:py-1 max-w-none min-w-0 wrap-break-word'>
+            <Markdown
+              components={markdownComponents}
+              rehypePlugins={rehypePlugins}
+              remarkPlugins={remarkPlugins}
+            >
+              {m.content}
+            </Markdown>
+          </div>
+        )}
+      </div>
+    )}
+  </div>
+));
 
 MessageItem.displayName = `MessageItem`;
 
@@ -172,9 +139,7 @@ export const Chatbot = ({ isOpen, onCloseAction }: ChatbotProps) => {
   const [isRateLimited, setIsRateLimited] = useState(false);
   const [activeToolCall, setActiveToolCall] = useState<ToolCall | undefined>();
   const [reasoningContent, setReasoningContent] = useState(``);
-  const [expandedReasoning, setExpandedReasoning] = useState<Set<string>>(
-    new Set(),
-  );
+  const [expandedReasoning, setExpandedReasoning] = useState<Set<string>>(new Set());
   const [lastUpdated, setLastUpdated] = useState<string | undefined>();
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -248,9 +213,8 @@ export const Chatbot = ({ isOpen, onCloseAction }: ChatbotProps) => {
               setMessages((prev) => [
                 ...prev.slice(0, -1),
                 {
-                  content:
-                    isRateLimitError ?
-                      `I've hit my daily API limit. Please try again tomorrow.`
+                  content: isRateLimitError
+                    ? `I've hit my daily API limit. Please try again tomorrow.`
                     : `Sorry, something went wrong. Please try again.`,
                   id: assistantId,
                   role: `assistant`,
@@ -269,10 +233,7 @@ export const Chatbot = ({ isOpen, onCloseAction }: ChatbotProps) => {
             case `text`: {
               rawContent += event.content;
 
-              if (
-                rawContent.includes(`<think>`) &&
-                !rawContent.includes(`</think>`)
-              ) {
+              if (rawContent.includes(`<think>`) && !rawContent.includes(`</think>`)) {
                 isInsideThinkTag = true;
                 const thinkStart = rawContent.lastIndexOf(`<think>`);
                 const thinkContent = rawContent.slice(thinkStart + 7);
@@ -280,9 +241,7 @@ export const Chatbot = ({ isOpen, onCloseAction }: ChatbotProps) => {
                 setReasoningContent(thinkContent);
               } else if (isInsideThinkTag && rawContent.includes(`</think>`)) {
                 isInsideThinkTag = false;
-                const thinkMatch = rawContent.match(
-                  /<think>([\s\S]*?)<\/think>/,
-                );
+                const thinkMatch = rawContent.match(/<think>([\s\S]*?)<\/think>/);
                 assistantReasoning = thinkMatch ? thinkMatch[1].trim() : ``;
                 setReasoningContent(``);
               } else if (isInsideThinkTag) {
@@ -298,8 +257,7 @@ export const Chatbot = ({ isOpen, onCloseAction }: ChatbotProps) => {
                 {
                   content: parsedContent,
                   id: assistantId,
-                  reasoning:
-                    parsedContent ? assistantReasoning || undefined : undefined,
+                  reasoning: parsedContent ? assistantReasoning || undefined : undefined,
                   role: `assistant`,
                   toolCalls: [...completedToolCalls],
                 },
@@ -318,10 +276,7 @@ export const Chatbot = ({ isOpen, onCloseAction }: ChatbotProps) => {
                   {
                     content: parsedContent,
                     id: assistantId,
-                    reasoning:
-                      parsedContent ?
-                        assistantReasoning || undefined
-                      : undefined,
+                    reasoning: parsedContent ? assistantReasoning || undefined : undefined,
                     role: `assistant`,
                     toolCalls: [...completedToolCalls],
                   },
@@ -338,9 +293,7 @@ export const Chatbot = ({ isOpen, onCloseAction }: ChatbotProps) => {
 
         const displayContent =
           finalContent ||
-          (hasToolCalls || hasReasoning ? `` : (
-            `I couldn't generate a response. Please try again.`
-          ));
+          (hasToolCalls || hasReasoning ? `` : `I couldn't generate a response. Please try again.`);
 
         setMessages((prev) => [
           ...prev.slice(0, -1),
@@ -354,17 +307,15 @@ export const Chatbot = ({ isOpen, onCloseAction }: ChatbotProps) => {
         ]);
       } catch (error) {
         const errorString = String(error);
-        const isRateLimitError =
-          error === `rate_limit` || errorString.includes(`rate_limit`);
+        const isRateLimitError = error === `rate_limit` || errorString.includes(`rate_limit`);
         if (isRateLimitError) {
           setIsRateLimited(true);
         }
         setMessages((prev) => [
           ...prev.slice(0, -1),
           {
-            content:
-              isRateLimitError ?
-                `I've hit my daily API limit. Please try again tomorrow.`
+            content: isRateLimitError
+              ? `I've hit my daily API limit. Please try again tomorrow.`
               : `Sorry, something went wrong. Please try again.`,
             id: assistantId,
             role: `assistant`,
@@ -413,21 +364,19 @@ export const Chatbot = ({ isOpen, onCloseAction }: ChatbotProps) => {
       {isOpen && (
         <motion.div
           animate={{ opacity: 1, x: 0 }}
-          className={`mb-2 flex w-[calc(100vw-2rem)] max-w-lg flex-col overflow-hidden rounded-xl border-2 border-tns-blue bg-tns-black shadow-xl ${_0xProto.className}`}
+          className={`border-tns-blue bg-tns-black mb-2 flex w-[calc(100vw-2rem)] max-w-lg flex-col overflow-hidden rounded-xl border-2 shadow-xl ${_0xProto.className}`}
           exit={{ opacity: 0, x: -20 }}
           initial={{ opacity: 0, x: -20 }}
           transition={{ duration: 0.2 }}
         >
-          <div className='flex items-center justify-between gap-2 border-b-2 border-tns-blue px-4 py-3'>
+          <div className='border-tns-blue flex items-center justify-between gap-2 border-b-2 px-4 py-3'>
             <div className='flex min-w-0 flex-1 items-center gap-2 text-sm'>
-              <span className='shrink-0 font-semibold text-tns-white'>
-                Chat
-              </span>
+              <span className='text-tns-white shrink-0 font-semibold'>Chat</span>
               {lastUpdated && (
                 <>
-                  <div className='h-4 w-px shrink-0 bg-tns-white/20' />
+                  <div className='bg-tns-white/20 h-4 w-px shrink-0' />
                   <span
-                    className='truncate text-tns-white/40'
+                    className='text-tns-white/40 truncate'
                     title={new Date(lastUpdated).toLocaleString(`en-US`, {
                       day: `numeric`,
                       hour: `numeric`,
@@ -449,7 +398,7 @@ export const Chatbot = ({ isOpen, onCloseAction }: ChatbotProps) => {
             </div>
             <div className='flex shrink-0 items-center gap-2'>
               <button
-                className='cursor-pointer text-tns-white/60 hover:text-tns-white'
+                className='text-tns-white/60 hover:text-tns-white cursor-pointer'
                 onClick={resetMessages}
                 title='Reset Chat'
                 type='button'
@@ -457,7 +406,7 @@ export const Chatbot = ({ isOpen, onCloseAction }: ChatbotProps) => {
                 <Undo className='size-4' />
               </button>
               <button
-                className='cursor-pointer text-tns-white/60 hover:text-tns-white'
+                className='text-tns-white/60 hover:text-tns-white cursor-pointer'
                 onClick={onCloseAction}
                 title='Close'
                 type='button'
@@ -478,7 +427,7 @@ export const Chatbot = ({ isOpen, onCloseAction }: ChatbotProps) => {
               <div className='flex flex-col items-center justify-center gap-4 text-center text-sm'>
                 <p className='text-tns-white/40'>Start a conversation...</p>
                 <div className='flex flex-col gap-2'>
-                  <p className='text-left text-tns-white/40'>Try asking:</p>
+                  <p className='text-tns-white/40 text-left'>Try asking:</p>
                   {[
                     `What information do you have?`,
                     `What projects has he worked on?`,
@@ -486,7 +435,7 @@ export const Chatbot = ({ isOpen, onCloseAction }: ChatbotProps) => {
                     `What tech stack does this site use?`,
                   ].map((prompt, i) => (
                     <button
-                      className='cursor-pointer rounded-lg border border-tns-blue/40 bg-tns-blue/10 px-3 py-2 text-left text-tns-blue transition-colors hover:border-tns-blue hover:bg-tns-blue/20'
+                      className='border-tns-blue/40 bg-tns-blue/10 text-tns-blue hover:border-tns-blue hover:bg-tns-blue/20 cursor-pointer rounded-lg border px-3 py-2 text-left transition-colors'
                       key={i}
                       onClick={() => void submitMessage(prompt, [])}
                     >
@@ -507,51 +456,43 @@ export const Chatbot = ({ isOpen, onCloseAction }: ChatbotProps) => {
             {activeToolCall && (
               <motion.div
                 animate={{ opacity: 1, y: 0 }}
-                className='flex items-center gap-2 rounded-lg border border-tns-blue/30 bg-tns-blue/10 px-2 py-1 text-xs text-tns-blue'
+                className='border-tns-blue/30 bg-tns-blue/10 text-tns-blue flex items-center gap-2 rounded-lg border px-2 py-1 text-xs'
                 initial={{ opacity: 0, y: 5 }}
               >
-                <span className='inline-block size-2 animate-pulse rounded-full bg-tns-blue' />
+                <span className='bg-tns-blue inline-block size-2 animate-pulse rounded-full' />
                 <span className='font-semibold'>{activeToolCall.name}</span>
               </motion.div>
             )}
-            {isStreaming &&
-              messages.at(-1)?.content === `` &&
-              !activeToolCall && (
-                <div className='flex items-start'>
-                  <div className='max-w-[85%] rounded-lg bg-tns-black-hover px-3 py-2 text-sm wrap-break-word text-tns-white/60 italic'>
-                    {reasoningContent || `Thinking...`}
-                  </div>
+            {isStreaming && messages.at(-1)?.content === `` && !activeToolCall && (
+              <div className='flex items-start'>
+                <div className='bg-tns-black-hover text-tns-white/60 max-w-[85%] rounded-lg px-3 py-2 text-sm wrap-break-word italic'>
+                  {reasoningContent || `Thinking...`}
                 </div>
-              )}
-            <p className='mt-auto pt-4 text-center text-xs text-tns-white/25'>
+              </div>
+            )}
+            <p className='text-tns-white/25 mt-auto pt-4 text-center text-xs'>
               Uses RAG to search and retrieve code from all my public projects.
             </p>
             <div ref={messagesEndRef} />
           </div>
 
-          {isRateLimited ?
-            <div className='border-t-2 border-tns-blue p-3 text-center'>
-              <p className='text-xs text-tns-white/40'>Daily Limit Reached.</p>
-              <p className='text-xs text-tns-white/40'>
-                Sorry, I&apos;m on free tier.
-              </p>
+          {isRateLimited ? (
+            <div className='border-tns-blue border-t-2 p-3 text-center'>
+              <p className='text-tns-white/40 text-xs'>Daily Limit Reached.</p>
+              <p className='text-tns-white/40 text-xs'>Sorry, I&apos;m on free tier.</p>
             </div>
-          : <form
-              className='border-t-2 border-tns-blue p-3'
-              onSubmit={(e) => void handleSubmit(e)}
-            >
+          ) : (
+            <form className='border-tns-blue border-t-2 p-3' onSubmit={(e) => void handleSubmit(e)}>
               <input
-                className='w-full rounded-lg border border-tns-blue/50 bg-tns-black-hover px-3 py-2 text-sm text-tns-white placeholder:text-tns-white/40 focus:border-tns-blue focus:outline-none disabled:opacity-50'
+                className='border-tns-blue/50 bg-tns-black-hover text-tns-white placeholder:text-tns-white/40 focus:border-tns-blue w-full rounded-lg border px-3 py-2 text-sm focus:outline-none disabled:opacity-50'
                 disabled={isStreaming}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder={
-                  isStreaming ? `Waiting for response...` : `Type a message...`
-                }
+                placeholder={isStreaming ? `Waiting for response...` : `Type a message...`}
                 ref={inputRef}
                 value={input}
               />
             </form>
-          }
+          )}
         </motion.div>
       )}
     </AnimatePresence>

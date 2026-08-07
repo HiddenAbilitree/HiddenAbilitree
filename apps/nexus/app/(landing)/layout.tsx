@@ -14,9 +14,7 @@ export default function LandingLayout({
     <>
       <Header />
       <HashScrollCenter />
-      <main className='flex size-full flex-col items-center justify-center'>
-        {children}
-      </main>
+      <main className='flex size-full flex-col items-center justify-center'>{children}</main>
       <Footer />
       <BottomControls />
     </>

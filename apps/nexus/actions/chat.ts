@@ -45,15 +45,12 @@ export type ToolCall = {
 };
 
 const projectDetailsInput = type({
-  projectName: type.string.describe(
-    `The full project name (e.g., "HiddenAbilitree/nexus")`,
-  ),
+  projectName: type.string.describe(`The full project name (e.g., "HiddenAbilitree/nexus")`),
   searchQuery: type.string.describe(
     `What to search for in the code. Include context from the conversation (e.g., "OAuth frontend components" not just "frontend code")`,
   ),
 });
 
-// eslint-disable-next-line @typescript-eslint/require-await
 export const chat = async (messages: Message[]): Promise<ChatResult> => {
   const stream = createStreamableValue<StreamEvent>();
 
@@ -93,16 +90,14 @@ export const chat = async (messages: Message[]): Promise<ChatResult> => {
                 type: `tool_call`,
               });
               const details = await getProjectDetails(projectName, searchQuery);
-              const resultText =
-                details ?
-                  formatProjectDetails(details)
+              const resultText = details
+                ? formatProjectDetails(details)
                 : `Project "${projectName}" not found`;
               stream.update({
                 tool: {
                   name: `getProjectDetails`,
-                  result:
-                    details ?
-                      `Retrieved ${details.codeSnippets.length} code snippets`
+                  result: details
+                    ? `Retrieved ${details.codeSnippets.length} code snippets`
                     : `Not found`,
                   status: `completed`,
                 },

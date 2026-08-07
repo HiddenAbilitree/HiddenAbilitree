@@ -37,7 +37,7 @@ export const MobileNav = ({ children }: { children: ReactNode }) => {
   return (
     <>
       <button
-        className='z-50 flex size-10 items-center justify-center rounded-full border-2 bg-tns-black hover:cursor-pointer focus:ring sm:hidden'
+        className='bg-tns-black z-50 flex size-10 items-center justify-center rounded-full border-2 hover:cursor-pointer focus:ring sm:hidden'
         onClick={() => setOpen(!open)}
       >
         <motion.span
@@ -57,15 +57,12 @@ export const MobileNav = ({ children }: { children: ReactNode }) => {
         {open && (
           <motion.div
             animate={{ opacity: 1 }}
-            className='fixed inset-0 z-40 bg-tns-black/50 bg-clip-content backdrop-blur-sm backdrop-brightness-50'
+            className='bg-tns-black/50 fixed inset-0 z-40 bg-clip-content backdrop-blur-sm backdrop-brightness-50'
             exit={{ opacity: 0 }}
             initial={{ opacity: 0 }}
             key='nav'
           >
-            <nav
-              className='flex flex-col gap-4 px-4 pt-18'
-              onClick={handleNavClick}
-            >
+            <nav className='flex flex-col gap-4 px-4 pt-18' onClick={handleNavClick}>
               <div className='w-full rounded-full border' />
               {children}
             </nav>

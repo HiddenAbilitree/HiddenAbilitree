@@ -21,14 +21,11 @@ export const Header = () => (
   </header>
 );
 
-const Bubble = ({
-  href,
-  ...props
-}: ComponentProps<`a`> & { href: string }): ReactNode => (
+const Bubble = ({ href, ...props }: ComponentProps<`a`> & { href: string }): ReactNode => (
   <Link
     href={href as Route}
     {...props}
-    className='visible isolate z-50 flex h-10 items-center justify-center rounded-full border-2 bg-tns-black px-4 text-center text-xl font-black shadow-sm transition-all duration-200 hover:translate-y-0.5 hover:bg-tns-black-hover hover:text-tns-white hover:shadow-lg'
+    className='bg-tns-black hover:bg-tns-black-hover hover:text-tns-white visible isolate z-50 flex h-10 items-center justify-center rounded-full border-2 px-4 text-center text-xl font-black shadow-sm transition-all duration-200 hover:translate-y-0.5 hover:shadow-lg'
   >
     {props.children}
   </Link>

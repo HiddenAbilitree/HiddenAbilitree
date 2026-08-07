@@ -6,9 +6,7 @@ type EmbeddingResponse = {
   data: Array<{ embedding: number[] }>;
 };
 
-export const embedQueryForCode = async (
-  text: string,
-): Promise<EmbeddingResult> => {
+export const embedQueryForCode = async (text: string): Promise<EmbeddingResult> => {
   const response = await fetch(`https://api.voyageai.com/v1/embeddings`, {
     body: JSON.stringify({
       input: text,

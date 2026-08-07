@@ -1,13 +1,7 @@
 import { SVGProps } from 'react';
 
 export const Mail = (props: SVGProps<SVGSVGElement>) => (
-  <svg
-    height='1em'
-    viewBox='0 0 24 24'
-    width='1em'
-    xmlns='http://www.w3.org/2000/svg'
-    {...props}
-  >
+  <svg height='1em' viewBox='0 0 24 24' width='1em' xmlns='http://www.w3.org/2000/svg' {...props}>
     {/* Icon from Tabler Icons by Paweł Kuna - https://github.com/tabler/tabler-icons/blob/master/LICENSE */}
     <g
       fill='none'

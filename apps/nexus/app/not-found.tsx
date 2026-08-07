@@ -8,7 +8,7 @@ export default function NotFound() {
         <p className='text-2xl'>Page not found</p>
       </div>
       <Link
-        className='rounded-full border-5 border-tns-blue bg-tns-blue px-9 py-2 text-tns-black'
+        className='border-tns-blue bg-tns-blue text-tns-black rounded-full border-5 px-9 py-2'
         href='/'
       >
         Return to safety

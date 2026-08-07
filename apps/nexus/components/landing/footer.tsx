@@ -6,22 +6,22 @@ import { Discord, Github, Mail } from '@/components/icons/';
 import { Separator } from '@/components/ui/separator';
 
 export const Footer = () => (
-  <section className='h-screen w-full bg-black bg-linear-to-b from-tns-blue/5 to-tns-blue/40 md:p-4'>
-    <footer className='flex size-full flex-col gap-2 overflow-hidden bg-tns-white p-4 pt-16 text-tns-black shadow-xl sm:p-6 sm:pt-22 md:rounded-3xl md:pt-18'>
+  <section className='from-tns-blue/5 to-tns-blue/40 h-screen w-full bg-black bg-linear-to-b md:p-4'>
+    <footer className='bg-tns-white text-tns-black flex size-full flex-col gap-2 overflow-hidden p-4 pt-16 shadow-xl sm:p-6 sm:pt-22 md:rounded-3xl md:pt-18'>
       <Separator className='bg-border/80' />
-      <h2 className='text-7xl leading-[0.8] xs:text-8xl sm:text-8xl md:text-8xl 2xl:text-9xl 3xl:text-11xl'>
+      <h2 className='xs:text-8xl 3xl:text-11xl text-7xl leading-[0.8] sm:text-8xl md:text-8xl 2xl:text-9xl'>
         CONTACT ME
       </h2>
       <Separator className='bg-border/80' />
       <p className='mr-auto leading-relaxed md:text-xl lg:text-2xl'>
         Colorscheme @{` `}
         <Link
-          className='group relative isolate underline decoration-tns-black/30 underline-offset-2 transition-colors hover:text-tns-blue hover:decoration-tns-blue'
+          className='group decoration-tns-black/30 hover:text-tns-blue hover:decoration-tns-blue relative isolate underline underline-offset-2 transition-colors'
           href='https://github.com/tokyo-night/tokyo-night-vscode-theme'
           rel='noopener noreferrer'
           target='_blank'
         >
-          <span className='absolute -top-1 -right-3 -bottom-1 -left-2 -z-10 rounded-lg select-none group-hover:bg-tns-black' />
+          <span className='group-hover:bg-tns-black absolute -top-1 -right-3 -bottom-1 -left-2 -z-10 rounded-lg select-none' />
           Tokyo Night Storm
         </Link>
       </p>
@@ -39,7 +39,7 @@ export const Footer = () => (
         <AppearingGroup className='flex flex-col'>
           <AppearingItem key='email'>
             <Link
-              className='group flex items-center gap-1.5 sm:gap-4 md:hover:text-tns-white'
+              className='group md:hover:text-tns-white flex items-center gap-1.5 sm:gap-4'
               href='mailto:me@ericzhang.dev'
               rel='noopener noreferrer'
               target='_blank'
@@ -50,7 +50,7 @@ export const Footer = () => (
           </AppearingItem>
           <AppearingItem key='discord'>
             <Link
-              className='group flex items-center gap-1.5 sm:gap-4 md:hover:text-tns-white'
+              className='group md:hover:text-tns-white flex items-center gap-1.5 sm:gap-4'
               href='https://discord.com/users/288137037457129483'
               rel='noopener noreferrer'
               target='_blank'
@@ -61,7 +61,7 @@ export const Footer = () => (
           </AppearingItem>
           <AppearingItem key='github'>
             <Link
-              className='group flex items-center gap-1.5 sm:gap-4 md:hover:text-tns-white'
+              className='group md:hover:text-tns-white flex items-center gap-1.5 sm:gap-4'
               href='https://github.com/HiddenAbilitree'
               rel='noopener noreferrer'
               target='_blank'
