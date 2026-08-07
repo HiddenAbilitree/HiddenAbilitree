@@ -3,26 +3,15 @@ import { db, projects } from 'db';
 import { Elysia, t } from 'elysia';
 
 const webhooks = new Webhooks({
-  secret: process.env.WEBHOOK_SECRET,
+  secret: process.env.WEBHOOK_SECRET!,
 });
-
-const repository = t.Object({
-  full_name: t.String(),
-  html_url: t.String(),
-  id: t.Number(),
-  stargazers_count: t.Number(),
-});
-
-const body = t.Object({ repository }, { additionalProperties: true });
 
 export const app = new Elysia({ aot: false }).post(
   `/`,
   async ({ body, headers, status }) => {
     if (
-      !(await webhooks.verify(
-        JSON.stringify(body),
-        headers[`x-hub-signature-256`] as string,
-      ))
+      headers[`x-hub-signature-256`] === undefined ||
+      !(await webhooks.verify(JSON.stringify(body), headers[`x-hub-signature-256`]))
     )
       return status(401);
 
@@ -40,5 +29,17 @@ export const app = new Elysia({ aot: false }).post(
 
     return status(data.rowCount === 0 ? 500 : 200);
   },
-  { body },
+  {
+    body: t.Object(
+      {
+        repository: t.Object({
+          full_name: t.String(),
+          html_url: t.String(),
+          id: t.Number(),
+          stargazers_count: t.Number(),
+        }),
+      },
+      { additionalProperties: true },
+    ),
+  },
 );

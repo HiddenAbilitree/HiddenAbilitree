@@ -1,19 +1,26 @@
 {
   "name": "gh-webhook-handler",
   "version": "0.0.1",
+  "type": "module",
   "private": true,
   "module": "src/index.js",
   "scripts": {
     "deploy": "wrangler deploy",
     "dev": "bun --watch src/index.ts",
     "start": "wrangler dev",
-    "lint": "eslint . --fix",
-    "cf-typegen": "wrangler types"
+    "lint": "oxlint",
+    "cf-typegen": "wrangler types",
+    "lint:fix": "oxlint --fix",
+    "format": "oxfmt .",
+    "format:check": "oxfmt --check ."
   },
   "devDependencies": {
     "@hiddenability/opinionated-defaults": "^0.1.24",
-    "@types/node": "^24.2.0",
+    "@types/node": "^26.1.2",
     "bun-types": "^1.2.19",
+    "oxfmt": "^0.62.0",
+    "oxlint": "^1.77.0",
+    "oxlint-tsgolint": "^7.0.2001",
     "typescript": "^5.9.2",
     "wrangler": "^4.28.1"
   },
