@@ -47,7 +47,11 @@ export const BottomControls = () => {
   return (
     <>
       {chatOpen && (
-        <div className='fixed inset-0 z-30 sm:hidden' onClick={() => setChatOpen(false)} />
+        <button
+          aria-label='Close chatbot'
+          className='fixed inset-0 z-30 sm:hidden'
+          onClick={() => setChatOpen(false)}
+        />
       )}
       <div className='fixed right-4 bottom-4 z-30 flex flex-col items-end sm:right-auto sm:left-4 sm:z-50 sm:items-start md:bottom-8 md:left-8'>
         <Chatbot isOpen={chatOpen} onCloseAction={() => setChatOpen(false)} />

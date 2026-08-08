@@ -63,7 +63,9 @@ export const getProjectDetails = async (
     vector: embeddingResult.embedding,
   });
 
-  const fileIds = codeResults.map((r) => r.id as number);
+  const fileIds = codeResults
+    .map((result) => result.id)
+    .filter((id): id is number => typeof id === `number`);
   let codeSnippets: Array<CodeFile & { projectName: string }> = [];
 
   if (fileIds.length > 0) {

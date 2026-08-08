@@ -2,9 +2,8 @@
 
 import { cerebras } from '@ai-sdk/cerebras';
 import { createStreamableValue } from '@ai-sdk/rsc';
-import { jsonSchema, stepCountIs, streamText, tool } from 'ai';
+import { stepCountIs, streamText, tool } from 'ai';
 import { type } from 'arktype';
-import type { JSONSchema7 } from 'json-schema';
 
 import {
   buildMinimalSystemPrompt,
@@ -105,9 +104,7 @@ export const chat = async (messages: Message[]): Promise<ChatResult> => {
               });
               return resultText;
             },
-            inputSchema: jsonSchema<typeof projectDetailsInput.infer>(
-              projectDetailsInput.toJsonSchema() as JSONSchema7,
-            ),
+            inputSchema: projectDetailsInput,
           }),
         },
       });

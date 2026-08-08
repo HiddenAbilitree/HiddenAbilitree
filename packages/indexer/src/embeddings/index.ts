@@ -24,9 +24,7 @@ export const createEmbeddingProvider = (config: Config): EmbeddingProvider => {
     });
 
     if (!response.ok) {
-      throw new Error(
-        `Voyage embedding failed: ${response.status} ${await response.text()}`,
-      );
+      throw new Error(`Voyage embedding failed: ${response.status} ${await response.text()}`);
     }
 
     const { data } = (await response.json()) as {

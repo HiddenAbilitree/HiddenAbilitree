@@ -1,9 +1,4 @@
-import type {
-  GitHubCommit,
-  GitHubContent,
-  GitHubRepo,
-  GitHubTree,
-} from '@/src/github/types';
+import type { GitHubCommit, GitHubContent, GitHubRepo, GitHubTree } from '@/src/github/types';
 
 export type GitHubClient = {
   getCommitCount: (_fullName: string) => Promise<number>;
@@ -72,10 +67,7 @@ export const isCodeFile = (path: string): boolean => {
   return CODE_EXTENSIONS.has(ext.toLowerCase());
 };
 
-export const createGitHubClient = (
-  pat: string,
-  username: string,
-): GitHubClient => {
+export const createGitHubClient = (pat: string, username: string): GitHubClient => {
   const headers = {
     Accept: `application/vnd.github+json`,
     Authorization: `Bearer ${pat}`,
@@ -85,9 +77,7 @@ export const createGitHubClient = (
   const fetchJson = async <T>(url: string): Promise<T> => {
     const response = await fetch(url, { headers });
     if (!response.ok) {
-      throw new Error(
-        `GitHub API error: ${response.status} ${await response.text()}`,
-      );
+      throw new Error(`GitHub API error: ${response.status} ${await response.text()}`);
     }
     return response.json() as Promise<T>;
   };
@@ -111,10 +101,7 @@ export const createGitHubClient = (
   const getRepo = async (fullName: string): Promise<GitHubRepo> =>
     fetchJson<GitHubRepo>(`https://api.github.com/repos/${fullName}`);
 
-  const getDefaultBranchSha = async (
-    fullName: string,
-    branch: string,
-  ): Promise<string> => {
+  const getDefaultBranchSha = async (fullName: string, branch: string): Promise<string> => {
     const commit = await fetchJson<GitHubCommit>(
       `https://api.github.com/repos/${fullName}/commits/${branch}`,
     );
@@ -122,10 +109,9 @@ export const createGitHubClient = (
   };
 
   const getCommitCount = async (fullName: string): Promise<number> => {
-    const response = await fetch(
-      `https://api.github.com/repos/${fullName}/commits?per_page=1`,
-      { headers },
-    );
+    const response = await fetch(`https://api.github.com/repos/${fullName}/commits?per_page=1`, {
+      headers,
+    });
     const link = response.headers.get(`link`);
     if (!link) return 1;
 
@@ -134,14 +120,9 @@ export const createGitHubClient = (
   };
 
   const getTree = async (fullName: string, sha: string): Promise<GitHubTree> =>
-    fetchJson<GitHubTree>(
-      `https://api.github.com/repos/${fullName}/git/trees/${sha}?recursive=1`,
-    );
+    fetchJson<GitHubTree>(`https://api.github.com/repos/${fullName}/git/trees/${sha}?recursive=1`);
 
-  const getFileContent = async (
-    fullName: string,
-    path: string,
-  ): Promise<string> => {
+  const getFileContent = async (fullName: string, path: string): Promise<string> => {
     const content = await fetchJson<GitHubContent>(
       `https://api.github.com/repos/${fullName}/contents/${path}`,
     );

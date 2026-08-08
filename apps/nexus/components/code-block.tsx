@@ -1,28 +1,23 @@
 'use client';
 
 import * as languages from 'linguist-languages';
+import type { Language } from 'linguist-languages';
 import { memo, ReactNode, useState } from 'react';
 import 'react-shiki/css';
-import ShikiHighlighter from 'react-shiki';
+import { ShikiHighlighter } from 'react-shiki';
 
 import { Check, Copy } from '@/components/icons';
 
-type LinguistLanguage = {
-  aliases?: string[];
-  color?: string;
-  name?: string;
-};
+const languageList = Object.values(languages) as Language[];
 
-const getLanguageColor = (lang: string): string | undefined => {
-  const normalizedLang = lang.toLowerCase();
-  const found = Object.values(languages).find((langData) => {
-    const data = langData as LinguistLanguage;
-    return (
-      data.name?.toLowerCase() === normalizedLang ||
-      data.aliases?.some((alias) => alias.toLowerCase() === normalizedLang)
-    );
-  }) as LinguistLanguage | undefined;
-  return found?.color;
+const getLanguageColor = (lang: string) => {
+  const normalized = lang.toLowerCase();
+
+  return languageList.find(
+    ({ name, aliases }) =>
+      name.toLowerCase() === normalized ||
+      aliases?.some((alias) => alias.toLowerCase() === normalized),
+  )?.color;
 };
 
 export const CodeBlock = memo(
@@ -120,7 +115,7 @@ export const createCodeComponent = () => ({
   code: ({ children, className, ...props }: { children?: ReactNode; className?: string }) => {
     const rawLang = className?.replace(`language-`, ``);
     const [language, url] = rawLang?.split(`|`) ?? [];
-    const codeContent = (Array.isArray(children) ? children[0] : children) as ReactNode;
+    const codeContent = Array.isArray(children) ? children[0] : children;
     const codeString = typeof codeContent === `string` ? codeContent.replace(/\n$/, ``) : ``;
     return language ? (
       <CodeBlock codeString={codeString} language={language} url={url} />

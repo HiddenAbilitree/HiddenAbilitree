@@ -1,5 +1,4 @@
 import clsx from 'clsx';
-import { Route } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ComponentProps, ReactNode, ViewTransition } from 'react';
@@ -62,14 +61,14 @@ type TagData = {
 
 const markdownComponents = {
   a: ({ children, href }: { children?: ReactNode; href?: string }) => (
-    <Link
+    <a
       className='text-tns-blue decoration-tns-blue/40 visited:text-tns-magenta visited:decoration-tns-magenta/40 hover:decoration-tns-blue underline underline-offset-2 transition-colors'
-      href={(href ?? ``) as Route}
+      href={href}
       rel='noopener noreferrer'
       target='_blank'
     >
       {children}
-    </Link>
+    </a>
   ),
   code: ({ children }: { children?: ReactNode }) => {
     const text = typeof children === `string` ? children : ``;
@@ -91,7 +90,7 @@ const markdownComponents = {
 export const ProjectCard = async ({
   badges,
   className,
-  color = `default`,
+  color,
   content,
   fullName,
   imgAlt,
@@ -114,7 +113,7 @@ export const ProjectCard = async ({
         className,
         colors.card[color],
         reverse && `lg:flex-row-reverse`,
-        `flex size-full max-w-[1600px] flex-col justify-start gap-2 rounded-2xl border-2 p-4 sm:p-4 lg:flex-row lg:gap-6 lg:rounded-3xl lg:p-6`,
+        `flex size-full max-w-400 flex-col justify-start gap-2 rounded-2xl border-2 p-4 sm:p-4 lg:flex-row lg:gap-6 lg:rounded-3xl lg:p-6`,
       )}
       id={slug ?? name}
       {...props}
@@ -123,7 +122,7 @@ export const ProjectCard = async ({
         <div className='flex grow flex-col gap-2'>
           <Link
             className='xs:text-3xl flex items-center gap-2 text-2xl hover:underline md:text-4xl'
-            href={slug ? (`/projects/${slug}` as Route) : `https://github.com/${fullName}`}
+            href={slug ? `/projects/${slug}` : `https://github.com/${fullName}`}
             rel={slug ? undefined : `noopener noreferrer`}
             target={slug ? undefined : `_blank`}
           >
@@ -175,7 +174,7 @@ export const ProjectCard = async ({
         (slug ? (
           <Link
             className='flex w-full shrink-0 flex-col items-center justify-center lg:w-1/2'
-            href={`/projects/${slug}` as Route}
+            href={`/projects/${slug}`}
           >
             <ViewTransition name={`project-image-${slug}`}>
               <Image
@@ -188,9 +187,10 @@ export const ProjectCard = async ({
             </ViewTransition>
           </Link>
         ) : imgHref ? (
-          <Link
+          <a
             className='flex w-full shrink-0 flex-col items-center justify-center lg:w-1/2'
-            href={imgHref as Route}
+            href={imgHref}
+            rel='noopener noreferrer'
             target='_blank'
           >
             <Image
@@ -200,7 +200,7 @@ export const ProjectCard = async ({
               src={imgSrc}
               width={imgWidth ?? 1920}
             />
-          </Link>
+          </a>
         ) : (
           <div className='flex w-full shrink-0 flex-col items-center justify-center lg:w-1/2'>
             <Image

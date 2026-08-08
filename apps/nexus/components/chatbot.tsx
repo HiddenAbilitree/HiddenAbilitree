@@ -37,7 +37,7 @@ const markdownComponents = {
   code: ({ children, className, ...props }: { children?: ReactNode; className?: string }) => {
     const rawLang = className?.replace(`language-`, ``);
     const [language, url] = rawLang?.split(`|`) ?? [];
-    const codeContent = (Array.isArray(children) ? children[0] : children) as ReactNode;
+    const codeContent: unknown = Array.isArray(children) ? children[0] : children;
     const codeString = typeof codeContent === `string` ? codeContent.replace(/\n$/, ``) : ``;
     return language ? (
       <CodeBlock codeString={codeString} language={language} url={url} />
@@ -482,7 +482,7 @@ export const Chatbot = ({ isOpen, onCloseAction }: ChatbotProps) => {
               <p className='text-tns-white/40 text-xs'>Sorry, I&apos;m on free tier.</p>
             </div>
           ) : (
-            <form className='border-tns-blue border-t-2 p-3' onSubmit={(e) => void handleSubmit(e)}>
+            <form className='border-tns-blue border-t-2 p-3' onSubmit={(e) => handleSubmit(e)}>
               <input
                 className='border-tns-blue/50 bg-tns-black-hover text-tns-white placeholder:text-tns-white/40 focus:border-tns-blue w-full rounded-lg border px-3 py-2 text-sm focus:outline-none disabled:opacity-50'
                 disabled={isStreaming}

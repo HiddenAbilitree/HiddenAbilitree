@@ -8,9 +8,7 @@ type RateLimitInfo = {
   used: number;
 };
 
-const extractRateLimitHeaders = (
-  headers: Headers,
-): RateLimitInfo | undefined => {
+const extractRateLimitHeaders = (headers: Headers): RateLimitInfo | undefined => {
   const limit = headers.get(`x-ratelimit-limit`);
   const remaining = headers.get(`x-ratelimit-remaining`);
   const used = headers.get(`x-ratelimit-used`);
@@ -29,10 +27,7 @@ const extractRateLimitHeaders = (
 };
 
 const logRateLimit = (info: RateLimitInfo, context: string) => {
-  const resetIn = Math.max(
-    0,
-    Math.round((info.reset.getTime() - Date.now()) / 1000),
-  );
+  const resetIn = Math.max(0, Math.round((info.reset.getTime() - Date.now()) / 1000));
   const minutes = Math.floor(resetIn / 60);
   const seconds = resetIn % 60;
   console.log(
@@ -43,10 +38,7 @@ const logRateLimit = (info: RateLimitInfo, context: string) => {
 export type GitHubGraphQLClient = {
   getCommitCount: (_fullName: string) => Promise<number>;
   getDefaultBranchSha: (_fullName: string, _branch: string) => Promise<string>;
-  getFileContents: (
-    _fullName: string,
-    _paths: string[],
-  ) => Promise<Map<string, string>>;
+  getFileContents: (_fullName: string, _paths: string[]) => Promise<Map<string, string>>;
   getRepo: (_fullName: string) => Promise<GitHubRepo>;
   getTree: (_fullName: string, _sha: string) => Promise<GitHubTree>;
   listRepos: () => Promise<GitHubRepo[]>;
@@ -106,10 +98,7 @@ export const createGitHubGraphQLClient = (
   let lastRateLimitLog = 0;
   const RATE_LIMIT_LOG_INTERVAL = 10_000;
 
-  const maybeLogRateLimit = (
-    rateLimit: RateLimitInfo | undefined,
-    context: string,
-  ) => {
+  const maybeLogRateLimit = (rateLimit: RateLimitInfo | undefined, context: string) => {
     if (!rateLimit) return;
 
     const now = Date.now();
@@ -145,9 +134,7 @@ export const createGitHubGraphQLClient = (
       if (!response.ok) {
         const text = await response.text();
         if (response.status === 403 && rateLimit?.remaining === 0) {
-          const resetIn = Math.ceil(
-            (rateLimit.reset.getTime() - Date.now()) / 1000,
-          );
+          const resetIn = Math.ceil((rateLimit.reset.getTime() - Date.now()) / 1000);
           throw new GitHubApiError(
             `Rate limit exceeded. Resets in ${Math.ceil(resetIn / 60)} minutes.`,
             response.status,
@@ -164,11 +151,7 @@ export const createGitHubGraphQLClient = (
       const json = (await response.json()) as GraphQLResponse<T>;
       if (json.errors?.length) {
         const errorMsg = json.errors.map((e) => e.message).join(`, `);
-        throw new GitHubApiError(
-          `GitHub GraphQL errors: ${errorMsg}`,
-          400,
-          rateLimit,
-        );
+        throw new GitHubApiError(`GitHub GraphQL errors: ${errorMsg}`, 400, rateLimit);
       }
 
       return json.data as T;
@@ -194,9 +177,7 @@ export const createGitHubGraphQLClient = (
       if (!response.ok) {
         const text = await response.text();
         if (response.status === 403 && rateLimit?.remaining === 0) {
-          const resetIn = Math.ceil(
-            (rateLimit.reset.getTime() - Date.now()) / 1000,
-          );
+          const resetIn = Math.ceil((rateLimit.reset.getTime() - Date.now()) / 1000);
           throw new GitHubApiError(
             `Rate limit exceeded. Resets in ${Math.ceil(resetIn / 60)} minutes.`,
             response.status,
@@ -365,10 +346,7 @@ export const createGitHubGraphQLClient = (
     };
   };
 
-  const getDefaultBranchSha = async (
-    fullName: string,
-    branch: string,
-  ): Promise<string> => {
+  const getDefaultBranchSha = async (fullName: string, branch: string): Promise<string> => {
     const [owner, name] = fullName.split(`/`);
     const query = `
       query($owner: String!, $name: String!, $branch: String!) {
@@ -429,9 +407,7 @@ export const createGitHubGraphQLClient = (
   };
 
   const getTree = async (fullName: string, sha: string): Promise<GitHubTree> =>
-    restFetch<GitHubTree>(
-      `https://api.github.com/repos/${fullName}/git/trees/${sha}?recursive=1`,
-    );
+    restFetch<GitHubTree>(`https://api.github.com/repos/${fullName}/git/trees/${sha}?recursive=1`);
 
   const getFileContents = async (
     fullName: string,

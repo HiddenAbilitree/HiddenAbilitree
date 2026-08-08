@@ -1,10 +1,11 @@
 'use client';
 
 import { AnimatePresence, motion } from 'motion/react';
-import { MouseEvent, ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 
 export const MobileNav = ({ children }: { children: ReactNode }) => {
   const [open, setOpen] = useState(false);
+  const navRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const onResize = () => window.innerWidth > 640 && setOpen(false);
@@ -19,24 +20,34 @@ export const MobileNav = ({ children }: { children: ReactNode }) => {
     };
   }, [open]);
 
-  const handleNavClick = (e: MouseEvent) => {
-    const link = (e.target as HTMLElement).closest(`a`);
-    if (!link) return;
+  useEffect(() => {
+    const nav = navRef.current;
+    if (!nav) return undefined;
 
-    const href = link.getAttribute(`href`) ?? `/`;
+    const handleNavClick = (event: globalThis.MouseEvent) => {
+      if (!(event.target instanceof Element)) return;
 
-    if (href.startsWith(`#`)) {
-      e.preventDefault();
+      const link = event.target.closest(`a`);
+      if (!link) return;
+
+      const href = link.getAttribute(`href`) ?? `/`;
       setOpen(false);
-      document.querySelector(href)?.scrollIntoView({ behavior: `smooth` });
-    } else {
-      setOpen(false);
-    }
-  };
+
+      if (href.startsWith(`#`)) {
+        event.preventDefault();
+        document.querySelector(href)?.scrollIntoView({ behavior: `smooth` });
+      }
+    };
+
+    nav.addEventListener(`click`, handleNavClick);
+    return () => nav.removeEventListener(`click`, handleNavClick);
+  }, [open]);
 
   return (
     <>
       <button
+        aria-label={open ? `Close navigation menu` : `Open navigation menu`}
+        aria-expanded={open}
         className='bg-tns-black z-50 flex size-10 items-center justify-center rounded-full border-2 hover:cursor-pointer focus:ring sm:hidden'
         onClick={() => setOpen(!open)}
       >
@@ -62,7 +73,7 @@ export const MobileNav = ({ children }: { children: ReactNode }) => {
             initial={{ opacity: 0 }}
             key='nav'
           >
-            <nav className='flex flex-col gap-4 px-4 pt-18' onClick={handleNavClick}>
+            <nav className='flex flex-col gap-4 px-4 pt-18' ref={navRef}>
               <div className='w-full rounded-full border' />
               {children}
             </nav>

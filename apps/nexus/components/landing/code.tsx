@@ -34,15 +34,15 @@ export const Code: FC<ComponentProps<`span`> & { children: string }> = ({
   </span>
 );
 
-const toast = (toast: Omit<ToastProps, `id`>) =>
-  sonnerToast.custom((id) => <Toast description={toast.description} id={id} />);
+const toast = (t: Omit<ToastProps, `id`>) =>
+  sonnerToast.custom((id) => <Toast description={t.description} id={id} />);
 
 const Toast = (props: ToastProps) => {
   const { description } = props;
 
   return (
     <div
-      className={`ring-tns-blue flex w-full items-center rounded-xl bg-[#111724] p-4 shadow-lg ring-1 md:max-w-[364px] ${_0xProto.className}`}
+      className={`ring-tns-blue flex w-full items-center rounded-xl bg-[#111724] p-4 shadow-lg ring-1 md:max-w-91 ${_0xProto.className}`}
     >
       <div className='flex flex-1 items-center gap-2'>
         <Check className='fill-tns-blue size-6' fill='fill-tns-blue' stroke='stroke-tns-blue' />

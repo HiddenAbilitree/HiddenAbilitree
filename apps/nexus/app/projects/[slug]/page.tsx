@@ -1,4 +1,4 @@
-import { Metadata, Route } from 'next';
+import { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -109,14 +109,14 @@ const fetchReadme = async (fullName: string): Promise<string | undefined> => {
 
 const markdownComponents = {
   a: ({ children, href }: { children?: ReactNode; href?: string }) => (
-    <Link
+    <a
       className='text-tns-blue decoration-tns-blue/40 visited:text-tns-magenta visited:decoration-tns-magenta/40 hover:decoration-tns-blue visited:hover:decoration-tns-magenta underline underline-offset-2 transition-colors'
-      href={(href ?? ``) as Route}
+      href={href}
       rel='noopener noreferrer'
       target='_blank'
     >
       {children}
-    </Link>
+    </a>
   ),
   blockquote: ({ children }: { children?: ReactNode }) => (
     <blockquote className='border-tns-blue/30 text-tns-white/70 my-4 border-l-4 pl-4 italic'>
@@ -126,7 +126,7 @@ const markdownComponents = {
   code: ({ children, className }: { children?: ReactNode; className?: string }) => {
     const rawLang = className?.replace(`language-`, ``);
     const [language, url] = rawLang?.split(`|`) ?? [];
-    const codeContent = (Array.isArray(children) ? children[0] : children) as ReactNode;
+    const codeContent: unknown = Array.isArray(children) ? children[0] : children;
     const codeString = typeof codeContent === `string` ? codeContent.replace(/\n$/, ``) : ``;
     const isBlock = typeof codeContent === `string` && codeContent.endsWith(`\n`);
     return language ? (

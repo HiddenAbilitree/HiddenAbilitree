@@ -8,14 +8,8 @@
     "skipLibCheck": true,
     "rootDir": "./",
     "paths": {
-      "@/*": [
-        "./*"
-      ]
+      "@/*": ["./*"]
     }
   },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    "**/*.mjs"
-  ]
+  "include": ["**/*.ts", "**/*.tsx", "**/*.mjs"]
 }
