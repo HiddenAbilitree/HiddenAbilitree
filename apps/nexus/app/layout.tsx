@@ -1,14 +1,14 @@
-import '@/styles/globals.css';
-import type { Metadata } from 'next';
+import "@/styles/globals.css";
+import type { Metadata } from "next";
 
-import { ReactNode } from 'react';
-import { Toaster } from 'sonner';
+import { ReactNode } from "react";
+import { Toaster } from "sonner";
 
-import { _0xProto } from '@/styles/fonts';
+import { _0xProto } from "@/styles/fonts";
 
 const siteUrl = `https://www.ericzhang.dev`;
 const siteName = `Eric Zhang`;
-const siteDescription = `Building the future.`;
+const siteDescription = `Full-stack software engineer based in Northern Virginia, specializing in TypeScript, Rust, and AI systems.`;
 
 export const metadata: Metadata = {
   authors: [{ name: siteName, url: siteUrl }],
@@ -46,8 +46,8 @@ export const metadata: Metadata = {
 };
 
 const jsonLd = {
-  '@context': `https://schema.org`,
-  '@type': `Person`,
+  "@context": `https://schema.org`,
+  "@type": `Person`,
   jobTitle: `Software Engineer`,
   name: siteName,
   url: siteUrl,
@@ -59,11 +59,11 @@ export default function RootLayout({
   children: ReactNode;
 }>) {
   return (
-    <html lang='en' suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-          type='application/ld+json'
+          type="application/ld+json"
         />
       </head>
       <body
