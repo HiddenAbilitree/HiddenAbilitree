@@ -1,5 +1,5 @@
-import clsx from 'clsx';
-import { ComponentProps } from 'react';
+import clsx from "clsx";
+import { ComponentProps } from "react";
 
 export const Section = ({ className, ...props }: ComponentProps<`section`>) => (
   <section

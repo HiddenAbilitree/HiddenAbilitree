@@ -24,7 +24,9 @@ const isEmbeddingResponse = (value: unknown): value is EmbeddingResponse => {
   );
 };
 
-export const embedQueryForCode = async (text: string): Promise<EmbeddingResult> => {
+export const embedQueryForCode = async (
+  text: string,
+): Promise<EmbeddingResult> => {
   const response = await fetch(`https://api.voyageai.com/v1/embeddings`, {
     body: JSON.stringify({
       input: text,
@@ -33,7 +35,7 @@ export const embedQueryForCode = async (text: string): Promise<EmbeddingResult> 
     }),
     headers: {
       Authorization: `Bearer ${process.env.VOYAGE_API_KEY}`,
-      'Content-Type': `application/json`,
+      "Content-Type": `application/json`,
     },
     method: `POST`,
   });
@@ -47,7 +49,10 @@ export const embedQueryForCode = async (text: string): Promise<EmbeddingResult> 
 
   const data: unknown = await response.json();
   if (!isEmbeddingResponse(data))
-    return { error: `Voyage embedding returned an invalid response`, success: false };
+    return {
+      error: `Voyage embedding returned an invalid response`,
+      success: false,
+    };
 
   return { embedding: data.data[0].embedding, success: true };
 };

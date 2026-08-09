@@ -1,9 +1,9 @@
-'use server';
+"use server";
 
-import { cerebras } from '@ai-sdk/cerebras';
-import { createStreamableValue } from '@ai-sdk/rsc';
-import { stepCountIs, streamText, tool } from 'ai';
-import { type } from 'arktype';
+import { cerebras } from "@ai-sdk/cerebras";
+import { createStreamableValue } from "@ai-sdk/rsc";
+import { stepCountIs, streamText, tool } from "ai";
+import { type } from "arktype";
 
 import {
   buildMinimalSystemPrompt,
@@ -11,7 +11,7 @@ import {
   getAllProjectSummaries,
   getLatestIndexedTime,
   getProjectDetails,
-} from '@/lib/rag';
+} from "@/lib/rag";
 
 export const getDataLastUpdated = async (): Promise<string | undefined> => {
   const date = await getLatestIndexedTime();
@@ -44,7 +44,9 @@ export type ToolCall = {
 };
 
 const projectDetailsInput = type({
-  projectName: type.string.describe(`The full project name (e.g., "HiddenAbilitree/nexus")`),
+  projectName: type.string.describe(
+    `The full project name (e.g., "HiddenAbilitree/nexus")`,
+  ),
   searchQuery: type.string.describe(
     `What to search for in the code. Include context from the conversation (e.g., "OAuth frontend components" not just "frontend code")`,
   ),

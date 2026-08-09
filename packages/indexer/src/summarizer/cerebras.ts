@@ -1,6 +1,6 @@
-import { cerebras } from '@ai-sdk/cerebras';
-import { generateText, Output } from 'ai';
-import { type } from 'arktype';
+import { cerebras } from "@ai-sdk/cerebras";
+import { generateText, Output } from "ai";
+import { type } from "arktype";
 
 export type KeyFile = {
   content: string;
@@ -40,10 +40,10 @@ Based on the actual code above, provide:
     model: cerebras(`llama-3.3-70b`),
     output: Output.object({
       schema: type({
-        summary: type('string').describe(
+        summary: type("string").describe(
           `A confident 3-4 sentence summary describing exactly what this project does, its main features, and purpose`,
         ),
-        tags: type('string[]').describe(
+        tags: type("string[]").describe(
           `5-10 specific tags: languages, frameworks, libraries, and domain categories (AI, CLI, Web, API, etc.)`,
         ),
       }),

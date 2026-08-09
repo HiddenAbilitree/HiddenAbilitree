@@ -1,5 +1,5 @@
-import { readFileSync } from 'node:fs';
-import path from 'node:path';
+import { readFileSync } from "node:fs";
+import path from "node:path";
 
 export type ProjectData = {
   badges: { href?: string; text: string }[];
@@ -68,7 +68,8 @@ export const projects: ProjectData[] = [
   },
 ];
 
-export const getProject = (slug: string) => projects.find((p) => p.slug === slug);
+export const getProject = (slug: string) =>
+  projects.find((p) => p.slug === slug);
 
 export const getProjectContent = (slug: string) => readContent(slug);
 

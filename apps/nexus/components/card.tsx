@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { motion } from 'motion/react';
-import { ComponentProps, ReactNode } from 'react';
+import { motion } from "motion/react";
+import { ComponentProps, ReactNode } from "react";
 
-import { cn } from '@/utils';
+import { cn } from "@/utils";
 
 export const Card = ({ ...props }: ComponentProps<`div`>): ReactNode => (
   <motion.div

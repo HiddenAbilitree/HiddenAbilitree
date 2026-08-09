@@ -1,4 +1,4 @@
-import { ComponentProps } from 'react';
+import { ComponentProps } from "react";
 
 export const JPQuoteLeft = ({ className }: ComponentProps<`span`>) => (
   <span className={className}>&#65378;</span>

@@ -1,7 +1,7 @@
-import { loadConfig } from '@/src/config';
-import { createEmbeddingProvider } from '@/src/embeddings';
-import { runIndexPipeline } from '@/src/pipeline/index-repos';
-import { createQdrantClient } from '@/src/vectors/qdrant';
+import { loadConfig } from "@/src/config";
+import { createEmbeddingProvider } from "@/src/embeddings";
+import { runIndexPipeline } from "@/src/pipeline/index-repos";
+import { createQdrantClient } from "@/src/vectors/qdrant";
 
 const parseRepoArg = (args: string[]): string | undefined => {
   const repoIndex = args.indexOf(`--repo`);

@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { usePathname } from 'next/navigation';
-import { useEffect } from 'react';
+import { usePathname } from "next/navigation";
+import { useEffect } from "react";
 
 const scrollToCenter = () => {
   const hash = globalThis.location.hash.slice(1);

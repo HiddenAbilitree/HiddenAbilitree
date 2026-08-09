@@ -1,64 +1,59 @@
-import { defineConfig } from 'oxlint';
+import { defineConfig } from "oxlint";
 
 export default defineConfig({
-  "rules": {
+  rules: {
     "typescript/no-misused-promises": [
       "error",
       {
-        "checksVoidReturn": false
-      }
+        checksVoidReturn: false,
+      },
     ],
     "no-unused-vars": [
       "error",
       {
-        "args": "all",
-        "argsIgnorePattern": "^_",
-        "caughtErrors": "all",
-        "caughtErrorsIgnorePattern": "^_",
-        "destructuredArrayIgnorePattern": "^_",
-        "ignoreRestSiblings": true,
-        "varsIgnorePattern": "^_"
-      }
+        args: "all",
+        argsIgnorePattern: "^_",
+        caughtErrors: "all",
+        caughtErrorsIgnorePattern: "^_",
+        destructuredArrayIgnorePattern: "^_",
+        ignoreRestSiblings: true,
+        varsIgnorePattern: "^_",
+      },
     ],
     "react/react-in-jsx-scope": "off",
     "typescript/prefer-nullish-coalescing": "error",
     "unicorn/filename-case": [
       "error",
       {
-        "cases": {
-          "kebabCase": true
-        }
-      }
+        cases: {
+          kebabCase: true,
+        },
+      },
     ],
     "unicorn/no-array-for-each": "off",
-    "unicorn/no-array-reduce": "off"
+    "unicorn/no-array-reduce": "off",
   },
-  "categories": {
-    "correctness": "error",
-    "suspicious": "warn"
+  categories: {
+    correctness: "error",
+    suspicious: "warn",
   },
-  "plugins": [
+  plugins: [
     "typescript",
     "unicorn",
     "oxc",
     "import",
     "promise",
     "node",
-    "jsx-a11y"
+    "jsx-a11y",
   ],
-  "env": {
-    "es6": true,
-    "browser": true,
-    "node": true
+  env: {
+    es6: true,
+    browser: true,
+    node: true,
   },
-  "ignorePatterns": [
-    "**/dist/",
-    "**/node_modules/",
-    "**/.git/",
-    "**/*.gen.ts"
-  ],
-  "options": {
-    "typeAware": true,
-    "typeCheck": true
-  }
+  ignorePatterns: ["**/dist/", "**/node_modules/", "**/.git/", "**/*.gen.ts"],
+  options: {
+    typeAware: true,
+    typeCheck: true,
+  },
 });

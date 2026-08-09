@@ -1,13 +1,13 @@
-import clsx from 'clsx';
-import Image from 'next/image';
-import Link from 'next/link';
-import { ComponentProps, ReactNode, ViewTransition } from 'react';
-import Markdown from 'react-markdown';
+import clsx from "clsx";
+import Image from "next/image";
+import Link from "next/link";
+import { ComponentProps, ReactNode, ViewTransition } from "react";
+import Markdown from "react-markdown";
 
-import { getStars, type StarsResult } from '@/actions';
-import { Github, Link as LinkIcon, Star } from '@/components/icons';
-import { Code, Tag } from '@/components/landing';
-import { Separator } from '@/components/ui/separator';
+import { getStars, type StarsResult } from "@/actions";
+import { Github, Link as LinkIcon, Star } from "@/components/icons";
+import { Code, Tag } from "@/components/landing";
+import { Separator } from "@/components/ui/separator";
 
 const colors = {
   card: {
@@ -62,10 +62,10 @@ type TagData = {
 const markdownComponents = {
   a: ({ children, href }: { children?: ReactNode; href?: string }) => (
     <a
-      className='text-tns-blue decoration-tns-blue/40 visited:text-tns-magenta visited:decoration-tns-magenta/40 hover:decoration-tns-blue underline underline-offset-2 transition-colors'
+      className="text-tns-blue decoration-tns-blue/40 visited:text-tns-magenta visited:decoration-tns-magenta/40 hover:decoration-tns-blue underline underline-offset-2 transition-colors"
       href={href}
-      rel='noopener noreferrer'
-      target='_blank'
+      rel="noopener noreferrer"
+      target="_blank"
     >
       {children}
     </a>
@@ -75,16 +75,20 @@ const markdownComponents = {
     return <Code>{text}</Code>;
   },
   h2: ({ children }: { children?: ReactNode }) => (
-    <h3 className='mt-3 mb-1.5 font-semibold'>{children}</h3>
+    <h3 className="mt-3 mb-1.5 font-semibold">{children}</h3>
   ),
   li: ({ children }: { children?: ReactNode }) => (
-    <li className='my-0.5 ml-5 list-disc leading-relaxed'>{children}</li>
+    <li className="my-0.5 ml-5 list-disc leading-relaxed">{children}</li>
   ),
-  p: ({ children }: { children?: ReactNode }) => <p className='my-2 leading-relaxed'>{children}</p>,
+  p: ({ children }: { children?: ReactNode }) => (
+    <p className="my-2 leading-relaxed">{children}</p>
+  ),
   strong: ({ children }: { children?: ReactNode }) => (
-    <strong className='text-tns-white font-semibold'>{children}</strong>
+    <strong className="text-tns-white font-semibold">{children}</strong>
   ),
-  ul: ({ children }: { children?: ReactNode }) => <ul className='my-2 pl-1'>{children}</ul>,
+  ul: ({ children }: { children?: ReactNode }) => (
+    <ul className="my-2 pl-1">{children}</ul>
+  ),
 };
 
 export const ProjectCard = async ({
@@ -118,20 +122,20 @@ export const ProjectCard = async ({
       id={slug ?? name}
       {...props}
     >
-      <div className='flex grow flex-col gap-4'>
-        <div className='flex grow flex-col gap-2'>
+      <div className="flex grow flex-col gap-4">
+        <div className="flex grow flex-col gap-2">
           <Link
-            className='xs:text-3xl flex items-center gap-2 text-2xl hover:underline md:text-4xl'
+            className="xs:text-3xl flex items-center gap-2 text-2xl hover:underline md:text-4xl"
             href={slug ? `/projects/${slug}` : `https://github.com/${fullName}`}
             rel={slug ? undefined : `noopener noreferrer`}
             target={slug ? undefined : `_blank`}
           >
             {name}
-            <LinkIcon className='xs:size-6 size-5 shrink-0 opacity-50 md:size-7' />
+            <LinkIcon className="xs:size-6 size-5 shrink-0 opacity-50 md:size-7" />
           </Link>
           <Markdown components={markdownComponents}>{content}</Markdown>
         </div>
-        <div className='flex flex-wrap gap-2'>
+        <div className="flex flex-wrap gap-2">
           {badges.map((data) => (
             <Tag
               className={clsx(
@@ -145,22 +149,27 @@ export const ProjectCard = async ({
             </Tag>
           ))}
         </div>
-        <Separator className={clsx(`rounded-full border-t-2`, colors.card[color])} />
-        <div className='flex items-center gap-4'>
+        <Separator
+          className={clsx(`rounded-full border-t-2`, colors.card[color])}
+        />
+        <div className="flex items-center gap-4">
           <Link
             className={clsx(
               `flex items-center gap-1.5 rounded-full border-2 p-2 pr-2.5 text-white hover:underline`,
               colors.card[color],
             )}
             href={`https://github.com/${fullName}`}
-            rel='noopener noreferrer'
-            target='_blank'
+            rel="noopener noreferrer"
+            target="_blank"
           >
-            <Github className='size-6' fill='fill-white' />
+            <Github className="size-6" fill="fill-white" />
             Link
           </Link>
-          <Separator className={clsx(`opacity-35`, colors.tag[color])} orientation='vertical' />
-          <span className='flex items-center justify-center gap-1 rounded-full text-center'>
+          <Separator
+            className={clsx(`opacity-35`, colors.tag[color])}
+            orientation="vertical"
+          />
+          <span className="flex items-center justify-center gap-1 rounded-full text-center">
             <Star
               className={`mb-0.5 size-6`}
               fill={colors.icon[color].fill}
@@ -173,13 +182,13 @@ export const ProjectCard = async ({
       {imgSrc &&
         (slug ? (
           <Link
-            className='flex w-full shrink-0 flex-col items-center justify-center lg:w-1/2'
+            className="flex w-full shrink-0 flex-col items-center justify-center lg:w-1/2"
             href={`/projects/${slug}`}
           >
             <ViewTransition name={`project-image-${slug}`}>
               <Image
                 alt={imgAlt ?? `Screenshot of ${name}`}
-                className='rounded-lg contain-content'
+                className="rounded-lg contain-content"
                 height={imgHeight ?? 1080}
                 src={imgSrc}
                 width={imgWidth ?? 1920}
@@ -188,24 +197,24 @@ export const ProjectCard = async ({
           </Link>
         ) : imgHref ? (
           <a
-            className='flex w-full shrink-0 flex-col items-center justify-center lg:w-1/2'
+            className="flex w-full shrink-0 flex-col items-center justify-center lg:w-1/2"
             href={imgHref}
-            rel='noopener noreferrer'
-            target='_blank'
+            rel="noopener noreferrer"
+            target="_blank"
           >
             <Image
               alt={imgAlt ?? `Screenshot of ${name}`}
-              className='rounded-lg contain-content'
+              className="rounded-lg contain-content"
               height={imgHeight ?? 1080}
               src={imgSrc}
               width={imgWidth ?? 1920}
             />
           </a>
         ) : (
-          <div className='flex w-full shrink-0 flex-col items-center justify-center lg:w-1/2'>
+          <div className="flex w-full shrink-0 flex-col items-center justify-center lg:w-1/2">
             <Image
               alt={imgAlt ?? `Screenshot of ${name}`}
-              className='rounded-lg contain-content'
+              className="rounded-lg contain-content"
               height={imgHeight ?? 1080}
               src={imgSrc}
               width={imgWidth ?? 1920}

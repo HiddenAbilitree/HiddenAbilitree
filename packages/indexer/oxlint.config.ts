@@ -1,49 +1,57 @@
-import { defineConfig } from 'oxlint';
+import { defineConfig } from "oxlint";
 
 export default defineConfig({
   rules: {
-    'typescript/no-misused-promises': [
-      'error',
+    "typescript/no-misused-promises": [
+      "error",
       {
         checksVoidReturn: false,
       },
     ],
-    'no-unused-vars': [
-      'error',
+    "no-unused-vars": [
+      "error",
       {
-        args: 'all',
-        argsIgnorePattern: '^_',
-        caughtErrors: 'all',
-        caughtErrorsIgnorePattern: '^_',
-        destructuredArrayIgnorePattern: '^_',
+        args: "all",
+        argsIgnorePattern: "^_",
+        caughtErrors: "all",
+        caughtErrorsIgnorePattern: "^_",
+        destructuredArrayIgnorePattern: "^_",
         ignoreRestSiblings: true,
-        varsIgnorePattern: '^_',
+        varsIgnorePattern: "^_",
       },
     ],
-    'react/react-in-jsx-scope': 'off',
-    'typescript/prefer-nullish-coalescing': 'error',
-    'unicorn/filename-case': [
-      'error',
+    "react/react-in-jsx-scope": "off",
+    "typescript/prefer-nullish-coalescing": "error",
+    "unicorn/filename-case": [
+      "error",
       {
         cases: {
           kebabCase: true,
         },
       },
     ],
-    'unicorn/no-array-for-each': 'off',
-    'unicorn/no-array-reduce': 'off',
+    "unicorn/no-array-for-each": "off",
+    "unicorn/no-array-reduce": "off",
   },
   categories: {
-    correctness: 'error',
-    suspicious: 'warn',
+    correctness: "error",
+    suspicious: "warn",
   },
-  plugins: ['typescript', 'unicorn', 'oxc', 'import', 'promise', 'node', 'jsx-a11y'],
+  plugins: [
+    "typescript",
+    "unicorn",
+    "oxc",
+    "import",
+    "promise",
+    "node",
+    "jsx-a11y",
+  ],
   env: {
     es6: true,
     browser: true,
     node: true,
   },
-  ignorePatterns: ['**/dist/', '**/node_modules/', '**/.git/', '**/*.gen.ts'],
+  ignorePatterns: ["**/dist/", "**/node_modules/", "**/.git/", "**/*.gen.ts"],
   options: {
     typeAware: true,
     typeCheck: true,

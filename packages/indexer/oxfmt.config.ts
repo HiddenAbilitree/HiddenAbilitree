@@ -1,20 +1,20 @@
-import { defineConfig } from 'oxfmt';
+import { defineConfig } from "oxfmt";
 
 export default defineConfig({
-  arrowParens: 'always',
+  arrowParens: "always",
   bracketSameLine: false,
   bracketSpacing: true,
   jsxSingleQuote: true,
   semi: true,
   singleQuote: true,
   tabWidth: 2,
-  trailingComma: 'all',
+  trailingComma: "all",
   useTabs: false,
-  ignorePatterns: ['**/*.gen.ts'],
+  ignorePatterns: ["**/*.gen.ts"],
   sortImports: {
     newlinesBetween: true,
   },
   sortTailwindcss: {
-    functions: ['cva', 'clsx', 'cn'],
+    functions: ["cva", "clsx", "cn"],
   },
 });

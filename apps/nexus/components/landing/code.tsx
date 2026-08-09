@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import clsx from 'clsx';
-import { ComponentProps, FC } from 'react';
-import { toast as sonnerToast } from 'sonner';
+import clsx from "clsx";
+import { ComponentProps, FC } from "react";
+import { toast as sonnerToast } from "sonner";
 
-import { Copy } from '@/components/icons';
-import { Check } from '@/components/icons/check';
-import { ToastProps } from '@/components/landing/types';
-import { _0xProto } from '@/styles/fonts';
+import { Copy } from "@/components/icons";
+import { Check } from "@/components/icons/check";
+import { ToastProps } from "@/components/landing/types";
+import { _0xProto } from "@/styles/fonts";
 
 export const Code: FC<ComponentProps<`span`> & { children: string }> = ({
   children,
@@ -21,9 +21,11 @@ export const Code: FC<ComponentProps<`span`> & { children: string }> = ({
     )}
     {...props}
   >
-    <code className={`${_0xProto.className} text-tns-cyan text-[0.9em]`}>{children}</code>
+    <code className={`${_0xProto.className} text-tns-cyan text-[0.9em]`}>
+      {children}
+    </code>
     <button
-      className='border-tns-blue/40 bg-tns-blue/10 hover:border-tns-blue/60 hover:bg-tns-blue/20 rounded-sm border p-1 transition-colors hover:cursor-pointer'
+      className="border-tns-blue/40 bg-tns-blue/10 hover:border-tns-blue/60 hover:bg-tns-blue/20 rounded-sm border p-1 transition-colors hover:cursor-pointer"
       onClick={() => {
         toast({ description: `Successfully copied` });
         void navigator.clipboard.writeText(children);
@@ -44,9 +46,13 @@ const Toast = (props: ToastProps) => {
     <div
       className={`ring-tns-blue flex w-full items-center rounded-xl bg-[#111724] p-4 shadow-lg ring-1 md:max-w-91 ${_0xProto.className}`}
     >
-      <div className='flex flex-1 items-center gap-2'>
-        <Check className='fill-tns-blue size-6' fill='fill-tns-blue' stroke='stroke-tns-blue' />
-        <p className='text-tns-white text-sm'>{description}</p>
+      <div className="flex flex-1 items-center gap-2">
+        <Check
+          className="fill-tns-blue size-6"
+          fill="fill-tns-blue"
+          stroke="stroke-tns-blue"
+        />
+        <p className="text-tns-white text-sm">{description}</p>
       </div>
     </div>
   );

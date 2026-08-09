@@ -1,16 +1,16 @@
-import { codeFiles, db, eq, indexerMetadata, projects } from 'db';
+import { codeFiles, db, eq, indexerMetadata, projects } from "db";
 
-import type { Config } from '@/src/config';
-import type { EmbeddingProvider } from '@/src/embeddings';
-import { isCodeFile } from '@/src/github/client';
+import type { Config } from "@/src/config";
+import type { EmbeddingProvider } from "@/src/embeddings";
+import { isCodeFile } from "@/src/github/client";
 import {
   createGitHubGraphQLClient,
   GitHubApiError,
   type GitHubGraphQLClient,
-} from '@/src/github/graphql-client';
-import type { GitHubRepo } from '@/src/github/types';
-import { type KeyFile, summarizeRepo } from '@/src/summarizer/cerebras';
-import type { QdrantWrapper } from '@/src/vectors/qdrant';
+} from "@/src/github/graphql-client";
+import type { GitHubRepo } from "@/src/github/types";
+import { type KeyFile, summarizeRepo } from "@/src/summarizer/cerebras";
+import type { QdrantWrapper } from "@/src/vectors/qdrant";
 
 const KEY_FILE_PATTERNS = [
   /^readme\.md$/i,
@@ -26,7 +26,8 @@ const KEY_FILE_PATTERNS = [
   /^src\/lib\/.*\.[tj]sx?$/,
 ];
 
-const isKeyFile = (path: string) => KEY_FILE_PATTERNS.some((pattern) => pattern.test(path));
+const isKeyFile = (path: string) =>
+  KEY_FILE_PATTERNS.some((pattern) => pattern.test(path));
 
 type IndexResult =
   | { error: string; status: `error` }
@@ -48,7 +49,10 @@ const indexRepo = async (
       .where(eq(projects.id, repo.id))
       .then((rows) => rows[0]);
 
-    const currentSha = await github.getDefaultBranchSha(repo.full_name, repo.default_branch);
+    const currentSha = await github.getDefaultBranchSha(
+      repo.full_name,
+      repo.default_branch,
+    );
 
     if (!options.force && existing?.last_indexed_sha === currentSha) {
       console.log(`Skipping ${repo.full_name} (unchanged)`);
@@ -63,7 +67,9 @@ const indexRepo = async (
       .filter((item) => item.type === `blob` && isCodeFile(item.path))
       .map((item) => item.path);
 
-    console.log(`  [${repo.full_name}] Found ${codeFilePaths.length} code files`);
+    console.log(
+      `  [${repo.full_name}] Found ${codeFilePaths.length} code files`,
+    );
 
     let keyFilePaths = tree.tree
       .filter((item) => item.type === `blob` && isKeyFile(item.path))
@@ -74,7 +80,10 @@ const indexRepo = async (
       keyFilePaths = codeFilePaths.slice(0, 3);
     }
 
-    const keyFileContents = await github.getFileContents(repo.full_name, keyFilePaths);
+    const keyFileContents = await github.getFileContents(
+      repo.full_name,
+      keyFilePaths,
+    );
     const keyFiles: KeyFile[] = keyFilePaths.flatMap((path) => {
       const content = keyFileContents.get(path);
       return content === undefined ? [] : [{ content, path }];
@@ -92,7 +101,9 @@ const indexRepo = async (
     const isOwner = repo.owner.login.toLowerCase() === username.toLowerCase();
     const isFork = repo.fork;
 
-    console.log(`  [${repo.full_name}] Summary: ${summary.summary.slice(0, 100)}...`);
+    console.log(
+      `  [${repo.full_name}] Summary: ${summary.summary.slice(0, 100)}...`,
+    );
     console.log(`  [${repo.full_name}] Tags: ${summary.tags.join(`, `)}`);
 
     await db
@@ -145,8 +156,9 @@ const indexRepo = async (
       await db.delete(codeFiles).where(eq(codeFiles.project_id, repo.id));
 
       const BATCH_SIZE = 100;
-      const batches = Array.from({ length: Math.ceil(codeFilePaths.length / BATCH_SIZE) }, (_, i) =>
-        codeFilePaths.slice(i * BATCH_SIZE, (i + 1) * BATCH_SIZE),
+      const batches = Array.from(
+        { length: Math.ceil(codeFilePaths.length / BATCH_SIZE) },
+        (_, i) => codeFilePaths.slice(i * BATCH_SIZE, (i + 1) * BATCH_SIZE),
       );
 
       let completedBatches = 0;
@@ -154,7 +166,10 @@ const indexRepo = async (
 
       await Promise.all(
         batches.map(async (batchPaths) => {
-          const fileContents = await github.getFileContents(repo.full_name, batchPaths);
+          const fileContents = await github.getFileContents(
+            repo.full_name,
+            batchPaths,
+          );
 
           const batchFiles = batchPaths.flatMap((path) => {
             const content = fileContents.get(path);
@@ -184,16 +199,25 @@ const indexRepo = async (
 
           await Promise.all(
             inserted.map((row, idx) =>
-              qdrant.upsertCodeFile(row.id, repo.id, batchFiles[idx].ext, vectors[idx]),
+              qdrant.upsertCodeFile(
+                row.id,
+                repo.id,
+                batchFiles[idx].ext,
+                vectors[idx],
+              ),
             ),
           );
 
           completedBatches++;
-          console.log(`  [${repo.full_name}] Indexed batch ${completedBatches}/${totalBatches}`);
+          console.log(
+            `  [${repo.full_name}] Indexed batch ${completedBatches}/${totalBatches}`,
+          );
         }),
       );
 
-      console.log(`  [${repo.full_name}] Indexed ${codeFilePaths.length} files`);
+      console.log(
+        `  [${repo.full_name}] Indexed ${codeFilePaths.length} files`,
+      );
     }
 
     return { status: `indexed` };
@@ -220,9 +244,13 @@ export const runIndexPipeline = async (
     summariesOnly: boolean;
   },
 ) => {
-  const github = createGitHubGraphQLClient(config.github.pat, config.github.username, {
-    maxConcurrent: 50,
-  });
+  const github = createGitHubGraphQLClient(
+    config.github.pat,
+    config.github.username,
+    {
+      maxConcurrent: 50,
+    },
+  );
 
   if (options.recreateCollection) {
     await qdrant.recreateCollection(provider.dimensions);
@@ -236,7 +264,11 @@ export const runIndexPipeline = async (
     .where(eq(indexerMetadata.key, `embedding_provider`))
     .then((rows) => rows[0]?.value);
 
-  if (storedProvider && storedProvider !== provider.name && !options.recreateCollection) {
+  if (
+    storedProvider &&
+    storedProvider !== provider.name &&
+    !options.recreateCollection
+  ) {
     throw new Error(
       `Embedding provider changed! Stored: ${storedProvider}, Current: ${provider.name}. Use --recreate-collection to rebuild with new provider`,
     );
@@ -271,7 +303,9 @@ export const runIndexPipeline = async (
   const skipped = results.filter((r) => r.status === `skipped`).length;
   const errors = results.filter((r) => r.status === `error`);
 
-  console.log(`\nDone! Indexed: ${indexed}, Skipped: ${skipped}, Errors: ${errors.length}`);
+  console.log(
+    `\nDone! Indexed: ${indexed}, Skipped: ${skipped}, Errors: ${errors.length}`,
+  );
 
   if (errors.length > 0) {
     console.log(`\nFailed repos:`);
@@ -287,7 +321,9 @@ export const runIndexPipeline = async (
     const storedProjects = await db
       .select({ fullName: projects.full_name, id: projects.id })
       .from(projects);
-    const staleProjects = storedProjects.filter((p) => !githubRepoIds.has(p.id));
+    const staleProjects = storedProjects.filter(
+      (p) => !githubRepoIds.has(p.id),
+    );
 
     if (staleProjects.length > 0) {
       console.log(`\nCleaning up ${staleProjects.length} deleted repos...`);

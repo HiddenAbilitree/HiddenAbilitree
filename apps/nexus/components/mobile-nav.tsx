@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { AnimatePresence, motion } from 'motion/react';
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import { AnimatePresence, motion } from "motion/react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 
 export const MobileNav = ({ children }: { children: ReactNode }) => {
   const [open, setOpen] = useState(false);
@@ -48,7 +48,7 @@ export const MobileNav = ({ children }: { children: ReactNode }) => {
       <button
         aria-label={open ? `Close navigation menu` : `Open navigation menu`}
         aria-expanded={open}
-        className='bg-tns-black z-50 flex size-10 items-center justify-center rounded-full border-2 hover:cursor-pointer focus:ring sm:hidden'
+        className="bg-tns-black z-50 flex size-10 items-center justify-center rounded-full border-2 hover:cursor-pointer focus:ring sm:hidden"
         onClick={() => setOpen(!open)}
       >
         <motion.span
@@ -56,7 +56,7 @@ export const MobileNav = ({ children }: { children: ReactNode }) => {
             borderColor: open ? `var(--tns-red)` : `var(--tns-green)`,
             borderRadius: open ? `100%` : `25%`,
           }}
-          className='size-4 border-2'
+          className="size-4 border-2"
           initial={{
             borderColor: open ? `var(--tns-red)` : `var(--tns-green)`,
             borderRadius: open ? `100%` : `25%`,
@@ -68,13 +68,13 @@ export const MobileNav = ({ children }: { children: ReactNode }) => {
         {open && (
           <motion.div
             animate={{ opacity: 1 }}
-            className='bg-tns-black/50 fixed inset-0 z-40 bg-clip-content backdrop-blur-sm backdrop-brightness-50'
+            className="bg-tns-black/50 fixed inset-0 z-40 bg-clip-content backdrop-blur-sm backdrop-brightness-50"
             exit={{ opacity: 0 }}
             initial={{ opacity: 0 }}
-            key='nav'
+            key="nav"
           >
-            <nav className='flex flex-col gap-4 px-4 pt-18' ref={navRef}>
-              <div className='w-full rounded-full border' />
+            <nav className="flex flex-col gap-4 px-4 pt-18" ref={navRef}>
+              <div className="w-full rounded-full border" />
               {children}
             </nav>
           </motion.div>

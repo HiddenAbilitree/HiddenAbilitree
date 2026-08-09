@@ -1,6 +1,6 @@
-import { Webhooks } from '@octokit/webhooks';
-import { db, projects } from 'db';
-import { Elysia, t } from 'elysia';
+import { Webhooks } from "@octokit/webhooks";
+import { db, projects } from "db";
+import { Elysia, t } from "elysia";
 
 const webhooks = new Webhooks({
   secret: process.env.WEBHOOK_SECRET!,
@@ -11,7 +11,10 @@ export const app = new Elysia({ aot: false }).post(
   async ({ body, headers, status }) => {
     if (
       headers[`x-hub-signature-256`] === undefined ||
-      !(await webhooks.verify(JSON.stringify(body), headers[`x-hub-signature-256`]))
+      !(await webhooks.verify(
+        JSON.stringify(body),
+        headers[`x-hub-signature-256`],
+      ))
     )
       return status(401);
 

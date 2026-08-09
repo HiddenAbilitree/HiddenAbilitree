@@ -1,14 +1,14 @@
-import { type } from 'arktype';
+import { type } from "arktype";
 
-import type { Config } from '@/src/config';
-import type { EmbeddingProvider } from '@/src/embeddings/provider';
+import type { Config } from "@/src/config";
+import type { EmbeddingProvider } from "@/src/embeddings/provider";
 
-export type { EmbeddingProvider } from './provider';
+export type { EmbeddingProvider } from "./provider";
 
 const MODEL = `voyage-code-3`;
 const DIMENSIONS = 1024;
 const embeddingResponseSchema = type({
-  data: type({ embedding: 'number[]' }).array(),
+  data: type({ embedding: "number[]" }).array(),
 });
 
 export const createEmbeddingProvider = (config: Config): EmbeddingProvider => {
@@ -23,13 +23,15 @@ export const createEmbeddingProvider = (config: Config): EmbeddingProvider => {
       }),
       headers: {
         Authorization: `Bearer ${voyageApiKey}`,
-        'Content-Type': `application/json`,
+        "Content-Type": `application/json`,
       },
       method: `POST`,
     });
 
     if (!response.ok) {
-      throw new Error(`Voyage embedding failed: ${response.status} ${await response.text()}`);
+      throw new Error(
+        `Voyage embedding failed: ${response.status} ${await response.text()}`,
+      );
     }
 
     const { data } = embeddingResponseSchema.assert(await response.json());

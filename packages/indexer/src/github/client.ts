@@ -1,6 +1,6 @@
-import { type } from 'arktype';
+import { type } from "arktype";
 
-import type { GitHubRepo, GitHubTree } from '@/src/github/types';
+import type { GitHubRepo, GitHubTree } from "@/src/github/types";
 
 export type GitHubClient = {
   getCommitCount: (_fullName: string) => Promise<number>;
@@ -10,32 +10,32 @@ export type GitHubClient = {
   getTree: (_fullName: string, _sha: string) => Promise<GitHubTree>;
   listRepos: () => Promise<GitHubRepo[]>;
 };
-const commitSchema = type({ sha: 'string' });
-const contentSchema = type({ content: 'string', encoding: `'base64'` });
+const commitSchema = type({ sha: "string" });
+const contentSchema = type({ content: "string", encoding: `'base64'` });
 const repoSchema = type({
-  created_at: 'string',
-  default_branch: 'string',
-  description: 'string | null',
-  fork: 'boolean',
-  full_name: 'string',
-  html_url: 'string',
-  id: 'number',
-  language: 'string | null',
-  owner: { id: 'number', login: 'string' },
-  pushed_at: 'string',
-  stargazers_count: 'number',
-  topics: 'string[]',
-  updated_at: 'string',
+  created_at: "string",
+  default_branch: "string",
+  description: "string | null",
+  fork: "boolean",
+  full_name: "string",
+  html_url: "string",
+  id: "number",
+  language: "string | null",
+  owner: { id: "number", login: "string" },
+  pushed_at: "string",
+  stargazers_count: "number",
+  topics: "string[]",
+  updated_at: "string",
 });
 const treeSchema = type({
-  sha: 'string',
+  sha: "string",
   tree: type({
-    path: 'string',
-    sha: 'string',
-    'size?': 'number',
+    path: "string",
+    sha: "string",
+    "size?": "number",
     type: `'blob' | 'tree'`,
   }).array(),
-  truncated: 'boolean',
+  truncated: "boolean",
 });
 
 const normalizeRepo = (repo: typeof repoSchema.infer): GitHubRepo => ({
@@ -102,17 +102,25 @@ export const isCodeFile = (path: string): boolean => {
   return CODE_EXTENSIONS.has(ext.toLowerCase());
 };
 
-export const createGitHubClient = (pat: string, username: string): GitHubClient => {
+export const createGitHubClient = (
+  pat: string,
+  username: string,
+): GitHubClient => {
   const headers = {
     Accept: `application/vnd.github+json`,
     Authorization: `Bearer ${pat}`,
-    'X-GitHub-Api-Version': `2022-11-28`,
+    "X-GitHub-Api-Version": `2022-11-28`,
   };
 
-  const fetchJson = async <T>(url: string, parse: (data: unknown) => T): Promise<T> => {
+  const fetchJson = async <T>(
+    url: string,
+    parse: (data: unknown) => T,
+  ): Promise<T> => {
     const response = await fetch(url, { headers });
     if (!response.ok) {
-      throw new Error(`GitHub API error: ${response.status} ${await response.text()}`);
+      throw new Error(
+        `GitHub API error: ${response.status} ${await response.text()}`,
+      );
     }
     return parse(await response.json());
   };
@@ -135,9 +143,17 @@ export const createGitHubClient = (pat: string, username: string): GitHubClient 
   };
 
   const getRepo = async (fullName: string): Promise<GitHubRepo> =>
-    normalizeRepo(await fetchJson(`https://api.github.com/repos/${fullName}`, repoSchema.assert));
+    normalizeRepo(
+      await fetchJson(
+        `https://api.github.com/repos/${fullName}`,
+        repoSchema.assert,
+      ),
+    );
 
-  const getDefaultBranchSha = async (fullName: string, branch: string): Promise<string> => {
+  const getDefaultBranchSha = async (
+    fullName: string,
+    branch: string,
+  ): Promise<string> => {
     const commit = await fetchJson(
       `https://api.github.com/repos/${fullName}/commits/${branch}`,
       commitSchema.assert,
@@ -146,9 +162,12 @@ export const createGitHubClient = (pat: string, username: string): GitHubClient 
   };
 
   const getCommitCount = async (fullName: string): Promise<number> => {
-    const response = await fetch(`https://api.github.com/repos/${fullName}/commits?per_page=1`, {
-      headers,
-    });
+    const response = await fetch(
+      `https://api.github.com/repos/${fullName}/commits?per_page=1`,
+      {
+        headers,
+      },
+    );
     const link = response.headers.get(`link`);
     if (!link) return 1;
 
@@ -162,7 +181,10 @@ export const createGitHubClient = (pat: string, username: string): GitHubClient 
       treeSchema.assert,
     );
 
-  const getFileContent = async (fullName: string, path: string): Promise<string> => {
+  const getFileContent = async (
+    fullName: string,
+    path: string,
+  ): Promise<string> => {
     const content = await fetchJson(
       `https://api.github.com/repos/${fullName}/contents/${path}`,
       contentSchema.assert,
