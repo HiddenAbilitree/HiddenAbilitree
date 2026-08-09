@@ -1,4 +1,4 @@
-import { Metadata, Route } from 'next';
+import { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -12,23 +12,15 @@ import { CodeBlock, PlainCodeBlock } from '@/components/code-block';
 import { Github } from '@/components/icons';
 import { Tag } from '@/components/landing';
 import { Separator } from '@/components/ui/separator';
-import {
-  getProject,
-  getProjectContent,
-  getProjectSlugs,
-  ProjectData,
-} from '@/projects';
+import { getProject, getProjectContent, getProjectSlugs, ProjectData } from '@/projects';
 
 type Props = {
   params: Promise<{ slug: string }>;
 };
 
-export const generateStaticParams = () =>
-  getProjectSlugs().map((slug) => ({ slug }));
+export const generateStaticParams = () => getProjectSlugs().map((slug) => ({ slug }));
 
-export const generateMetadata = async ({
-  params,
-}: Props): Promise<Metadata> => {
+export const generateMetadata = async ({ params }: Props): Promise<Metadata> => {
   const { slug } = await params;
   const project = getProject(slug);
   if (!project) return {};
@@ -112,52 +104,39 @@ const fetchReadme = async (fullName: string): Promise<string | undefined> => {
   return content
     .replaceAll(/\(\/([^)]+)\)/g, `(${baseUrl}/${branch}/$1)`)
     .replaceAll(/src="\/([^"]+)"/g, `src="${baseUrl}/${branch}/$1"`)
-    .replaceAll(
-      /!\[([^\]]*)\]\((?!http)([^)]+)\)/g,
-      `![$1](${baseUrl}/${branch}/$2)`,
-    );
+    .replaceAll(/!\[([^\]]*)\]\((?!http)([^)]+)\)/g, `![$1](${baseUrl}/${branch}/$2)`);
 };
 
 const markdownComponents = {
   a: ({ children, href }: { children?: ReactNode; href?: string }) => (
-    <Link
-      className='text-tns-blue underline decoration-tns-blue/40 underline-offset-2 transition-colors visited:text-tns-magenta visited:decoration-tns-magenta/40 hover:decoration-tns-blue visited:hover:decoration-tns-magenta'
-      href={(href ?? ``) as Route}
+    <a
+      className='text-tns-blue decoration-tns-blue/40 visited:text-tns-magenta visited:decoration-tns-magenta/40 hover:decoration-tns-blue visited:hover:decoration-tns-magenta underline underline-offset-2 transition-colors'
+      href={href}
       rel='noopener noreferrer'
       target='_blank'
     >
       {children}
-    </Link>
+    </a>
   ),
   blockquote: ({ children }: { children?: ReactNode }) => (
-    <blockquote className='my-4 border-l-4 border-tns-blue/30 pl-4 text-tns-white/70 italic'>
+    <blockquote className='border-tns-blue/30 text-tns-white/70 my-4 border-l-4 pl-4 italic'>
       {children}
     </blockquote>
   ),
-  code: ({
-    children,
-    className,
-  }: {
-    children?: ReactNode;
-    className?: string;
-  }) => {
+  code: ({ children, className }: { children?: ReactNode; className?: string }) => {
     const rawLang = className?.replace(`language-`, ``);
     const [language, url] = rawLang?.split(`|`) ?? [];
-    const codeContent = (
-      Array.isArray(children) ?
-        children[0]
-      : children) as ReactNode;
-    const codeString =
-      typeof codeContent === `string` ? codeContent.replace(/\n$/, ``) : ``;
-    const isBlock =
-      typeof codeContent === `string` && codeContent.endsWith(`\n`);
-    return (
-      language ?
-        <CodeBlock codeString={codeString} language={language} url={url} />
-      : isBlock ? <PlainCodeBlock codeString={codeString} />
-      : <code className='not-prose rounded-sm bg-tns-blue/10 px-1.5 py-0.5 text-[0.9em] text-tns-blue'>
-          {children}
-        </code>
+    const codeContent: unknown = Array.isArray(children) ? children[0] : children;
+    const codeString = typeof codeContent === `string` ? codeContent.replace(/\n$/, ``) : ``;
+    const isBlock = typeof codeContent === `string` && codeContent.endsWith(`\n`);
+    return language ? (
+      <CodeBlock codeString={codeString} language={language} url={url} />
+    ) : isBlock ? (
+      <PlainCodeBlock codeString={codeString} />
+    ) : (
+      <code className='not-prose bg-tns-blue/10 text-tns-blue rounded-sm px-1.5 py-0.5 text-[0.9em]'>
+        {children}
+      </code>
     );
   },
   div: ({
@@ -171,11 +150,8 @@ const markdownComponents = {
     className?: string;
   }) => {
     const isAlert = className?.includes(`markdown-alert`);
-    const alignClass =
-      align === `center` ? `text-center flex flex-col items-center` : ``;
-    const classes = [className, isAlert && `not-prose`, alignClass]
-      .filter(Boolean)
-      .join(` `);
+    const alignClass = align === `center` ? `text-center flex flex-col items-center` : ``;
+    const classes = [className, isAlert && `not-prose`, alignClass].filter(Boolean).join(` `);
     return (
       <div className={classes || undefined} {...props}>
         {children}
@@ -183,12 +159,12 @@ const markdownComponents = {
     );
   },
   h1: ({ children }: { children?: ReactNode }) => (
-    <h2 className='mt-8 mb-4 border-b border-tns-blue/20 pb-2 text-2xl font-semibold'>
+    <h2 className='border-tns-blue/20 mt-8 mb-4 border-b pb-2 text-2xl font-semibold'>
       {children}
     </h2>
   ),
   h2: ({ children }: { children?: ReactNode }) => (
-    <h3 className='mt-6 mb-3 border-b border-tns-blue/15 pb-1.5 text-xl font-semibold'>
+    <h3 className='border-tns-blue/15 mt-6 mb-3 border-b pb-1.5 text-xl font-semibold'>
       {children}
     </h3>
   ),
@@ -198,20 +174,17 @@ const markdownComponents = {
   h4: ({ children }: { children?: ReactNode }) => (
     <h5 className='mt-4 mb-2 text-base font-semibold'>{children}</h5>
   ),
-  hr: () => <hr className='my-6 border-tns-blue/20' />,
+  hr: () => <hr className='border-tns-blue/20 my-6' />,
   img: ({ alt, src }: { alt?: string; src?: string | Blob }) => {
     const srcUrl = typeof src === `string` ? src : undefined;
-    const isBadge =
-      srcUrl?.includes(`shields.io`) ?? srcUrl?.includes(`img.shields.io`);
-    return isBadge ?
-        // eslint-disable-next-line @next/next/no-img-element
-        <img alt={alt ?? ``} className='inline-block' src={srcUrl} />
-        // eslint-disable-next-line @next/next/no-img-element
-      : <img
-          alt={alt ?? ``}
-          className='my-4 max-w-full rounded-lg'
-          src={srcUrl}
-        />;
+    const isBadge = srcUrl?.includes(`shields.io`) ?? srcUrl?.includes(`img.shields.io`);
+    return isBadge ? (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img alt={alt ?? ``} className='inline-block' src={srcUrl} />
+    ) : (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img alt={alt ?? ``} className='my-4 max-w-full rounded-lg' src={srcUrl} />
+    );
   },
   li: ({ children }: { children?: ReactNode }) => (
     <li className='my-1.5 ml-6 list-disc leading-relaxed'>{children}</li>
@@ -219,27 +192,19 @@ const markdownComponents = {
   ol: ({ children }: { children?: ReactNode }) => (
     <ol className='my-4 list-decimal pl-6'>{children}</ol>
   ),
-  p: ({
-    children,
-    className,
-    ...props
-  }: {
-    children?: ReactNode;
-    className?: string;
-  }) => {
+  p: ({ children, className, ...props }: { children?: ReactNode; className?: string }) => {
     const isAlertTitle = className?.includes(`markdown-alert-title`);
-    return isAlertTitle ?
-        <p
-          className={`${className} flex flex-row items-center gap-2`}
-          {...props}
-        >
-          {children}
-        </p>
-      : <p className='my-4 leading-relaxed'>{children}</p>;
+    return isAlertTitle ? (
+      <p className={`${className} flex flex-row items-center gap-2`} {...props}>
+        {children}
+      </p>
+    ) : (
+      <p className='my-4 leading-relaxed'>{children}</p>
+    );
   },
   pre: ({ children }: { children?: ReactNode }) => <>{children}</>,
   strong: ({ children }: { children?: ReactNode }) => (
-    <strong className='font-semibold text-tns-white'>{children}</strong>
+    <strong className='text-tns-white font-semibold'>{children}</strong>
   ),
   table: ({ children }: { children?: ReactNode }) => (
     <div className='my-4 overflow-x-auto'>
@@ -247,10 +212,10 @@ const markdownComponents = {
     </div>
   ),
   td: ({ children }: { children?: ReactNode }) => (
-    <td className='border border-tns-blue/30 px-3 py-2'>{children}</td>
+    <td className='border-tns-blue/30 border px-3 py-2'>{children}</td>
   ),
   th: ({ children }: { children?: ReactNode }) => (
-    <th className='border border-tns-blue/30 bg-tns-blue/10 px-3 py-2 text-left font-semibold'>
+    <th className='border-tns-blue/30 bg-tns-blue/10 border px-3 py-2 text-left font-semibold'>
       {children}
     </th>
   ),
@@ -272,9 +237,7 @@ const ProjectPage = async ({ params }: Props) => {
 
   return (
     <main className='flex min-h-screen flex-col bg-black'>
-      <section
-        className={`flex-1 bg-linear-to-b to-80% pt-24 pb-12 ${colorScheme.gradient}`}
-      >
+      <section className={`flex-1 bg-linear-to-b to-80% pt-24 pb-12 ${colorScheme.gradient}`}>
         <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
           <div className='flex flex-col gap-8'>
             {project.imgSrc && (
@@ -293,7 +256,7 @@ const ProjectPage = async ({ params }: Props) => {
               <div className='flex flex-wrap gap-2'>
                 {project.badges.map((badge) => (
                   <Tag
-                    className={`${colorScheme.tag} rounded-full text-tns-black`}
+                    className={`${colorScheme.tag} text-tns-black rounded-full`}
                     href={badge.href}
                     key={badge.text}
                   >
@@ -312,11 +275,8 @@ const ProjectPage = async ({ params }: Props) => {
                   View on GitHub
                 </Link>
               </div>
-              <div className='mt-2 text-tns-white/80'>
-                <Markdown
-                  components={markdownComponents}
-                  remarkPlugins={[remarkGfm]}
-                >
+              <div className='text-tns-white/80 mt-2'>
+                <Markdown components={markdownComponents} remarkPlugins={[remarkGfm]}>
                   {content}
                 </Markdown>
               </div>
@@ -329,10 +289,8 @@ const ProjectPage = async ({ params }: Props) => {
         <section className={`pb-16 ${colorScheme.flat}`}>
           <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
             <Separator className={`mb-12 ${colorScheme.tag}`} />
-            <div className='prose max-w-none prose-invert prose-p:my-1 prose-pre:my-6 prose-img:mt-2 prose-img:mb-6'>
-              <h2 className='mb-6 text-2xl font-bold text-tns-white/60'>
-                README
-              </h2>
+            <div className='prose prose-invert prose-p:my-1 prose-pre:my-6 prose-img:mt-2 prose-img:mb-6 max-w-none'>
+              <h2 className='text-tns-white/60 mb-6 text-2xl font-bold'>README</h2>
               <div className='text-tns-white/80'>
                 <Markdown
                   components={markdownComponents}

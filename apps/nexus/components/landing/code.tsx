@@ -16,16 +16,14 @@ export const Code: FC<ComponentProps<`span`> & { children: string }> = ({
 }) => (
   <span
     className={clsx(
-      `inline-flex w-fit items-center gap-1.5 rounded-sm bg-tns-blue/15 px-1.5 py-1 wrap-anywhere md:wrap-normal`,
+      `bg-tns-blue/15 inline-flex w-fit items-center gap-1.5 rounded-sm px-1.5 py-1 wrap-anywhere md:wrap-normal`,
       className,
     )}
     {...props}
   >
-    <code className={`${_0xProto.className} text-[0.9em] text-tns-cyan`}>
-      {children}
-    </code>
+    <code className={`${_0xProto.className} text-tns-cyan text-[0.9em]`}>{children}</code>
     <button
-      className='rounded-sm border border-tns-blue/40 bg-tns-blue/10 p-1 transition-colors hover:cursor-pointer hover:border-tns-blue/60 hover:bg-tns-blue/20'
+      className='border-tns-blue/40 bg-tns-blue/10 hover:border-tns-blue/60 hover:bg-tns-blue/20 rounded-sm border p-1 transition-colors hover:cursor-pointer'
       onClick={() => {
         toast({ description: `Successfully copied` });
         void navigator.clipboard.writeText(children);
@@ -36,23 +34,19 @@ export const Code: FC<ComponentProps<`span`> & { children: string }> = ({
   </span>
 );
 
-const toast = (toast: Omit<ToastProps, `id`>) =>
-  sonnerToast.custom((id) => <Toast description={toast.description} id={id} />);
+const toast = (t: Omit<ToastProps, `id`>) =>
+  sonnerToast.custom((id) => <Toast description={t.description} id={id} />);
 
 const Toast = (props: ToastProps) => {
   const { description } = props;
 
   return (
     <div
-      className={`flex w-full items-center rounded-xl bg-[#111724] p-4 shadow-lg ring-1 ring-tns-blue md:max-w-[364px] ${_0xProto.className}`}
+      className={`ring-tns-blue flex w-full items-center rounded-xl bg-[#111724] p-4 shadow-lg ring-1 md:max-w-91 ${_0xProto.className}`}
     >
       <div className='flex flex-1 items-center gap-2'>
-        <Check
-          className='size-6 fill-tns-blue'
-          fill='fill-tns-blue'
-          stroke='stroke-tns-blue'
-        />
-        <p className='text-sm text-tns-white'>{description}</p>
+        <Check className='fill-tns-blue size-6' fill='fill-tns-blue' stroke='stroke-tns-blue' />
+        <p className='text-tns-white text-sm'>{description}</p>
       </div>
     </div>
   );

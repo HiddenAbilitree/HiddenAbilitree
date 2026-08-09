@@ -19,19 +19,12 @@ export type QdrantWrapper = {
   ) => Promise<void>;
 };
 
-export const createQdrantClient = (
-  url: string,
-  apiKey?: string,
-): QdrantWrapper => {
+export const createQdrantClient = (url: string, apiKey?: string): QdrantWrapper => {
   const client = new QdrantClient({ apiKey, url });
 
-  const ensureCollection = async (
-    provider: EmbeddingProvider,
-  ): Promise<void> => {
+  const ensureCollection = async (provider: EmbeddingProvider): Promise<void> => {
     const collections = await client.getCollections();
-    const exists = collections.collections.some(
-      (c) => c.name === `code_chunks`,
-    );
+    const exists = collections.collections.some((c) => c.name === `code_chunks`);
 
     if (!exists) {
       await client.createCollection(`code_chunks`, {
@@ -41,17 +34,13 @@ export const createQdrantClient = (
         field_name: `project_id`,
         field_schema: `integer`,
       });
-      console.log(
-        `Created collection: code_chunks (${provider.dimensions} dimensions)`,
-      );
+      console.log(`Created collection: code_chunks (${provider.dimensions} dimensions)`);
     }
   };
 
   const recreateCollection = async (dimensions: number): Promise<void> => {
     const collections = await client.getCollections();
-    const exists = collections.collections.some(
-      (c) => c.name === `code_chunks`,
-    );
+    const exists = collections.collections.some((c) => c.name === `code_chunks`);
 
     if (exists) {
       await client.deleteCollection(`code_chunks`);
@@ -98,9 +87,8 @@ export const createQdrantClient = (
     limit: number,
     projectIdFilter?: number,
   ): Promise<Array<{ id: number; projectId: number; score: number }>> => {
-    const filter =
-      projectIdFilter ?
-        { must: [{ key: `project_id`, match: { value: projectIdFilter } }] }
+    const filter = projectIdFilter
+      ? { must: [{ key: `project_id`, match: { value: projectIdFilter } }] }
       : undefined;
 
     const results = await client.search(`code_chunks`, {
@@ -108,11 +96,16 @@ export const createQdrantClient = (
       limit,
       vector,
     });
-    return results.map((r) => ({
-      id: r.id as number,
-      projectId: (r.payload as { project_id: number }).project_id,
-      score: r.score,
-    }));
+    return results.map((result) => {
+      if (typeof result.id !== `number`) {
+        throw new TypeError(`Expected a numeric Qdrant point ID, received ${typeof result.id}`);
+      }
+      const projectId = result.payload?.project_id;
+      if (typeof projectId !== `number`) {
+        throw new TypeError(`Expected a numeric project_id in the Qdrant payload`);
+      }
+      return { id: result.id, projectId, score: result.score };
+    });
   };
 
   return {

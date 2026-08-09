@@ -1,54 +1,41 @@
 'use client';
 
 import * as languages from 'linguist-languages';
+import type { Language } from 'linguist-languages';
 import { memo, ReactNode, useState } from 'react';
 import 'react-shiki/css';
-import ShikiHighlighter from 'react-shiki';
+import { ShikiHighlighter } from 'react-shiki';
 
 import { Check, Copy } from '@/components/icons';
 
-type LinguistLanguage = {
-  aliases?: string[];
-  color?: string;
-  name?: string;
-};
+const languageList = Object.values(languages) as Language[];
 
-const getLanguageColor = (lang: string): string | undefined => {
-  const normalizedLang = lang.toLowerCase();
-  const found = Object.values(languages).find((langData) => {
-    const data = langData as LinguistLanguage;
-    return (
-      data.name?.toLowerCase() === normalizedLang ||
-      data.aliases?.some((alias) => alias.toLowerCase() === normalizedLang)
-    );
-  }) as LinguistLanguage | undefined;
-  return found?.color;
+const getLanguageColor = (lang: string) => {
+  const normalized = lang.toLowerCase();
+
+  return languageList.find(
+    ({ name, aliases }) =>
+      name.toLowerCase() === normalized ||
+      aliases?.some((alias) => alias.toLowerCase() === normalized),
+  )?.color;
 };
 
 export const CodeBlock = memo(
-  ({
-    codeString,
-    language,
-    url,
-  }: {
-    codeString: string;
-    language: string;
-    url?: string;
-  }) => {
+  ({ codeString, language, url }: { codeString: string; language: string; url?: string }) => {
     const langColor = getLanguageColor(language);
     return (
-      <div className='not-prose my-6 overflow-hidden rounded-md border border-tns-blue'>
-        <div className='flex items-center gap-2 bg-tns-blue py-1 pr-3 pl-2 text-xs font-semibold text-tns-black selection:bg-tns-black selection:text-tns-blue'>
+      <div className='not-prose border-tns-blue my-6 overflow-hidden rounded-md border'>
+        <div className='bg-tns-blue text-tns-black selection:bg-tns-black selection:text-tns-blue flex items-center gap-2 py-1 pr-3 pl-2 text-xs font-semibold'>
           {langColor && (
             <span
-              className='size-2.5 rounded-full border border-tns-black'
+              className='border-tns-black size-2.5 rounded-full border'
               style={{ backgroundColor: langColor }}
             />
           )}
           <span className='flex-1'>{language}</span>
           {url && (
             <a
-              className='flex items-center gap-1 text-tns-black/70 transition-colors hover:text-tns-black'
+              className='text-tns-black/70 hover:text-tns-black flex items-center gap-1 transition-colors'
               href={url}
               rel='noopener noreferrer'
               target='_blank'
@@ -103,23 +90,19 @@ export const PlainCodeBlock = memo(({ codeString }: { codeString: string }) => {
   };
 
   return (
-    <div className='not-prose my-6 overflow-hidden rounded-md border border-tns-blue/30 bg-tns-blue/5'>
+    <div className='not-prose border-tns-blue/30 bg-tns-blue/5 my-6 overflow-hidden rounded-md border'>
       <div className='flex items-center justify-between p-3'>
-        <code className='flex-1 overflow-x-auto text-sm text-tns-blue'>
-          {codeString}
-        </code>
+        <code className='text-tns-blue flex-1 overflow-x-auto text-sm'>{codeString}</code>
         <button
-          className='ml-3 shrink-0 cursor-pointer text-tns-blue/50 transition-colors hover:text-tns-blue'
+          className='text-tns-blue/50 hover:text-tns-blue ml-3 shrink-0 cursor-pointer transition-colors'
           onClick={handleCopy}
           type='button'
         >
-          {copied ?
-            <Check
-              className='size-4'
-              fill='fill-tns-green'
-              stroke='stroke-tns-green'
-            />
-          : <Copy className='size-4' />}
+          {copied ? (
+            <Check className='size-4' fill='fill-tns-green' stroke='stroke-tns-green' />
+          ) : (
+            <Copy className='size-4' />
+          )}
         </button>
       </div>
     </div>
@@ -129,29 +112,20 @@ export const PlainCodeBlock = memo(({ codeString }: { codeString: string }) => {
 PlainCodeBlock.displayName = `PlainCodeBlock`;
 
 export const createCodeComponent = () => ({
-  code: ({
-    children,
-    className,
-    ...props
-  }: {
-    children?: ReactNode;
-    className?: string;
-  }) => {
+  code: ({ children, className, ...props }: { children?: ReactNode; className?: string }) => {
     const rawLang = className?.replace(`language-`, ``);
     const [language, url] = rawLang?.split(`|`) ?? [];
-    const codeContent = (
-      Array.isArray(children) ?
-        children[0]
-      : children) as ReactNode;
-    const codeString =
-      typeof codeContent === `string` ? codeContent.replace(/\n$/, ``) : ``;
-    return language ?
-        <CodeBlock codeString={codeString} language={language} url={url} />
-      : <code
-          className='rounded-sm bg-tns-blue/15 px-1.5 py-0.5 text-[0.9em] text-tns-blue'
-          {...props}
-        >
-          {children}
-        </code>;
+    const codeContent = Array.isArray(children) ? children[0] : children;
+    const codeString = typeof codeContent === `string` ? codeContent.replace(/\n$/, ``) : ``;
+    return language ? (
+      <CodeBlock codeString={codeString} language={language} url={url} />
+    ) : (
+      <code
+        className='bg-tns-blue/15 text-tns-blue rounded-sm px-1.5 py-0.5 text-[0.9em]'
+        {...props}
+      >
+        {children}
+      </code>
+    );
   },
 });

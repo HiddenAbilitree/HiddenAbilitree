@@ -1,6 +1,5 @@
 import '@/styles/globals.css';
 import type { Metadata } from 'next';
-
 import { ReactNode } from 'react';
 import { Toaster } from 'sonner';
 
@@ -8,7 +7,7 @@ import { _0xProto } from '@/styles/fonts';
 
 const siteUrl = `https://www.ericzhang.dev`;
 const siteName = `Eric Zhang`;
-const siteDescription = `Building the future.`;
+const siteDescription = `Full-stack software engineer based in Northern Virginia, specializing in TypeScript, Rust, and AI systems.`;
 
 export const metadata: Metadata = {
   authors: [{ name: siteName, url: siteUrl }],
@@ -66,11 +65,7 @@ export default function RootLayout({
           type='application/ld+json'
         />
       </head>
-      <body
-        className={`
-          ${_0xProto.className}
-        `}
-      >
+      <body className={` ${_0xProto.className} `}>
         <Toaster toastOptions={{ duration: 1500 }} />
         {children}
       </body>

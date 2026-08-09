@@ -16,9 +16,9 @@ export const summarizeRepo = async (
   keyFiles: KeyFile[],
 ) => {
   const keyFilesSection =
-    keyFiles.length > 0 ?
-      `\n\nKey source files:\n${keyFiles.map((f) => `--- ${f.path} ---\n${f.content.slice(0, 3000)}${f.content.length > 3000 ? `\n... truncated` : ``}`).join(`\n\n`)}`
-    : ``;
+    keyFiles.length > 0
+      ? `\n\nKey source files:\n${keyFiles.map((f) => `--- ${f.path} ---\n${f.content.slice(0, 3000)}${f.content.length > 3000 ? `\n... truncated` : ``}`).join(`\n\n`)}`
+      : ``;
 
   const prompt = `Analyze this GitHub repository and provide a definitive summary and tags. Be specific and confident - you have access to the actual source code.
 
@@ -40,10 +40,10 @@ Based on the actual code above, provide:
     model: cerebras(`llama-3.3-70b`),
     output: Output.object({
       schema: type({
-        summary: type("string").describe(
+        summary: type('string').describe(
           `A confident 3-4 sentence summary describing exactly what this project does, its main features, and purpose`,
         ),
-        tags: type("string[]").describe(
+        tags: type('string[]').describe(
           `5-10 specific tags: languages, frameworks, libraries, and domain categories (AI, CLI, Web, API, etc.)`,
         ),
       }),

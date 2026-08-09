@@ -1,13 +1,7 @@
 import { SVGProps } from 'react';
 
 export const Star = (props: SVGProps<SVGSVGElement>) => (
-  <svg
-    height='1em'
-    viewBox='0 0 24 24'
-    width='1em'
-    xmlns='http://www.w3.org/2000/svg'
-    {...props}
-  >
+  <svg height='1em' viewBox='0 0 24 24' width='1em' xmlns='http://www.w3.org/2000/svg' {...props}>
     {/* Icon from Sargam Icons by Abhimanyu Rana - https://github.com/planetabhi/sargam-icons/blob/main/LICENSE.txt */}
     <g fill='none'>
       <path

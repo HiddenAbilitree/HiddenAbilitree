@@ -7,16 +7,9 @@
     "strict": true,
     "skipLibCheck": true,
     "rootDir": "./",
-    "baseUrl": "./",
     "paths": {
-      "@/*": [
-        "./*"
-      ]
+      "@/*": ["./*"]
     }
   },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    "**/*.mjs"
-  ]
+  "include": ["**/*.ts", "**/*.tsx", "**/*.mjs"]
 }

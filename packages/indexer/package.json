@@ -6,21 +6,26 @@
   "scripts": {
     "index": "bun run src/index.ts index",
     "index:force": "bun run src/index.ts index --force",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
+    "format": "oxfmt .",
+    "format:check": "oxfmt --check ."
   },
   "dependencies": {
     "@ai-sdk/cerebras": "^2.0.20",
     "@qdrant/js-client-rest": "^1.16.2",
     "ai": "^6.0.49",
+    "arktype": "^2.1.20",
     "db": "workspace:*",
-    "drizzle-orm": "^0.45.1",
-    "arktype": "^2.1.20"
+    "drizzle-orm": "^0.45.1"
   },
   "devDependencies": {
     "@hiddenability/opinionated-defaults": "^0.1.47",
     "@types/bun": "^1.3.6",
-    "@types/node": "^25.0.10",
+    "@types/node": "^26.2.0",
+    "oxfmt": "^0.62.0",
+    "oxlint": "^1.77.0",
+    "oxlint-tsgolint": "^7.0.2001",
     "typescript": "^5.9.3"
   }
 }

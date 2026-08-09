@@ -1,3 +1,5 @@
+import { type } from 'arktype';
+
 import type { Config } from '@/src/config';
 import type { EmbeddingProvider } from '@/src/embeddings/provider';
 
@@ -5,6 +7,9 @@ export type { EmbeddingProvider } from './provider';
 
 const MODEL = `voyage-code-3`;
 const DIMENSIONS = 1024;
+const embeddingResponseSchema = type({
+  data: type({ embedding: 'number[]' }).array(),
+});
 
 export const createEmbeddingProvider = (config: Config): EmbeddingProvider => {
   const { voyageApiKey } = config.embedding;
@@ -24,15 +29,11 @@ export const createEmbeddingProvider = (config: Config): EmbeddingProvider => {
     });
 
     if (!response.ok) {
-      throw new Error(
-        `Voyage embedding failed: ${response.status} ${await response.text()}`,
-      );
+      throw new Error(`Voyage embedding failed: ${response.status} ${await response.text()}`);
     }
 
-    const { data } = (await response.json()) as {
-      data: Array<{ embedding: number[] }>;
-    };
-    return data.map((d) => d.embedding);
+    const { data } = embeddingResponseSchema.assert(await response.json());
+    return data.map(({ embedding }) => embedding);
   };
 
   return { dimensions: DIMENSIONS, embedBatch, name: `voyage:${MODEL}` };

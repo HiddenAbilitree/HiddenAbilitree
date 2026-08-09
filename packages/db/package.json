@@ -2,6 +2,7 @@
   "name": "db",
   "version": "0.0.1",
   "private": true,
+  "type": "module",
   "module": "src/index.ts",
   "exports": {
     ".": {
@@ -11,20 +12,25 @@
   },
   "scripts": {
     "migrate": "drizzle-kit push --force",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
+    "format": "oxfmt .",
+    "format:check": "oxfmt --check ."
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",
     "pg": "^8.17.2"
   },
-  "peerDependencies": {
-    "drizzle-orm": "^0.45.1"
-  },
   "devDependencies": {
     "@hiddenability/opinionated-defaults": "^0.1.47",
-    "@types/node": "^25.0.10",
+    "@types/node": "^26.2.0",
     "drizzle-kit": "^0.31.8",
+    "oxfmt": "^0.62.0",
+    "oxlint": "^1.77.0",
+    "oxlint-tsgolint": "^7.0.2001",
     "typescript": "^5.9.3"
+  },
+  "peerDependencies": {
+    "drizzle-orm": "^0.45.1"
   }
 }

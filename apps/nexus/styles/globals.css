@@ -22,11 +22,11 @@
 
 @utility prose-github {
   & :where(h1):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-    @apply mt-8 mb-4 border-b border-tns-blue/20 pb-2 text-2xl font-semibold;
+    @apply border-tns-blue/20 mt-8 mb-4 border-b pb-2 text-2xl font-semibold;
   }
 
   & :where(h2):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-    @apply mt-6 mb-3 border-b border-tns-blue/15 pb-1.5 text-xl font-semibold;
+    @apply border-tns-blue/15 mt-6 mb-3 border-b pb-1.5 text-xl font-semibold;
   }
 
   & :where(h3):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
@@ -54,19 +54,19 @@
   }
 
   & :where(blockquote):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-    @apply my-4 border-l-4 border-tns-blue/30 pl-4 text-tns-white/70 italic;
+    @apply border-tns-blue/30 text-tns-white/70 my-4 border-l-4 pl-4 italic;
   }
 
   & :where(hr):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-    @apply my-6 border-tns-blue/20;
+    @apply border-tns-blue/20 my-6;
   }
 
   & :where(strong):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-    @apply font-semibold text-tns-white;
+    @apply text-tns-white font-semibold;
   }
 
   & :where(a):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-    @apply text-tns-blue underline decoration-tns-blue/50 underline-offset-2 transition-colors hover:decoration-tns-blue;
+    @apply text-tns-blue decoration-tns-blue/50 hover:decoration-tns-blue underline underline-offset-2 transition-colors;
   }
 
   & :where(a:visited):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
@@ -74,11 +74,11 @@
   }
 
   & :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-    @apply rounded bg-tns-blue/10 px-1.5 py-0.5 text-[0.875em] text-tns-blue;
+    @apply bg-tns-blue/10 text-tns-blue rounded px-1.5 py-0.5 text-[0.875em];
   }
 
   & :where(pre):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-    @apply my-4 overflow-x-auto rounded-lg bg-tns-black p-4;
+    @apply bg-tns-black my-4 overflow-x-auto rounded-lg p-4;
   }
 
   & :where(pre code):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
@@ -90,11 +90,11 @@
   }
 
   & :where(th):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-    @apply border border-tns-blue/30 bg-tns-blue/10 px-3 py-2 text-left font-semibold;
+    @apply border-tns-blue/30 bg-tns-blue/10 border px-3 py-2 text-left font-semibold;
   }
 
   & :where(td):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-    @apply border border-tns-blue/30 px-3 py-2;
+    @apply border-tns-blue/30 border px-3 py-2;
   }
 
   & :where(img):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
@@ -237,7 +237,6 @@
   --tns-highlight: oklch(0.7537 0.1243 213.18);
 }
 
-
 @layer base {
   @font-face {
     font-family: '0xProto';
@@ -288,7 +287,7 @@
   }
 
   * {
-    @apply border-tns-blue tracking-tighter antialiased outline-ring/50 optimize-legibility selection:bg-tns-blue selection:text-tns-black;
+    @apply border-tns-blue outline-ring/50 optimize-legibility selection:bg-tns-blue selection:text-tns-black tracking-tighter antialiased;
     scrollbar-width: thin;
     scrollbar-color: var(--tns-blue) var(--tns-black);
   }

@@ -5,10 +5,26 @@ export type EmbeddingResult =
 type EmbeddingResponse = {
   data: Array<{ embedding: number[] }>;
 };
+const isEmbeddingResponse = (value: unknown): value is EmbeddingResponse => {
+  if (
+    typeof value !== `object` ||
+    value === null ||
+    !(`data` in value) ||
+    !Array.isArray(value.data)
+  )
+    return false;
 
-export const embedQueryForCode = async (
-  text: string,
-): Promise<EmbeddingResult> => {
+  const first: unknown = value.data[0];
+  return (
+    typeof first === `object` &&
+    first !== null &&
+    `embedding` in first &&
+    Array.isArray(first.embedding) &&
+    first.embedding.every((item: unknown) => typeof item === `number`)
+  );
+};
+
+export const embedQueryForCode = async (text: string): Promise<EmbeddingResult> => {
   const response = await fetch(`https://api.voyageai.com/v1/embeddings`, {
     body: JSON.stringify({
       input: text,
@@ -29,6 +45,12 @@ export const embedQueryForCode = async (
     };
   }
 
-  const data = (await response.json()) as EmbeddingResponse;
+  const data: unknown = await response.json();
+  if (!isEmbeddingResponse(data))
+    return {
+      error: `Voyage embedding returned an invalid response`,
+      success: false,
+    };
+
   return { embedding: data.data[0].embedding, success: true };
 };

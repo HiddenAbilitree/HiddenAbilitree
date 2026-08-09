@@ -11,11 +11,8 @@
     "isolatedModules": true,
     "types": ["bun-types"],
     "rootDir": "./",
-    "baseUrl": "./",
     "paths": {
-      "@/*": [
-        "./*"
-      ]
+      "@/*": ["./*"]
     }
   },
   "include": ["src/**/*"],

@@ -1,5 +1,23 @@
 {
   "name": "HiddenAbilitree",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
+    "format": "oxfmt .",
+    "format:check": "oxfmt --check .",
+    "check-types": "turbo run check-types",
+    "index": "bun run --cwd packages/indexer index"
+  },
+  "dependencies": {
+    "babel-plugin-react-compiler": "^1.0.0"
+  },
   "devDependencies": {
     "turbo": "^2.5.4"
   },
@@ -7,23 +25,7 @@
     "node": ">=18"
   },
   "packageManager": "bun@1.2.13",
-  "private": true,
-  "scripts": {
-    "build": "turbo run build",
-    "dev": "turbo run dev",
-    "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "check-types": "turbo run check-types",
-    "index": "bun run --cwd packages/indexer index"
-  },
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
   "trustedDependencies": [
     "@tailwindcss/oxide"
-  ],
-  "dependencies": {
-    "babel-plugin-react-compiler": "^1.0.0"
-  }
+  ]
 }
