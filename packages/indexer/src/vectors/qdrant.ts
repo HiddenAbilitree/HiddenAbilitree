@@ -96,11 +96,16 @@ export const createQdrantClient = (url: string, apiKey?: string): QdrantWrapper 
       limit,
       vector,
     });
-    return results.map((r) => ({
-      id: r.id as number,
-      projectId: (r.payload as { project_id: number }).project_id,
-      score: r.score,
-    }));
+    return results.map((result) => {
+      if (typeof result.id !== `number`) {
+        throw new TypeError(`Expected a numeric Qdrant point ID, received ${typeof result.id}`);
+      }
+      const projectId = result.payload?.project_id;
+      if (typeof projectId !== `number`) {
+        throw new TypeError(`Expected a numeric project_id in the Qdrant payload`);
+      }
+      return { id: result.id, projectId, score: result.score };
+    });
   };
 
   return {
