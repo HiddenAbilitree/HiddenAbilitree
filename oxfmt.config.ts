@@ -1,20 +1,7 @@
-import { defineConfig } from 'oxfmt';
+import {
+  oxfmtConfig,
+  oxfmtConfigBase,
+  oxfmtConfigNext,
+} from '@hiddenability/opinionated-defaults/oxfmt';
 
-export default defineConfig({
-  arrowParens: 'always',
-  bracketSameLine: false,
-  bracketSpacing: true,
-  jsxSingleQuote: true,
-  semi: true,
-  singleQuote: true,
-  tabWidth: 2,
-  trailingComma: 'all',
-  useTabs: false,
-  ignorePatterns: ['**/*.gen.ts'],
-  sortImports: {
-    newlinesBetween: true,
-  },
-  sortTailwindcss: {
-    functions: ['cva', 'clsx', 'cn'],
-  },
-});
+export default oxfmtConfig(oxfmtConfigBase, oxfmtConfigNext);

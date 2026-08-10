@@ -26,6 +26,12 @@
             (mkScript "dev" "bun dev")
             (mkScript "lint" "oxlint && eslint_d .")
             (mkScript "lint:fix" "oxlint --fix --fix-suggestions && eslint_d . --fix")
+            (mkScript "reinstall" ''
+              set -euo pipefail
+              root="$(git rev-parse --show-toplevel)"
+              cd "$root"
+              fd -HI -t d '^node_modules$' -X rm -rf && bun i
+            '')
             (mkScript "haod" "bunx @hiddenability/opinionated-defaults@latest")
           ];
         in
@@ -36,6 +42,8 @@
               [
                 bun
                 eslint_d
+                fd
+                git
                 nodejs_24
                 oxlint
                 prettierd

@@ -91,12 +91,13 @@ export const createQdrantClient = (url: string, apiKey?: string): QdrantWrapper 
       ? { must: [{ key: `project_id`, match: { value: projectIdFilter } }] }
       : undefined;
 
-    const results = await client.search(`code_chunks`, {
+    const { points } = await client.query(`code_chunks`, {
       filter,
       limit,
-      vector,
+      query: vector,
+      with_payload: [`project_id`],
     });
-    return results.map((result) => {
+    return points.map((result) => {
       if (typeof result.id !== `number`) {
         throw new TypeError(`Expected a numeric Qdrant point ID, received ${typeof result.id}`);
       }
