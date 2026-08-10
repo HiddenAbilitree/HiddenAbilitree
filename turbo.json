@@ -10,6 +10,10 @@
     "QDRANT_API_KEY",
     "QDRANT_URL",
     "VOYAGE_API_KEY",
+    "RESUME_PASSWORD",
+    "RESUME_PAT",
+    "RESUME_REPO",
+    "RESUME_SESSION_SECRET",
     "WEBHOOK_SECRET"
   ],
   "tasks": {

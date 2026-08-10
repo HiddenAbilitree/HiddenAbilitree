@@ -9,13 +9,13 @@ export const Header = () => (
       ericzhang<span className='text-tns-blue'>.</span>dev
     </Bubble>
     <nav className='hidden items-center gap-2 rounded-full text-center text-xl font-black sm:flex'>
+      <Bubble href='/resume'>resume</Bubble>
       <Bubble href='#projects'>projects</Bubble>
-      {/* <Bubble href='#resume'>resume</Bubble> */}
       {/* <Bubble href='/'>blog</Bubble> */}
     </nav>
     <MobileNav>
+      <Bubble href='/resume'>resume</Bubble>
       <Bubble href='#projects'>projects</Bubble>
-      {/* <Bubble href='/'>blog</Bubble> */}
     </MobileNav>
   </header>
 );

@@ -24,6 +24,9 @@ export default oxlintConfig([oxlintConfigBase], {
       },
     },
   ],
+  rules: {
+    'import/no-unassigned-import': ['error', { allow: ['server-only'] }],
+  },
   settings: {
     next: {
       rootDir: ['apps/nexus/'],

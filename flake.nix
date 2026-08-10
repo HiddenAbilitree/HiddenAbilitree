@@ -32,6 +32,10 @@
               cd "$root"
               fd -HI -t d '^node_modules$' -X rm -rf && bun i
             '')
+            (mkScript "checkenv" ''
+              root="$(git rev-parse --show-toplevel)"
+              exec bun --no-env-file "$root/scripts/check-env.ts"
+            '')
             (mkScript "haod" "bunx @hiddenability/opinionated-defaults@latest")
           ];
         in

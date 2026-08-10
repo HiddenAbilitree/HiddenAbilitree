@@ -292,6 +292,19 @@
     scrollbar-color: var(--tns-blue) var(--tns-black);
   }
 
+  .react-pdf__Page__textContent {
+    mix-blend-mode: multiply;
+  }
+
+  .react-pdf__Page__textContent span {
+    letter-spacing: normal;
+  }
+
+  .react-pdf__Page__textContent span::selection {
+    color: transparent;
+    background: var(--tns-blue);
+  }
+
   *::-webkit-scrollbar {
     width: 8px;
     height: 8px;

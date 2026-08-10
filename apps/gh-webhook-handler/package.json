@@ -6,7 +6,7 @@
   "module": "src/index.js",
   "scripts": {
     "deploy": "wrangler deploy",
-    "dev": "bun --watch src/index.ts",
+    "dev": "bun --watch --port=3001 src/index.ts",
     "start": "wrangler dev",
     "lint": "oxlint",
     "cf-typegen": "wrangler types",
