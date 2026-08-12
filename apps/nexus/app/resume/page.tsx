@@ -28,21 +28,27 @@ export default async function ResumePage() {
         back
       </Link>
       <main className='from-tns-blue/20 to-tns-blue/5 flex min-h-screen items-center justify-center bg-linear-to-b px-4 py-24'>
-        <section className={`flex w-full max-w-5xl flex-col gap-8 ${unlocked ? 'self-start' : ''}`}>
+        <section
+          className={`w-full max-w-5xl gap-4 sm:gap-8 ${
+            unlocked ? 'grid grid-cols-1 self-start sm:grid-cols-[1fr_auto]' : 'flex flex-col'
+          }`}
+        >
           {unlocked ? (
             <>
-              <div className='flex min-h-14 flex-wrap items-center justify-between gap-2 sm:gap-4'>
-                <h1 className='text-tns-white text-4xl font-black sm:text-5xl'>resume</h1>
-                <a
-                  className='bg-tns-blue text-tns-black hover:bg-tns-green flex h-12 shrink-0 items-center gap-2 rounded-lg border-2 pr-4 pl-3.5 font-black transition-colors'
-                  download='resume.pdf'
-                  href='/resume/download?download=1'
-                >
-                  <Document aria-hidden='true' className='size-5 shrink-0' />
-                  download pdf
-                </a>
+              <h1 className='text-tns-white flex items-center text-4xl font-black sm:min-h-14 sm:text-5xl'>
+                resume
+              </h1>
+              <div className='min-w-0 sm:col-span-2 sm:row-start-2'>
+                <ResumePdfViewer />
               </div>
-              <ResumePdfViewer />
+              <a
+                className='bg-tns-blue text-tns-black hover:bg-tns-green flex h-12 w-full items-center justify-center gap-2 rounded-lg border-2 px-4 font-black transition-colors sm:col-start-2 sm:row-start-1 sm:w-auto sm:self-center'
+                download='resume.pdf'
+                href='/resume/download?download=1'
+              >
+                <Document aria-hidden='true' className='size-5 shrink-0' />
+                download pdf
+              </a>
             </>
           ) : (
             <ResumeForm />

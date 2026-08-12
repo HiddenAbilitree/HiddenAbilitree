@@ -13,7 +13,7 @@ export default function LandingPage() {
 
 const Hero = () => (
   <Section className='from-tns-blue/25 to-tns-blue/5 h-screen gap-4 bg-black bg-linear-to-b to-80%'>
-    <div className='2xs:text-8xl lg:text-10xl xl:text-10xl 3xl:text-11xl absolute bottom-24 left-8 flex flex-col text-7xl sm:text-8xl md:text-9xl'>
+    <div className='2xs:text-8xl lg:text-10xl xl:text-10xl 3xl:text-11xl absolute right-4 bottom-24 left-4 flex flex-col text-7xl sm:text-8xl md:right-8 md:left-8 md:text-9xl'>
       <h1 className='flex flex-col'>
         <span className='text-tns-white/70 text-edge-cap text-trim-both uppercase'>Eric</span>
         {` `}
