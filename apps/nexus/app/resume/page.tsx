@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
+import { Document } from '@/components/icons';
 import { ResumeForm } from '@/components/resume-form';
 import { ResumePdfViewer } from '@/components/resume-pdf-viewer';
 import { hasResumeAccess } from '@/lib/resume';
@@ -33,10 +34,11 @@ export default async function ResumePage() {
               <div className='flex min-h-14 flex-wrap items-center justify-between gap-2 sm:gap-4'>
                 <h1 className='text-tns-white text-4xl font-black sm:text-5xl'>resume</h1>
                 <a
-                  className='bg-tns-blue text-tns-black hover:bg-tns-green flex h-12 shrink-0 items-center rounded-lg border-2 px-4 font-black transition-colors'
+                  className='bg-tns-blue text-tns-black hover:bg-tns-green flex h-12 shrink-0 items-center gap-2 rounded-lg border-2 pr-4 pl-3.5 font-black transition-colors'
                   download='resume.pdf'
                   href='/resume/download?download=1'
                 >
+                  <Document aria-hidden='true' className='size-5 shrink-0' />
                   download pdf
                 </a>
               </div>
