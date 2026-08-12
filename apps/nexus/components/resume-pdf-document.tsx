@@ -61,6 +61,7 @@ export const ResumePdfDocument = () => {
                 key={pageNumber}
                 loading={<ResumePdfSkeleton label={`Loading resume page ${pageNumber}`} />}
                 pageNumber={pageNumber}
+                devicePixelRatio={Math.max(window.devicePixelRatio, 2)}
                 renderAnnotationLayer
                 renderTextLayer
                 width={containerWidth}
