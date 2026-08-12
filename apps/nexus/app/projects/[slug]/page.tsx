@@ -109,19 +109,9 @@ const fetchReadme = async (fullName: string): Promise<string | undefined> => {
 
 const markdownComponents = {
   a: ({ children, href }: { children?: ReactNode; href?: string }) => (
-    <a
-      className='text-tns-blue decoration-tns-blue/40 visited:text-tns-magenta visited:decoration-tns-magenta/40 hover:decoration-tns-blue visited:hover:decoration-tns-magenta underline underline-offset-2 transition-colors'
-      href={href}
-      rel='noopener noreferrer'
-      target='_blank'
-    >
+    <a href={href} rel='noopener noreferrer' target='_blank'>
       {children}
     </a>
-  ),
-  blockquote: ({ children }: { children?: ReactNode }) => (
-    <blockquote className='border-tns-blue/30 text-tns-white/70 my-4 border-l-4 pl-4 italic'>
-      {children}
-    </blockquote>
   ),
   code: ({ children, className }: { children?: ReactNode; className?: string }) => {
     const rawLang = className?.replace(`language-`, ``);
@@ -134,16 +124,13 @@ const markdownComponents = {
     ) : isBlock ? (
       <PlainCodeBlock codeString={codeString} />
     ) : (
-      <code className='not-prose bg-tns-blue/10 text-tns-blue rounded-sm px-1.5 py-0.5 text-[0.9em]'>
-        {children}
-      </code>
+      <code>{children}</code>
     );
   },
   div: ({
     align,
     children,
     className,
-    ...props
   }: {
     align?: string;
     children?: ReactNode;
@@ -152,11 +139,7 @@ const markdownComponents = {
     const isAlert = className?.includes(`markdown-alert`);
     const alignClass = align === `center` ? `text-center flex flex-col items-center` : ``;
     const classes = [className, isAlert && `not-prose`, alignClass].filter(Boolean).join(` `);
-    return (
-      <div className={classes || undefined} {...props}>
-        {children}
-      </div>
-    );
+    return <div className={classes || undefined}>{children}</div>;
   },
   h1: ({ children }: { children?: ReactNode }) => (
     <h2 className='border-tns-blue/20 mt-8 mb-4 border-b pb-2 text-2xl font-semibold'>
@@ -174,53 +157,30 @@ const markdownComponents = {
   h4: ({ children }: { children?: ReactNode }) => (
     <h5 className='mt-4 mb-2 text-base font-semibold'>{children}</h5>
   ),
-  hr: () => <hr className='border-tns-blue/20 my-6' />,
   img: ({ alt, src }: { alt?: string; src?: string | Blob }) => {
     const srcUrl = typeof src === `string` ? src : undefined;
     const isBadge = srcUrl?.includes(`shields.io`) ?? srcUrl?.includes(`img.shields.io`);
     return isBadge ? (
       // eslint-disable-next-line @next/next/no-img-element
-      <img alt={alt ?? ``} className='inline-block' src={srcUrl} />
+      <img alt={alt ?? ``} className='not-prose inline-block' src={srcUrl} />
     ) : (
       // eslint-disable-next-line @next/next/no-img-element
-      <img alt={alt ?? ``} className='my-4 max-w-full rounded-lg' src={srcUrl} />
+      <img alt={alt ?? ``} src={srcUrl} />
     );
   },
-  li: ({ children }: { children?: ReactNode }) => (
-    <li className='my-1.5 ml-6 list-disc leading-relaxed'>{children}</li>
-  ),
-  ol: ({ children }: { children?: ReactNode }) => (
-    <ol className='my-4 list-decimal pl-6'>{children}</ol>
-  ),
-  p: ({ children, className, ...props }: { children?: ReactNode; className?: string }) => {
+  p: ({ children, className }: { children?: ReactNode; className?: string }) => {
     const isAlertTitle = className?.includes(`markdown-alert-title`);
-    return isAlertTitle ? (
-      <p className={`${className} flex flex-row items-center gap-2`} {...props}>
+    return (
+      <p className={isAlertTitle ? `${className} flex flex-row items-center gap-2` : className}>
         {children}
       </p>
-    ) : (
-      <p className='my-4 leading-relaxed'>{children}</p>
     );
   },
   pre: ({ children }: { children?: ReactNode }) => <>{children}</>,
-  strong: ({ children }: { children?: ReactNode }) => (
-    <strong className='text-tns-white font-semibold'>{children}</strong>
-  ),
   table: ({ children }: { children?: ReactNode }) => (
-    <div className='my-4 overflow-x-auto'>
-      <table className='w-full border-collapse'>{children}</table>
+    <div className='overflow-x-auto'>
+      <table>{children}</table>
     </div>
-  ),
-  td: ({ children }: { children?: ReactNode }) => (
-    <td className='border-tns-blue/30 border px-3 py-2'>{children}</td>
-  ),
-  th: ({ children }: { children?: ReactNode }) => (
-    <th className='border-tns-blue/30 bg-tns-blue/10 border px-3 py-2 text-left font-semibold'>
-      {children}
-    </th>
-  ),
-  ul: ({ children }: { children?: ReactNode }) => (
-    <ul className='my-4 list-disc pl-6'>{children}</ul>
   ),
 };
 
@@ -275,7 +235,7 @@ const ProjectPage = async ({ params }: Props) => {
                   View on GitHub
                 </Link>
               </div>
-              <div className='text-tns-white/80 mt-2'>
+              <div className='prose prose-sm prose-invert prose-tns prose-card text-tns-white/80 mt-2 max-w-none'>
                 <Markdown components={markdownComponents} remarkPlugins={[remarkGfm]}>
                   {content}
                 </Markdown>
@@ -289,18 +249,16 @@ const ProjectPage = async ({ params }: Props) => {
         <section className={`pb-16 ${colorScheme.flat}`}>
           <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
             <Separator className={`mb-12 ${colorScheme.tag}`} />
-            <div className='prose prose-invert prose-p:my-1 prose-pre:my-6 prose-img:mt-2 prose-img:mb-6 max-w-none'>
-              <h2 className='text-tns-white/60 mb-6 text-2xl font-bold'>README</h2>
-              <div className='text-tns-white/80'>
-                <Markdown
-                  components={markdownComponents}
-                  rehypePlugins={[rehypeRaw]}
-                  remarkPlugins={[remarkGfm, remarkGithubAlerts]}
-                >
-                  {readme}
-                </Markdown>
-              </div>
-            </div>
+            <h2 className='text-tns-white/60 mb-6 text-2xl font-bold'>README</h2>
+            <article className='prose prose-invert prose-tns prose-github text-tns-white/80 max-w-none'>
+              <Markdown
+                components={markdownComponents}
+                rehypePlugins={[rehypeRaw]}
+                remarkPlugins={[remarkGfm, remarkGithubAlerts]}
+              >
+                {readme}
+              </Markdown>
+            </article>
           </div>
         </section>
       )}

@@ -115,7 +115,7 @@ const MessageItem = memo(({ isExpanded, message: m, onToggleReasoning }: Message
         {m.role === `user` ? (
           <span>{m.content}</span>
         ) : (
-          <div className='prose-compact prose prose-sm prose-invert prose-headings:my-2 prose-headings:border-0 prose-p:my-1.5 prose-p:leading-relaxed prose-a:text-tns-blue prose-a:decoration-tns-blue/40 prose-a:underline-offset-2 hover:prose-a:decoration-tns-blue prose-strong:text-tns-white prose-code:rounded-sm prose-code:bg-tns-blue/15 prose-code:px-1 prose-code:py-0.5 prose-code:break-all prose-code:text-tns-cyan prose-code:before:content-none prose-code:after:content-none prose-pre:my-2 prose-pre:bg-transparent prose-pre:p-0 prose-ol:my-1.5 prose-ul:my-1.5 prose-li:my-0.5 prose-table:my-2 prose-th:border prose-th:border-tns-blue/30 prose-th:bg-tns-blue/10 prose-th:px-2 prose-th:py-1 prose-td:border prose-td:border-tns-blue/30 prose-td:px-2 prose-td:py-1 max-w-none min-w-0 wrap-break-word'>
+          <div className='prose prose-sm prose-invert prose-tns prose-chat max-w-none min-w-0 wrap-break-word'>
             <Markdown
               components={markdownComponents}
               rehypePlugins={rehypePlugins}
@@ -432,7 +432,7 @@ export const Chatbot = ({ isOpen, onCloseAction }: ChatbotProps) => {
                     `What information do you have?`,
                     `What projects has he worked on?`,
                     `Explain how the tool router works in mcp-scheduling`,
-                    `What tech stack does this site use?`,
+                    `Explain how this chatbot is implemented`,
                   ].map((prompt, i) => (
                     <button
                       className='border-tns-blue/40 bg-tns-blue/10 text-tns-blue hover:border-tns-blue hover:bg-tns-blue/20 cursor-pointer rounded-lg border px-3 py-2 text-left transition-colors'

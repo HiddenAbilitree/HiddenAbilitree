@@ -14,121 +14,139 @@
   text-box-edge: cap alphabetic;
 }
 
-@utility prose-code-size-inherit {
-  & :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-    font-size: inherit;
+@utility prose-tns {
+  &.prose :where(a):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply text-tns-blue decoration-tns-blue/50 hover:decoration-tns-blue underline underline-offset-2 transition-colors;
+  }
+
+  &.prose :where(a:visited):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply text-tns-magenta decoration-tns-magenta/50 hover:decoration-tns-magenta;
+  }
+
+  &.prose :where(strong):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply text-tns-white font-semibold;
   }
 }
 
 @utility prose-github {
-  & :where(h1):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+  &.prose :where(h1):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
     @apply border-tns-blue/20 mt-8 mb-4 border-b pb-2 text-2xl font-semibold;
   }
 
-  & :where(h2):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+  &.prose :where(h2):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
     @apply border-tns-blue/15 mt-6 mb-3 border-b pb-1.5 text-xl font-semibold;
   }
 
-  & :where(h3):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+  &.prose :where(h3):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
     @apply mt-5 mb-2 text-lg font-semibold;
   }
 
-  & :where(h4):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+  &.prose :where(h4):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
     @apply mt-4 mb-2 text-base font-semibold;
   }
 
-  & :where(p):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+  &.prose :where(p):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
     @apply my-4 leading-relaxed;
   }
 
-  & :where(ul, ol):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+  &.prose :where(ul, ol):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
     @apply my-4 pl-6;
   }
 
-  & :where(li):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+  &.prose :where(li, li > p):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
     @apply my-1;
   }
 
-  & :where(li > p):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-    @apply my-1;
-  }
-
-  & :where(blockquote):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+  &.prose :where(blockquote):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
     @apply border-tns-blue/30 text-tns-white/70 my-4 border-l-4 pl-4 italic;
   }
 
-  & :where(hr):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+  &.prose :where(hr):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
     @apply border-tns-blue/20 my-6;
   }
 
-  & :where(strong):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-    @apply text-tns-white font-semibold;
+  &.prose :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply bg-tns-blue/10 text-tns-blue rounded px-1.5 py-0.5 text-[0.875em] before:content-none after:content-none;
   }
 
-  & :where(a):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-    @apply text-tns-blue decoration-tns-blue/50 hover:decoration-tns-blue underline underline-offset-2 transition-colors;
-  }
-
-  & :where(a:visited):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-    @apply text-tns-magenta decoration-tns-magenta/50 hover:decoration-tns-magenta;
-  }
-
-  & :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-    @apply bg-tns-blue/10 text-tns-blue rounded px-1.5 py-0.5 text-[0.875em];
-  }
-
-  & :where(pre):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+  &.prose :where(pre):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
     @apply bg-tns-black my-4 overflow-x-auto rounded-lg p-4;
   }
 
-  & :where(pre code):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+  &.prose :where(pre code):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
     @apply bg-transparent p-0;
   }
 
-  & :where(table):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+  &.prose :where(table):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
     @apply my-4 w-full border-collapse;
   }
 
-  & :where(th):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+  &.prose :where(th):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
     @apply border-tns-blue/30 bg-tns-blue/10 border px-3 py-2 text-left font-semibold;
   }
 
-  & :where(td):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+  &.prose :where(td):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
     @apply border-tns-blue/30 border px-3 py-2;
   }
 
-  & :where(img):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+  &.prose :where(img):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
     @apply my-4 rounded-lg;
   }
 }
 
-@utility prose-compact {
-  & :where(p):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-    @apply my-2 leading-normal;
+@utility prose-card {
+  &.prose :where(p):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply my-2 leading-relaxed;
   }
 
-  & :where(ul, ol):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-    @apply my-2;
+  &.prose :where(ul, ol):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply my-2 pl-5;
   }
 
-  & :where(li):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+  &.prose :where(li):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
     @apply my-0.5;
   }
 
-  & :where(h1):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-    @apply mt-4 mb-2;
+  &.prose :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply bg-tns-blue/10 text-tns-blue rounded px-1.5 py-0.5 text-[0.875em] before:content-none after:content-none;
+  }
+}
+
+@utility prose-chat {
+  &.prose :where(h1, h2, h3, h4):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply my-2 border-0;
   }
 
-  & :where(h2):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-    @apply mt-3 mb-1.5;
+  &.prose :where(p):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply my-1.5 leading-relaxed;
   }
 
-  & :where(h3, h4):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-    @apply mt-2 mb-1;
+  &.prose :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply bg-tns-blue/15 text-tns-cyan rounded-sm px-1 py-0.5 break-all before:content-none after:content-none;
   }
 
-  & :where(pre):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+  &.prose :where(pre):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply my-2 bg-transparent p-0;
+  }
+
+  &.prose :where(ol, ul):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply my-1.5;
+  }
+
+  &.prose :where(li):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply my-0.5;
+  }
+
+  &.prose :where(table):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
     @apply my-2;
+  }
+
+  &.prose :where(th):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply border-tns-blue/30 bg-tns-blue/10 border px-2 py-1;
+  }
+
+  &.prose :where(td):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply border-tns-blue/30 border px-2 py-1;
   }
 }
 

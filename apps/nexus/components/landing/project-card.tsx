@@ -61,30 +61,17 @@ type TagData = {
 
 const markdownComponents = {
   a: ({ children, href }: { children?: ReactNode; href?: string }) => (
-    <a
-      className='text-tns-blue decoration-tns-blue/40 visited:text-tns-magenta visited:decoration-tns-magenta/40 hover:decoration-tns-blue underline underline-offset-2 transition-colors'
-      href={href}
-      rel='noopener noreferrer'
-      target='_blank'
-    >
+    <a href={href} rel='noopener noreferrer' target='_blank'>
       {children}
     </a>
   ),
   code: ({ children }: { children?: ReactNode }) => {
     const text = typeof children === `string` ? children : ``;
-    return <Code>{text}</Code>;
+    return <Code className='not-prose'>{text}</Code>;
   },
   h2: ({ children }: { children?: ReactNode }) => (
     <h3 className='mt-3 mb-1.5 font-semibold'>{children}</h3>
   ),
-  li: ({ children }: { children?: ReactNode }) => (
-    <li className='my-0.5 ml-5 list-disc leading-relaxed'>{children}</li>
-  ),
-  p: ({ children }: { children?: ReactNode }) => <p className='my-2 leading-relaxed'>{children}</p>,
-  strong: ({ children }: { children?: ReactNode }) => (
-    <strong className='text-tns-white font-semibold'>{children}</strong>
-  ),
-  ul: ({ children }: { children?: ReactNode }) => <ul className='my-2 pl-1'>{children}</ul>,
 };
 
 export const ProjectCard = async ({
@@ -129,7 +116,9 @@ export const ProjectCard = async ({
             {name}
             <LinkIcon className='xs:size-6 size-5 shrink-0 opacity-50 md:size-7' />
           </Link>
-          <Markdown components={markdownComponents}>{content}</Markdown>
+          <div className='prose prose-sm prose-invert prose-tns prose-card max-w-none'>
+            <Markdown components={markdownComponents}>{content}</Markdown>
+          </div>
         </div>
         <div className='flex flex-wrap gap-2'>
           {badges.map((data) => (
