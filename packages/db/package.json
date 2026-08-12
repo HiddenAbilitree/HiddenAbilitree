@@ -11,7 +11,7 @@
     }
   },
   "scripts": {
-    "migrate": "drizzle-kit push --force",
+    "migrate": "bun --env-file=../../.env run drizzle-kit push --force",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "format": "oxfmt .",

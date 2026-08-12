@@ -4,8 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "index": "bun run src/index.ts index",
-    "index:force": "bun run src/index.ts index --force",
+    "index": "bun --env-file=../../.env run src/index.ts index",
+    "index:force": "bun --env-file=../../.env run src/index.ts index --force",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "format": "oxfmt .",

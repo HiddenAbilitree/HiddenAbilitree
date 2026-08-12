@@ -37,7 +37,7 @@ Based on the actual code above, provide:
 2. 5-10 specific tags including: programming languages used, frameworks/libraries (Next.js, React, Drizzle, etc.), and domain categories (Web, API, Database, AI, etc.)`;
 
   const { output } = await generateText({
-    model: cerebras(`llama-3.3-70b`),
+    model: cerebras(`gpt-oss-120b`),
     output: Output.object({
       schema: type({
         summary: type('string').describe(

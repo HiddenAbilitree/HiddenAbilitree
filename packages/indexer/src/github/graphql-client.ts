@@ -1,16 +1,16 @@
-import { type } from 'arktype';
+import {
+  GitHubGraphQLCommitCountResponse,
+  GitHubGraphQLFileResponse,
+  GitHubGraphQLRepoResponse,
+  GitHubGraphQLReposResponse,
+  GitHubGraphQLResponse,
+  GitHubGraphQLShaResponse,
+  type GitHubRateLimit,
+  type GitHubRepo,
+  GitHubTree,
+} from '@/src/github/types';
 
-import type { GitHubRepo, GitHubTree } from '@/src/github/types';
-
-type RateLimitInfo = {
-  limit: number;
-  remaining: number;
-  reset: Date;
-  resource: string;
-  used: number;
-};
-
-const extractRateLimitHeaders = (headers: Headers): RateLimitInfo | undefined => {
+const extractRateLimitHeaders = (headers: Headers): GitHubRateLimit | undefined => {
   const limit = headers.get(`x-ratelimit-limit`);
   const remaining = headers.get(`x-ratelimit-remaining`);
   const used = headers.get(`x-ratelimit-used`);
@@ -28,7 +28,7 @@ const extractRateLimitHeaders = (headers: Headers): RateLimitInfo | undefined =>
   };
 };
 
-const logRateLimit = (info: RateLimitInfo, context: string) => {
+const logRateLimit = (info: GitHubRateLimit, context: string) => {
   const resetIn = Math.max(0, Math.round((info.reset.getTime() - Date.now()) / 1000));
   const minutes = Math.floor(resetIn / 60);
   const seconds = resetIn % 60;
@@ -37,76 +37,11 @@ const logRateLimit = (info: RateLimitInfo, context: string) => {
   );
 };
 
-export type GitHubGraphQLClient = {
-  getCommitCount: (_fullName: string) => Promise<number>;
-  getDefaultBranchSha: (_fullName: string, _branch: string) => Promise<string>;
-  getFileContents: (_fullName: string, _paths: string[]) => Promise<Map<string, string>>;
-  getRepo: (_fullName: string) => Promise<GitHubRepo>;
-  getTree: (_fullName: string, _sha: string) => Promise<GitHubTree>;
-  listRepos: () => Promise<GitHubRepo[]>;
-};
-
-const graphQLResponseSchema = type({
-  'data?': 'unknown',
-  'errors?': type({ message: 'string' }).array(),
-});
-const nullableNameSchema = type({ name: 'string' }).or('null');
-
-const repoNodeSchema = type({
-  created_at: 'string',
-  default_branch: nullableNameSchema,
-  description: 'string | null',
-  fork: 'boolean',
-  full_name: 'string',
-  html_url: 'string',
-  id: 'number',
-  language: nullableNameSchema,
-  name: 'string',
-  owner: { id: 'number', login: 'string' },
-  pushed_at: 'string',
-  stargazers_count: 'number',
-  topics: {
-    nodes: type({ topic: { name: 'string' } }).array(),
-  },
-  updated_at: 'string',
-});
-
-const reposResponseSchema = type({
-  user: {
-    repositories: {
-      nodes: repoNodeSchema.array(),
-      pageInfo: {
-        endCursor: 'string | null',
-        hasNextPage: 'boolean',
-      },
-    },
-  },
-});
-
-const repoResponseSchema = type({ repository: repoNodeSchema });
-const shaResponseSchema = type({
-  repository: {
-    ref: type({ target: { oid: 'string' } }).or('null'),
-  },
-});
-const commitCountResponseSchema = type({
-  repository: {
-    defaultBranchRef: type({
-      target: { history: { totalCount: 'number' } },
-    }).or('null'),
-  },
-});
-const fileResponseSchema = type({
-  repository: {
-    '[string]': type({ text: 'string | null' }).or('null'),
-  },
-});
-
 export class GitHubApiError extends Error {
-  rateLimit?: RateLimitInfo;
+  rateLimit?: GitHubRateLimit;
   status: number;
 
-  constructor(message: string, status: number, rateLimit?: RateLimitInfo) {
+  constructor(message: string, status: number, rateLimit?: GitHubRateLimit) {
     super(message);
     this.name = `GitHubApiError`;
     this.status = status;
@@ -114,19 +49,51 @@ export class GitHubApiError extends Error {
   }
 }
 
+const RETRYABLE_STATUSES = [408, 429, 500, 502, 503, 504] as const;
+type RetryableStatus = (typeof RETRYABLE_STATUSES)[number];
+const RETRYABLE_STATUS_SET = new Set<number>(RETRYABLE_STATUSES);
+const isRetryableStatus = (status: number): status is RetryableStatus =>
+  RETRYABLE_STATUS_SET.has(status);
+const MAX_ERROR_DETAIL_LENGTH = 500;
+
+const getRetryDelay = (response: Response, attempt: number, baseDelay: number): number => {
+  const retryAfter = response.headers.get(`retry-after`);
+  if (retryAfter) {
+    const seconds = Number(retryAfter);
+    if (Number.isFinite(seconds)) return Math.max(0, seconds * 1000);
+
+    const date = Date.parse(retryAfter);
+    if (Number.isFinite(date)) return Math.max(0, date - Date.now());
+  }
+
+  return baseDelay * 2 ** attempt + Math.random() * baseDelay;
+};
+
+const getErrorDetail = async (response: Response): Promise<string> => {
+  const contentType = response.headers.get(`content-type`) ?? ``;
+  if (contentType.includes(`text/html`)) return response.statusText || `Request failed`;
+
+  const body = (await response.text()).replaceAll(/\s+/g, ` `).trim();
+  if (!body) return response.statusText || `Request failed`;
+  return body.length > MAX_ERROR_DETAIL_LENGTH
+    ? `${body.slice(0, MAX_ERROR_DETAIL_LENGTH)}…`
+    : body;
+};
+
 const createSemaphore = (limit: number) => {
   let running = 0;
   const queue: Array<() => void> = [];
 
-  const acquire = (): Promise<void> =>
-    new Promise((resolve) => {
-      if (running < limit) {
-        running++;
-        resolve();
-      } else {
-        queue.push(resolve);
-      }
-    });
+  const acquire = (): Promise<void> => {
+    const { promise, resolve } = Promise.withResolvers<void>();
+    if (running < limit) {
+      running++;
+      resolve();
+    } else {
+      queue.push(resolve);
+    }
+    return promise;
+  };
 
   const release = () => {
     running--;
@@ -143,15 +110,25 @@ const createSemaphore = (limit: number) => {
 export const createGitHubGraphQLClient = (
   pat: string,
   username: string,
-  options: { maxConcurrent?: number } = {},
-): GitHubGraphQLClient => {
-  const { maxConcurrent = 10 } = options;
+  options: {
+    fetcher?: typeof globalThis.fetch;
+    maxConcurrent?: number;
+    maxRetries?: number;
+    retryBaseDelayMs?: number;
+  } = {},
+) => {
+  const {
+    fetcher = globalThis.fetch,
+    maxConcurrent = 10,
+    maxRetries = 3,
+    retryBaseDelayMs = 500,
+  } = options;
   const semaphore = createSemaphore(maxConcurrent);
 
   let lastRateLimitLog = 0;
   const RATE_LIMIT_LOG_INTERVAL = 10_000;
 
-  const maybeLogRateLimit = (rateLimit: RateLimitInfo | undefined, context: string) => {
+  const maybeLogRateLimit = (rateLimit: GitHubRateLimit | undefined, context: string) => {
     if (!rateLimit) return;
 
     const now = Date.now();
@@ -166,92 +143,120 @@ export const createGitHubGraphQLClient = (
     }
   };
 
+  const request = async (
+    url: string,
+    init: RequestInit,
+    context: string,
+  ): Promise<{ rateLimit: GitHubRateLimit | undefined; response: Response }> => {
+    let attempt = 0;
+
+    while (true) {
+      await semaphore.acquire();
+      const response = await (async () => {
+        try {
+          return await fetcher(url, init);
+        } finally {
+          semaphore.release();
+        }
+      })();
+
+      const rateLimit = extractRateLimitHeaders(response.headers);
+      maybeLogRateLimit(rateLimit, context);
+
+      if (!isRetryableStatus(response.status) || attempt >= maxRetries) {
+        return { rateLimit, response };
+      }
+
+      const delay = getRetryDelay(response, attempt, retryBaseDelayMs);
+      await response.body?.cancel();
+      console.warn(
+        `  [GitHub ${context}] ${response.status}; retrying ${attempt + 1}/${maxRetries} in ${Math.round(delay)}ms`,
+      );
+      const { promise, resolve } = Promise.withResolvers<void>();
+      setTimeout(resolve, delay);
+      await promise;
+      attempt++;
+    }
+  };
+
   const graphqlFetch = async <T>(
     query: string,
     parseData: (data: unknown) => T,
     variables: Record<string, unknown> = {},
   ): Promise<T> => {
-    await semaphore.acquire();
-    try {
-      const response = await fetch(`https://api.github.com/graphql`, {
+    const { rateLimit, response } = await request(
+      `https://api.github.com/graphql`,
+      {
         body: JSON.stringify({ query, variables }),
         headers: {
           Authorization: `Bearer ${pat}`,
           'Content-Type': `application/json`,
         },
         method: `POST`,
-      });
+      },
+      `GraphQL`,
+    );
 
-      const rateLimit = extractRateLimitHeaders(response.headers);
-      maybeLogRateLimit(rateLimit, `GraphQL`);
-
-      if (!response.ok) {
-        const text = await response.text();
-        if (response.status === 403 && rateLimit?.remaining === 0) {
-          const resetIn = Math.ceil((rateLimit.reset.getTime() - Date.now()) / 1000);
-          throw new GitHubApiError(
-            `Rate limit exceeded. Resets in ${Math.ceil(resetIn / 60)} minutes.`,
-            response.status,
-            rateLimit,
-          );
-        }
+    if (!response.ok) {
+      if (response.status === 403 && rateLimit?.remaining === 0) {
+        const resetIn = Math.ceil((rateLimit.reset.getTime() - Date.now()) / 1000);
         throw new GitHubApiError(
-          `GitHub GraphQL error: ${response.status} ${text}`,
+          `Rate limit exceeded. Resets in ${Math.ceil(resetIn / 60)} minutes.`,
           response.status,
           rateLimit,
         );
       }
-
-      const json = graphQLResponseSchema.assert(await response.json());
-      if (json.errors?.length) {
-        const errorMsg = json.errors.map(({ message }) => message).join(`, `);
-        throw new GitHubApiError(`GitHub GraphQL errors: ${errorMsg}`, 400, rateLimit);
-      }
-      if (json.data === undefined) {
-        throw new GitHubApiError(`GitHub GraphQL response contained no data`, 502, rateLimit);
-      }
-
-      return parseData(json.data);
-    } finally {
-      semaphore.release();
+      const detail = await getErrorDetail(response);
+      throw new GitHubApiError(
+        `GitHub GraphQL error: ${response.status} ${detail}`,
+        response.status,
+        rateLimit,
+      );
     }
+
+    const json = GitHubGraphQLResponse.assert(await response.json());
+    if (json.errors?.length) {
+      const errorMsg = json.errors.map(({ message }) => message).join(`, `);
+      throw new GitHubApiError(`GitHub GraphQL errors: ${errorMsg}`, 400, rateLimit);
+    }
+    if (json.data === undefined) {
+      throw new GitHubApiError(`GitHub GraphQL response contained no data`, 502, rateLimit);
+    }
+
+    return parseData(json.data);
   };
 
   const restFetch = async <T>(url: string, parse: (data: unknown) => T): Promise<T> => {
-    await semaphore.acquire();
-    try {
-      const response = await fetch(url, {
+    const { rateLimit, response } = await request(
+      url,
+      {
         headers: {
           Accept: `application/vnd.github+json`,
           Authorization: `Bearer ${pat}`,
           'X-GitHub-Api-Version': `2022-11-28`,
         },
-      });
+      },
+      `REST`,
+    );
 
-      const rateLimit = extractRateLimitHeaders(response.headers);
-      maybeLogRateLimit(rateLimit, `REST`);
-
-      if (!response.ok) {
-        const text = await response.text();
-        if (response.status === 403 && rateLimit?.remaining === 0) {
-          const resetIn = Math.ceil((rateLimit.reset.getTime() - Date.now()) / 1000);
-          throw new GitHubApiError(
-            `Rate limit exceeded. Resets in ${Math.ceil(resetIn / 60)} minutes.`,
-            response.status,
-            rateLimit,
-          );
-        }
+    if (!response.ok) {
+      if (response.status === 403 && rateLimit?.remaining === 0) {
+        const resetIn = Math.ceil((rateLimit.reset.getTime() - Date.now()) / 1000);
         throw new GitHubApiError(
-          `GitHub REST API error: ${response.status} ${text}`,
+          `Rate limit exceeded. Resets in ${Math.ceil(resetIn / 60)} minutes.`,
           response.status,
           rateLimit,
         );
       }
-
-      return parse(await response.json());
-    } finally {
-      semaphore.release();
+      const detail = await getErrorDetail(response);
+      throw new GitHubApiError(
+        `GitHub REST API error: ${response.status} ${detail}`,
+        response.status,
+        rateLimit,
+      );
     }
+
+    return parse(await response.json());
   };
 
   const listRepos = async (): Promise<GitHubRepo[]> => {
@@ -285,7 +290,7 @@ export const createGitHubGraphQLClient = (
         }
       `;
 
-      const data = await graphqlFetch(query, reposResponseSchema.assert, {
+      const data = await graphqlFetch(query, GitHubGraphQLReposResponse.assert, {
         cursor,
         login: username,
       });
@@ -338,7 +343,7 @@ export const createGitHubGraphQLClient = (
       }
     `;
 
-    const data = await graphqlFetch(query, repoResponseSchema.assert, {
+    const data = await graphqlFetch(query, GitHubGraphQLRepoResponse.assert, {
       name,
       owner,
     });
@@ -373,7 +378,7 @@ export const createGitHubGraphQLClient = (
       }
     `;
 
-    const data = await graphqlFetch(query, shaResponseSchema.assert, {
+    const data = await graphqlFetch(query, GitHubGraphQLShaResponse.assert, {
       branch: `refs/heads/${branch}`,
       name,
       owner,
@@ -400,7 +405,7 @@ export const createGitHubGraphQLClient = (
       }
     `;
 
-    const data = await graphqlFetch(query, commitCountResponseSchema.assert, {
+    const data = await graphqlFetch(query, GitHubGraphQLCommitCountResponse.assert, {
       name,
       owner,
     });
@@ -410,16 +415,7 @@ export const createGitHubGraphQLClient = (
   const getTree = async (fullName: string, sha: string): Promise<GitHubTree> =>
     restFetch(
       `https://api.github.com/repos/${fullName}/git/trees/${sha}?recursive=1`,
-      type({
-        sha: 'string',
-        tree: type({
-          path: 'string',
-          sha: 'string',
-          'size?': 'number',
-          type: `'blob' | 'tree'`,
-        }).array(),
-        truncated: 'boolean',
-      }).assert,
+      GitHubTree.assert,
     );
 
   const getFileContents = async (
@@ -452,7 +448,7 @@ export const createGitHubGraphQLClient = (
         }
       `;
 
-      const data = await graphqlFetch(query, fileResponseSchema.assert, {
+      const data = await graphqlFetch(query, GitHubGraphQLFileResponse.assert, {
         name,
         owner,
       });
