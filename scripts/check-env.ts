@@ -14,35 +14,18 @@ const parseEnv = (contents: string): Map<string, string> =>
 const hasValue = (value: string | undefined): boolean =>
   value !== undefined && value !== `` && value !== `''` && value !== `""`;
 
-const appsDirectory = `${import.meta.dir}/../apps`;
-const exampleFiles: string[] = [
-  ...new Bun.Glob(`*/.env.example`).scanSync({
-    cwd: appsDirectory,
-    dot: true,
-  }),
-];
-
-const results = await Promise.all(
-  exampleFiles.map(async (exampleFile) => {
-    const app = exampleFile.slice(0, exampleFile.indexOf(`/`));
-    const appDirectory = `${appsDirectory}/${app}`;
-    const example = parseEnv(await Bun.file(`${appDirectory}/.env.example`).text());
-    const envFile = Bun.file(`${appDirectory}/.env`);
-    const env = (await envFile.exists())
-      ? parseEnv(await envFile.text())
-      : new Map<string, string>();
-    const missing = [...example.keys()].filter(
-      (variable) => !hasValue(Bun.env[variable]) && !hasValue(env.get(variable)),
-    );
-
-    if (missing.length === 0) {
-      console.log(`${app}: all environment variables are present`);
-    } else {
-      console.log(`${app}: missing ${missing.join(`, `)}`);
-    }
-
-    return missing.length > 0;
-  }),
+const rootDirectory = `${import.meta.dir}/..`;
+const example = parseEnv(await Bun.file(`${rootDirectory}/.env.example`).text());
+const envFile = Bun.file(`${rootDirectory}/.env`);
+const env = (await envFile.exists()) ? parseEnv(await envFile.text()) : new Map<string, string>();
+const missing = [...example.keys()].filter(
+  (variable) => !hasValue(Bun.env[variable]) && !hasValue(env.get(variable)),
 );
 
-process.exitCode = results.some(Boolean) ? 1 : 0;
+if (missing.length === 0) {
+  console.log(`all environment variables are present`);
+} else {
+  console.log(`missing ${missing.join(`, `)}`);
+}
+
+process.exitCode = missing.length > 0 ? 1 : 0;

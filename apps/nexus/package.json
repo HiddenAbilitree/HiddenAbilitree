@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "next dev --turbopack -p 3000",
+    "dev": "bun --env-file=../../.env run next dev --turbopack -p 3000",
     "build": "bun run --cwd ../../packages/db migrate && bun run --cwd ../../packages/indexer index && next build",
     "start": "next start",
     "lint": "oxlint",
