@@ -45,12 +45,10 @@
               with pkgs;
               [
                 bun
-                eslint_d
                 fd
                 git
                 nodejs_24
                 oxlint
-                prettierd
               ]
               ++ scripts;
           };
