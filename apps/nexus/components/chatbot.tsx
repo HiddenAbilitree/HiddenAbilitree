@@ -1,6 +1,7 @@
 'use client';
 
 import { readStreamableValue } from '@ai-sdk/rsc';
+import * as SelectPrimitive from '@radix-ui/react-select';
 import { AnimatePresence, motion } from 'motion/react';
 import { FormEvent, memo, ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import Markdown from 'react-markdown';
@@ -12,9 +13,13 @@ import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import type { PluggableList } from 'unified';
 
-import { chat, ChatResult, getDataLastUpdated, Message, ToolCall } from '@/actions';
+import { chat, ChatResult, getDataLastUpdated, getModels, Message, ToolCall } from '@/actions/chat';
 import { CodeBlock } from '@/components/code-block';
-import { Close, Document, Undo } from '@/components/icons';
+import { Check } from '@/components/icons/check';
+import { ChevronDown } from '@/components/icons/chevron-down';
+import { Close } from '@/components/icons/close';
+import { Document } from '@/components/icons/document';
+import { Undo } from '@/components/icons/undo';
 import { _0xProto } from '@/styles/fonts';
 
 const parseContent = (raw: string): string =>
@@ -141,6 +146,8 @@ export const Chatbot = ({ isOpen, onCloseAction }: ChatbotProps) => {
   const [reasoningContent, setReasoningContent] = useState(``);
   const [expandedReasoning, setExpandedReasoning] = useState<Set<string>>(new Set());
   const [lastUpdated, setLastUpdated] = useState<string | undefined>();
+  const [models, setModels] = useState<string[] | undefined>();
+  const [model, setModel] = useState<string | undefined>();
 
   const inputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -150,6 +157,14 @@ export const Chatbot = ({ isOpen, onCloseAction }: ChatbotProps) => {
 
   useEffect(() => {
     void getDataLastUpdated().then(setLastUpdated);
+  }, []);
+
+  useEffect(() => {
+    void (async () => {
+      const options = await getModels();
+      setModels(options.models);
+      setModel(options.defaultModel);
+    })();
   }, []);
 
   const toggleReasoning = useCallback((id: string) => {
@@ -171,7 +186,7 @@ export const Chatbot = ({ isOpen, onCloseAction }: ChatbotProps) => {
 
   const submitMessage = useCallback(
     async (content: string, existingMessages: Message[]) => {
-      if (content.trim() === `` || isStreaming || isRateLimited) return;
+      if (content.trim() === `` || isStreaming || isRateLimited || !model) return;
 
       setReasoningContent(``);
       const userMessage: Message = {
@@ -183,7 +198,7 @@ export const Chatbot = ({ isOpen, onCloseAction }: ChatbotProps) => {
       setInput(``);
       setIsStreaming(true);
 
-      const result: ChatResult = await chat([...existingMessages, userMessage]);
+      const result: ChatResult = await chat([...existingMessages, userMessage], model);
 
       if (!result.stream) {
         setIsStreaming(false);
@@ -327,7 +342,7 @@ export const Chatbot = ({ isOpen, onCloseAction }: ChatbotProps) => {
       setReasoningContent(``);
       setIsStreaming(false);
     },
-    [isStreaming, isRateLimited],
+    [isStreaming, isRateLimited, model],
   );
 
   const handleSubmit = (e: FormEvent) => {
@@ -396,7 +411,48 @@ export const Chatbot = ({ isOpen, onCloseAction }: ChatbotProps) => {
                 </>
               )}
             </div>
-            <div className='flex shrink-0 items-center gap-2'>
+            <div className='flex shrink-0 items-center gap-3'>
+              {models && model && (
+                <SelectPrimitive.Root disabled={isStreaming} onValueChange={setModel} value={model}>
+                  <SelectPrimitive.Trigger
+                    aria-label='Model'
+                    className='group border-tns-blue/30 bg-tns-blue/10 text-tns-blue enabled:hover:border-tns-blue/60 enabled:hover:bg-tns-blue/20 focus-visible:border-tns-blue data-[state=open]:border-tns-blue/60 data-[state=open]:bg-tns-blue/20 -my-1 flex cursor-pointer items-center gap-2 rounded-md border px-2.5 py-1 text-xs outline-none disabled:cursor-default disabled:opacity-50'
+                    title='Model'
+                  >
+                    <SelectPrimitive.Value />
+                    <SelectPrimitive.Icon>
+                      <ChevronDown className='size-3.5 transition-transform group-data-[state=open]:rotate-180' />
+                    </SelectPrimitive.Icon>
+                  </SelectPrimitive.Trigger>
+                  <SelectPrimitive.Portal>
+                    <SelectPrimitive.Content
+                      align='end'
+                      className={`border-tns-blue/50 bg-tns-black data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 z-50 min-w-(--radix-select-trigger-width) origin-(--radix-select-content-transform-origin) rounded-lg border p-1 ${_0xProto.className}`}
+                      position='popper'
+                      sideOffset={6}
+                    >
+                      <SelectPrimitive.Viewport>
+                        {models.map((id) => (
+                          <SelectPrimitive.Item
+                            className='text-tns-white/80 data-highlighted:bg-tns-blue/15 data-highlighted:text-tns-white flex cursor-pointer items-center justify-between gap-3 rounded-md px-2.5 py-2 text-xs outline-none select-none'
+                            key={id}
+                            value={id}
+                          >
+                            <SelectPrimitive.ItemText>{id}</SelectPrimitive.ItemText>
+                            <SelectPrimitive.ItemIndicator>
+                              <Check
+                                className='size-3.5'
+                                fill='fill-tns-blue'
+                                stroke='stroke-tns-blue'
+                              />
+                            </SelectPrimitive.ItemIndicator>
+                          </SelectPrimitive.Item>
+                        ))}
+                      </SelectPrimitive.Viewport>
+                    </SelectPrimitive.Content>
+                  </SelectPrimitive.Portal>
+                </SelectPrimitive.Root>
+              )}
               <button
                 className='text-tns-white/60 hover:text-tns-white cursor-pointer'
                 onClick={resetMessages}
@@ -485,9 +541,17 @@ export const Chatbot = ({ isOpen, onCloseAction }: ChatbotProps) => {
             <form className='border-tns-blue border-t-2 p-3' onSubmit={(e) => handleSubmit(e)}>
               <input
                 className='border-tns-blue/50 bg-tns-black-hover text-tns-white placeholder:text-tns-white/40 focus:border-tns-blue w-full rounded-lg border px-3 py-2 text-sm focus:outline-none disabled:opacity-50'
-                disabled={isStreaming}
+                disabled={isStreaming || !model}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder={isStreaming ? `Waiting for response...` : `Type a message...`}
+                placeholder={
+                  isStreaming
+                    ? `Waiting for response...`
+                    : model
+                      ? `Type a message...`
+                      : models
+                        ? `No models available`
+                        : `Loading models...`
+                }
                 ref={inputRef}
                 value={input}
               />

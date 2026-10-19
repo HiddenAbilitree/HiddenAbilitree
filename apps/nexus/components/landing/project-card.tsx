@@ -4,9 +4,12 @@ import Link from 'next/link';
 import { ComponentProps, ReactNode, ViewTransition } from 'react';
 import Markdown from 'react-markdown';
 
-import { getStars, type StarsResult } from '@/actions';
-import { Github, Link as LinkIcon, Star } from '@/components/icons';
-import { Code, Tag } from '@/components/landing';
+import { getStars, type StarsResult } from '@/actions/get-repo';
+import { Github } from '@/components/icons/github';
+import { Link as LinkIcon } from '@/components/icons/link';
+import { Star } from '@/components/icons/star';
+import { Code } from '@/components/landing/code';
+import { Tag } from '@/components/landing/tag';
 import { Separator } from '@/components/ui/separator';
 
 const colors = {

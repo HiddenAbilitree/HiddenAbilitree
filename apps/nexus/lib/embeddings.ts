@@ -29,7 +29,7 @@ export const embedQueryForCode = async (text: string): Promise<EmbeddingResult> 
     body: JSON.stringify({
       input: text,
       input_type: `query`,
-      model: `voyage-code-3`,
+      model: `voyage-code-4`,
     }),
     headers: {
       Authorization: `Bearer ${process.env.VOYAGE_API_KEY}`,

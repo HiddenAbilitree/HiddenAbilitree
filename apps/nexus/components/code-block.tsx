@@ -6,7 +6,8 @@ import { memo, ReactNode, useState } from 'react';
 import 'react-shiki/css';
 import { ShikiHighlighter } from 'react-shiki';
 
-import { Check, Copy } from '@/components/icons';
+import { Check } from '@/components/icons/check';
+import { Copy } from '@/components/icons/copy';
 
 const languageList = Object.values(languages) as Language[];
 

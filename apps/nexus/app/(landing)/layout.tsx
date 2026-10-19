@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 import { BottomControls } from '@/components/bottom-controls';
 import { HashScrollCenter } from '@/components/hash-scroll-center';
 import { Header } from '@/components/header';
-import { Footer } from '@/components/landing';
+import { Footer } from '@/components/landing/footer';
 
 export default function LandingLayout({
   children,

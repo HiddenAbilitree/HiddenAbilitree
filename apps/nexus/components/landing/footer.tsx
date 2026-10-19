@@ -2,7 +2,9 @@ import clsx from 'clsx';
 import Link from 'next/link';
 
 import { AppearingGroup, AppearingItem } from '@/components/appearing-group';
-import { Discord, Github, Mail } from '@/components/icons/';
+import { Discord } from '@/components/icons/discord';
+import { Github } from '@/components/icons/github';
+import { Mail } from '@/components/icons/mail';
 import { Separator } from '@/components/ui/separator';
 
 export const Footer = () => (

@@ -1,4 +1,6 @@
-import { JPQuote, ProjectCard, Section } from '@/components/landing';
+import { JPQuote } from '@/components/landing/jp-quote';
+import { ProjectCard } from '@/components/landing/project-card';
+import { Section } from '@/components/landing/section';
 import { Separator } from '@/components/ui/separator';
 import { getProjectContent, projects } from '@/projects';
 

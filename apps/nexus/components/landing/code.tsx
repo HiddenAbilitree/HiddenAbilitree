@@ -4,8 +4,8 @@ import clsx from 'clsx';
 import { ComponentProps, FC } from 'react';
 import { toast as sonnerToast } from 'sonner';
 
-import { Copy } from '@/components/icons';
 import { Check } from '@/components/icons/check';
+import { Copy } from '@/components/icons/copy';
 import { ToastProps } from '@/components/landing/types';
 import { _0xProto } from '@/styles/fonts';
 

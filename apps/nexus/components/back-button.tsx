@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-import { ArrowLeft } from '@/components/icons';
+import { ArrowLeft } from '@/components/icons/arrow-left';
 
 export const BackButton = () => {
   const pathname = usePathname();

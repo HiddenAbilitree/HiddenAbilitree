@@ -9,8 +9,8 @@ import remarkGfm from 'remark-gfm';
 import remarkGithubAlerts from 'remark-github-blockquote-alert';
 
 import { CodeBlock, PlainCodeBlock } from '@/components/code-block';
-import { Github } from '@/components/icons';
-import { Tag } from '@/components/landing';
+import { Github } from '@/components/icons/github';
+import { Tag } from '@/components/landing/tag';
 import { Separator } from '@/components/ui/separator';
 import { getProject, getProjectContent, getProjectSlugs, ProjectData } from '@/projects';
 

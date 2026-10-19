@@ -5,7 +5,7 @@ import type { EmbeddingProvider } from '@/src/embeddings/provider';
 
 export type { EmbeddingProvider } from './provider';
 
-const MODEL = `voyage-code-3`;
+const MODEL = `voyage-code-4`;
 const DIMENSIONS = 1024;
 const embeddingResponseSchema = type({
   data: type({ embedding: 'number[]' }).array(),

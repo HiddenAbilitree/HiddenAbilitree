@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
-import { Document } from '@/components/icons';
+import { Document } from '@/components/icons/document';
 import { ResumeForm } from '@/components/resume-form';
 import { ResumePdfViewer } from '@/components/resume-pdf-viewer';
 import { hasResumeAccess } from '@/lib/resume';

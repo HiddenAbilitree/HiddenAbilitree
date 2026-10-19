@@ -18,6 +18,27 @@ export const getDataLastUpdated = async (): Promise<string | undefined> => {
   return date?.toISOString();
 };
 
+const DEFAULT_MODEL = `qwen-3.8-27b`;
+
+const modelsResponseSchema = type({ data: type({ id: type.string }).array() });
+
+export const getModels = async (): Promise<{ defaultModel?: string; models: string[] }> => {
+  const response = await fetch(`https://api.cerebras.ai/v1/models`, {
+    headers: { Authorization: `Bearer ${process.env.CEREBRAS_API_KEY}` },
+  });
+  const body = response.ok ? modelsResponseSchema(await response.json()) : undefined;
+  const models =
+    body === undefined || body instanceof type.errors
+      ? []
+      : body.data.map(({ id }) => id).toSorted();
+  return {
+    defaultModel: models.includes(DEFAULT_MODEL)
+      ? DEFAULT_MODEL
+      : models[Math.floor(Math.random() * models.length)],
+    models,
+  };
+};
+
 export type ChatResult = {
   error?: `rate_limit` | `unknown`;
   stream?: ReturnType<typeof createStreamableValue<StreamEvent>>[`value`];
@@ -50,7 +71,7 @@ const projectDetailsInput = type({
   ),
 });
 
-export const chat = async (messages: Message[]): Promise<ChatResult> => {
+export const chat = async (messages: Message[], model: string): Promise<ChatResult> => {
   const stream = createStreamableValue<StreamEvent>();
 
   void (async () => {
@@ -63,7 +84,7 @@ export const chat = async (messages: Message[]): Promise<ChatResult> => {
       const result = streamText({
         maxRetries: 0,
         messages: messages.map((m) => ({ content: m.content, role: m.role })),
-        model: cerebras(`zai-glm-4.7`),
+        model: cerebras(model),
         onError: (event) => {
           hasError = true;
           const errorMessage = String(event.error).toLowerCase();

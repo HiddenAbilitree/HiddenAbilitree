@@ -217,23 +217,26 @@ export const runIndexPipeline = async (
     }
   };
 
-  if (options.recreateCollection) {
-    await qdrant.recreateCollection(provider.dimensions);
-  }
-
-  await qdrant.ensureCollection(provider);
-
   const storedProvider = await db
     .select()
     .from(indexerMetadata)
     .where(eq(indexerMetadata.key, `embedding_provider`))
     .then((rows) => rows[0]?.value);
 
-  if (storedProvider && storedProvider !== provider.name && !options.recreateCollection) {
-    throw new Error(
-      `Embedding provider changed! Stored: ${storedProvider}, Current: ${provider.name}. Use --recreate-collection to rebuild with new provider`,
+  const providerChanged = storedProvider !== undefined && storedProvider !== provider.name;
+  const rebuild = options.recreateCollection || providerChanged;
+
+  if (providerChanged) {
+    console.log(
+      `Embedding provider changed from ${storedProvider} to ${provider.name}, rebuilding`,
     );
   }
+
+  if (rebuild) {
+    await qdrant.recreateCollection(provider.dimensions);
+  }
+
+  await qdrant.ensureCollection(provider);
 
   await db
     .insert(indexerMetadata)
@@ -254,8 +257,8 @@ export const runIndexPipeline = async (
   const results = await Promise.all(
     repos.map((repo) =>
       indexRepo(repo, {
-        force: options.force,
-        summariesOnly: options.summariesOnly,
+        force: options.force || rebuild,
+        summariesOnly: options.summariesOnly && !rebuild,
       }),
     ),
   );

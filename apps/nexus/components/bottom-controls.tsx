@@ -5,7 +5,8 @@ import { motion } from 'motion/react';
 import { useEffect, useState } from 'react';
 
 import { Chatbot } from '@/components/chatbot';
-import { Motion, Robot } from '@/components/icons';
+import { Motion } from '@/components/icons/motion';
+import { Robot } from '@/components/icons/robot';
 
 const getInitialDesktop = () =>
   typeof globalThis.window !== `undefined` && globalThis.matchMedia(`(min-width: 768px)`).matches;
